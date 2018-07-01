@@ -1,4 +1,4 @@
-local Json = require "util.Json";
+local Json = require "libs.Json";
 local Stack = require "util.Stack";
 
 local SpriteSheet = {}
@@ -9,7 +9,7 @@ function SpriteSheet:new(duration)
     local execution = "infinity"
     
     local self = {spriteFrames = {}, firstFrame = nil, currentFrame = nil, amountFrames = 0, completeSpriteSheet = nil, currentTime = 0, duration = duration, execution = execution}
-
+    
     local __genOrderedIndex = function(tableToOrder)
         local orderedIndex = {}
         for key in pairs(tableToOrder) do
@@ -69,7 +69,7 @@ function SpriteSheet:new(duration)
             self.firstFrame = frameSelected
         end
     end
-
+    
     local setDuration = function(newDuration)
         self.duration = newDuration
     end
@@ -79,7 +79,7 @@ function SpriteSheet:new(duration)
             self.execution = execution
         end
     end
-
+    
     local resetCurrent = function()
         self.currentFrame = self.firstFrame
     end
@@ -89,7 +89,7 @@ function SpriteSheet:new(duration)
         self.currentFrame = self.currentFrame.nextFrame
         return frameReturned.quad
     end
-
+    
     local update = function(dt)
         if self.currentFrame.nextFrame ~= self.firstFrame or self.execution == "infinity" then
             self.currentTime = self.currentTime + dt
@@ -101,7 +101,7 @@ function SpriteSheet:new(duration)
             self.currentTime = 0
         end
     end
-
+    
     local draw = function(x, y)
         if self.currentFrame.nextFrame ~= self.firstFrame or self.execution == "infinity" then
             x = x or 300
