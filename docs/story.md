@@ -1,12 +1,17 @@
 # História de Fundo
 
-Uma pessoa que passou a vida toda tentando agradar aos outros, de forma que gastava seu dinheiro com tudo, agora os gerentes de todos os bancos do mundo estão atrás dele e de sua família, cabe a ele não deixar que nada acontece a ninguém. E para isso, ele terá de derrotar cada um dos bancos e comece a ganhar todo o dinheiro gasto durante sua vida
+Uma mãe solteira que passou a vida toda cuidando dos filhos, tendo de se virar com alimentação e gastos mensais com sua família. Agora seu país está em crise econômica, e ela deve mais do que nunca se esforçar para dar o melhor para sua família e para ela mesma. Nesse mundo futurista, os boletos e contas passaram a serem cobrados por seres desenvolvidos geneticamente apenas para esse fim, será que suas balas de dinheiro serão suficiente para dominar esses seres e salvar a si mesma e sua família?
+
+Com o passar de cada fase, a personagem principal irá conseguir alcançar novos empregos, e assim aumentar sua renda.
 
 ## Personagem Principal
 
+* É uma Mãe Solteira
 * Nome a Escolha do jogador
 * Sprite único
 
 ## Inimigos
 
-Investidores e Gerentes de banco que vão atrás do jogador. Deverão haver cerca de pelo menos 5 inimigos distintos (no sprite)
+* Seres simbolizando Boletos
+* Seres simbolizando Contas
+* Cartão de Crédito em forma de robô

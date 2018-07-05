@@ -8,17 +8,18 @@ function CharacterController:new(spriteSheet, world)
         x = 0,
         y = 0,
         move = false,
-        speed = 2.5,
+        speed = 2,
         jumpForce = 10,
         orientation = "right",
-        spriteSheet = spriteSheet or nil,
-        world = world or love.physics.newWorld(0, 9.81 * 64)
+        world = world or love.physics.newWorld(0, 9.81 * 64),
+        spriteSheet = spriteSheet or nil
     }
-
+    
     --aplying physics
     this.body = love.physics.newBody(this.world, 0, 0, "dynamic")
-    this.shape = love.physics.newPolygonShape({0,0, 0,64, 64,64, 64,0})
+    this.shape = love.physics.newPolygonShape({0, 0, 0, 64, 64, 64, 64, 0})
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
+    this.fixture:setUserData("MainCharacter")
     
     return setmetatable(this, CharacterController)
 end
@@ -52,6 +53,10 @@ function CharacterController:update(dt)
         self.y = self.y + self.jumpForce
         self.body:applyLinearImpulse(0, -430)
         inGround = false
+    end
+    
+    if love.keyboard.isDown("z") then
+        gameDirector:addBullet(self.body:getX(), self.body:getY(), self.orientation, 10)
     end
     
     if pressedKey then
