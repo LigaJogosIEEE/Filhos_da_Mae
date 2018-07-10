@@ -15,26 +15,36 @@ function Bullet:new(world, x, y, orientation, speed, texture)
     --aplying physics
     this.body = love.physics.newBody(this.world, this.x, this.y, "kinematic")
     this.shape = love.physics.newRectangleShape(16, 10)
-    this.fixture = love.physics.newFixture(this.body, this.shape, 1)
+    this.fixture = love.physics.newFixture(this.body, this.shape, 0)
     this.fixture:setUserData("Bullet")
+    
+    if this.orientation == "right" then
+        this.update = function(dt)
+            this.x = this.x + this.speed
+            this.body:setX(this.x)
+        end
+    elseif this.orientation == "left" then
+        this.update = function(dt)
+            this.x = this.x - this.speed
+            this.body:setX(this.x)
+        end
+    elseif this.orientation == "up" then
+        this.update = function(dt)
+            this.y = this.y - this.speed
+            this.body:setY(this.y)
+        end
+    else
+        this.update = function(dt)
+            this.y = this.y + this.speed
+            this.body:setY(this.y)
+        end
+    end
     
     return setmetatable(this, Bullet)
 end
 
 function Bullet:update(dt)
-    if self.orientation == "right" then
-        self.x = self.x + self.speed
-        self.body:setX(self.x)
-    elseif self.orientation == "left" then
-        self.x = self.x - self.speed
-        self.body:setX(self.x)
-    elseif self.orientation == "up" then
-        self.y = self.y - self.speed
-        self.body:setY(self.y)
-    else
-        self.y = self.y + self.speed
-        self.body:setY(self.y)
-    end
+    self.update(dt)
 end
 
 function Bullet:draw()

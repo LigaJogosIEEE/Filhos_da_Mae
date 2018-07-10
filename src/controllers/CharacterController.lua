@@ -11,6 +11,7 @@ function CharacterController:new(spriteSheet, world)
         speed = 2,
         jumpForce = 10,
         orientation = "right",
+        looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
         spriteSheet = spriteSheet or nil
     }
@@ -26,16 +27,13 @@ end
 
 function CharacterController:update(dt)
     local pressedKey = false
+    local lookingUpDown = false
     if love.keyboard.isDown("up") then
-        --[[self.y = self.y - self.speed
-        self.body:setY(self.y)--]]
-        self.orientation = "up"
-        pressedKey = true
+        self.looking = "up"
+        lookingUpDown = true
     elseif love.keyboard.isDown("down") then
-        --[[self.y = self.y + self.speed
-        self.body:setY(self.y)--]]
-        self.orientation = "down"
-        pressedKey = true
+        self.looking = "down"
+        lookingUpDown = true
     end
     if love.keyboard.isDown("left") then
         self.x = self.x - self.speed
@@ -56,13 +54,20 @@ function CharacterController:update(dt)
     end
     
     if love.keyboard.isDown("z") then
-        gameDirector:addBullet(self.body:getX(), self.body:getY(), self.orientation, 10)
+        local verticalDirection = self.looking == "up" and - 20 or self.looking == "down" and 70 or 0
+        local horizontalDirection = verticalDirection ~= 0 and 30 or self.orientation == "right" and 75 or self.orientation == "left" and - 10 or 0
+        
+        local positionToDraw = self.looking == nil and self.orientation or self.looking
+        gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 10)
     end
     
     if pressedKey then
         self.move = true
     else
         self.move = false
+    end
+    if not lookingUpDown then
+        self.looking = nil
     end
     
     if self.spriteSheet then
@@ -71,12 +76,16 @@ function CharacterController:update(dt)
         else
             self.spriteSheet[self.orientation].resetCurrent()
         end
+        if self.looking then
+            self.spriteSheet[self.looking].update(dt)
+        end
     end
 end
 
 function CharacterController:draw()
     if self.spriteSheet then
-        self.spriteSheet[self.orientation].draw(self.body:getX(), self.body:getY())
+        local positionToDraw = self.looking == nil and self.orientation or self.looking
+        self.spriteSheet[positionToDraw].draw(self.body:getX(), self.body:getY())
     end
 end
 
