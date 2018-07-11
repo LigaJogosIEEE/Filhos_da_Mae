@@ -5,10 +5,9 @@ CharacterController.__index = CharacterController
 function CharacterController:new(spriteSheet, world)
     
     local this = {
-        x = 0,
-        y = 0,
         move = false,
-        speed = 2,
+        inGround = false,
+        speed = 10,
         jumpForce = 10,
         orientation = "right",
         looking = nil,
@@ -21,57 +20,60 @@ function CharacterController:new(spriteSheet, world)
     this.shape = love.physics.newPolygonShape({0, 0, 0, 64, 64, 64, 64, 0})
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData("MainCharacter")
+    this.fixture:setMask(2)
     
     return setmetatable(this, CharacterController)
 end
 
-function CharacterController:update(dt)
-    local pressedKey = false
-    local lookingUpDown = false
-    if love.keyboard.isDown("up") then
+function CharacterController:keypressed(key, scancode, isrepeat)
+    if key == "up" then
         self.looking = "up"
-        lookingUpDown = true
-    elseif love.keyboard.isDown("down") then
+    elseif key == "down" then
         self.looking = "down"
-        lookingUpDown = true
     end
-    if love.keyboard.isDown("left") then
-        self.x = self.x - self.speed
-        self.body:setX(self.x)
+    if key == "left" then
         self.orientation = "left"
-        pressedKey = true
-    elseif love.keyboard.isDown("right") then
-        self.x = self.x + self.speed
-        self.body:setX(self.x)
+        self.move = true
+    elseif key == "right" then
         self.orientation = "right"
-        pressedKey = true
+        self.move = true
     end
     
-    if love.keyboard.isDown("space") and inGround then
-        self.y = self.y + self.jumpForce
+    if key == "space" and self.inGround then
         self.body:applyLinearImpulse(0, -430)
-        inGround = false
+        self.inGround = false
     end
     
-    if love.keyboard.isDown("z") then
+    if key == "z" then
         local verticalDirection = self.looking == "up" and - 20 or self.looking == "down" and 70 or 0
         local horizontalDirection = verticalDirection ~= 0 and 30 or self.orientation == "right" and 75 or self.orientation == "left" and - 10 or 0
         
         local positionToDraw = self.looking == nil and self.orientation or self.looking
         gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 10)
     end
-    
-    if pressedKey then
-        self.move = true
-    else
-        self.move = false
+end
+
+function CharacterController:keyreleased(key, scancode)
+    if key == "left" or key == "right" then
+        if key == self.orientation then
+            self.move = false
+            local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
+            self.body:setLinearVelocity(0, yBodyVelocity)
+        end
     end
-    if not lookingUpDown then
+    if key == "up" or key == "down" then
         self.looking = nil
     end
-    
+end
+
+function CharacterController:update(dt)
     if self.spriteSheet then
         if self.move then
+            if self.orientation == "left" then
+                self.body:applyLinearImpulse(-1 * self.speed, 0)
+            elseif self.orientation == "right" then
+                self.body:applyLinearImpulse(self.speed, 0)
+            end
             self.spriteSheet[self.orientation].update(dt)
         else
             self.spriteSheet[self.orientation].resetCurrent()

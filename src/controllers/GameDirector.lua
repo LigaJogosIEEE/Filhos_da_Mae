@@ -47,8 +47,20 @@ function GameDirector:new()
     return setmetatable(this, GameDirector)
 end
 
+function GameDirector:keypressed(key, scancode, isrepeat)
+    self.mainCharacter:keypressed(key, scancode, isrepeat)
+end
+
+function GameDirector:keyreleased(key, scancode)
+    self.mainCharacter:keyreleased(key, scancode)
+end
+
 function GameDirector:addBullet(x, y, orientation, speed)
     table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed))
+end
+
+function GameDirector:getMainCharacter()
+    return self.mainCharacter
 end
 
 function GameDirector:update(dt)

@@ -2,8 +2,10 @@ local World = {}
 
 World.__index = World
 
-local beginContact = function()
-    inGround = true
+local beginContact = function(a, b, coll)
+    if (a:getUserData() == "MainCharacter" and b:getUserData() == "Ground") or (a:getUserData() == "Ground" and b:getUserData() == "MainCharacter") then
+        gameDirector:getMainCharacter().inGround = true
+    end
 end
 
 function World:new()

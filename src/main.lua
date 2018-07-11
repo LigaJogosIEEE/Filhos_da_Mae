@@ -1,14 +1,19 @@
 local GameDirector = require "controllers.GameDirector"
 
-function love.keypressed(key, isrepeat)
-    if key == "escape" then
-        love.event.quit()
-    end
-end
-
 function love.load()
     love.window.setTitle("Filhos da Mãe")
     gameDirector = GameDirector:new()
+end
+
+function love.keypressed(key, scancode, isrepeat)
+    if key == "escape" then
+        love.event.quit()
+    end
+    gameDirector:keypressed(key, scancode, isrepeat)
+end
+
+function love.keyreleased(key, scancode)
+    gameDirector:keyreleased(key, scancode)
 end
 
 function love.update(dt)

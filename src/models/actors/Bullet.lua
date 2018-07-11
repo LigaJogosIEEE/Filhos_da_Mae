@@ -17,6 +17,7 @@ function Bullet:new(world, x, y, orientation, speed, texture)
     this.shape = love.physics.newRectangleShape(16, 10)
     this.fixture = love.physics.newFixture(this.body, this.shape, 0)
     this.fixture:setUserData("Bullet")
+    this.fixture:setCategory(2)
     
     if this.orientation == "right" then
         this.update = function(dt)
@@ -51,7 +52,7 @@ function Bullet:draw()
     if self.texture then
         love.graphics.draw(self.texture, self.x, self.y)
     else
-        love.graphics.setColor(72, 160, 14)
+        love.graphics.setColor(72, 160, 140)
         love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
     end
 end
