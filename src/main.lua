@@ -3,6 +3,7 @@ local GameDirector = require "controllers.GameDirector"
 function love.load()
     love.window.setTitle("Filhos da Mãe")
     gameDirector = GameDirector:new()
+    gameDirector.enemiesController:createEnemies()
 end
 
 function love.keypressed(key, scancode, isrepeat)

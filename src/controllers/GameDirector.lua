@@ -12,13 +12,14 @@ local SpriteSheet = require "util.SpriteSheet"
 
 --Controllers
 local CharacterController = require "controllers.CharacterController"
+local EnemiesController = require "controllers.EnemiesController"
 
 local GameDirector = {}
 
 GameDirector.__index = GameDirector
 
-local configureSpriteSheet = function(jsonFile, imageFile, animationType)
-    local newSprite = SpriteSheet:new()
+function GameDirector:configureSpriteSheet(jsonFile, imageFile, animationType, duration)
+    local newSprite = SpriteSheet:new(duration)
     newSprite.loadSprite(jsonFile, imageFile)
     newSprite.splitFrame()
     newSprite.setType(animationType)
@@ -29,10 +30,10 @@ function GameDirector:new()
     love.physics.setMeter(64)
     
     local mainCharacterSpriteSheet = {}
-    mainCharacterSpriteSheet.right = configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Direita.json", "assets/sprites/Franjostei/Franjostei_Direita.png", "infinity")
-    mainCharacterSpriteSheet.left = configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Esquerda.json", "assets/sprites/Franjostei/Franjostei_Esquerda.png", "infinity")
-    mainCharacterSpriteSheet.down = configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Frente.json", "assets/sprites/Franjostei/Franjostei_Frente.png", "infinity")
-    mainCharacterSpriteSheet.up = configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Costas.json", "assets/sprites/Franjostei/Franjostei_Costas.png", "infinity")
+    mainCharacterSpriteSheet.right = GameDirector:configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Direita.json", "assets/sprites/Franjostei/Franjostei_Direita.png", "infinity")
+    mainCharacterSpriteSheet.left = GameDirector:configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Esquerda.json", "assets/sprites/Franjostei/Franjostei_Esquerda.png", "infinity")
+    mainCharacterSpriteSheet.down = GameDirector:configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Frente.json", "assets/sprites/Franjostei/Franjostei_Frente.png", "infinity")
+    mainCharacterSpriteSheet.up = GameDirector:configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Costas.json", "assets/sprites/Franjostei/Franjostei_Costas.png", "infinity")
     
     local world = World:new()
     this = {
@@ -41,6 +42,7 @@ function GameDirector:new()
         ground = Ground:new(world.world),
         mainMenu = MainMenuScene:new(),
         mainCharacter = CharacterController:new(mainCharacterSpriteSheet, world.world),
+        enemiesController = EnemiesController:new(world),
         gameStatus = "paused"
     }
     
@@ -55,8 +57,8 @@ function GameDirector:keyreleased(key, scancode)
     self.mainCharacter:keyreleased(key, scancode)
 end
 
-function GameDirector:addBullet(x, y, orientation, speed)
-    table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed))
+function GameDirector:addBullet(x, y, orientation, speed, category)
+    table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed, nil, category))
 end
 
 function GameDirector:getMainCharacter()
@@ -66,6 +68,7 @@ end
 function GameDirector:update(dt)
     self.mainCharacter:update(dt)
     self.world:update(dt)
+    self.enemiesController:update(dt)
     
     for index, bullet in pairs(self.bulletsInWorld) do
         bullet:update(dt)
@@ -75,9 +78,10 @@ end
 function GameDirector:draw()
     self.mainCharacter:draw()
     self.ground:draw()
+    self.enemiesController:draw()
     
     for index, bullet in pairs(self.bulletsInWorld) do
-        bullet:draw(dt)
+        bullet:draw()
     end
 end
 

@@ -10,9 +10,11 @@ Essa pasta tem o intuito de armazenar todos os arquivos de imagem, áudio e font
 ## src/controllers
 Essa pasta contém os principais controladores que são utilizados no jogo.
 
+* CameraController - Controller que possui os scripts de camera para realizar a movimentação e manipulação do mundo do jogo.
 * CharacterController - É o controller que irá ser responsável pela manipulação do personagem do jogador no jogo. Dessa forma, essa classe detecta os eventos de input no teclado para que o jogador possa se locomover e realizar ações.
-* DataPersistence - Tem o intuito de armazenar os dados de jogo para carregamento futuro, como checkpoints
-* GameDirector - Controller mais importante de todos, ele manipula todo o jogo, faz a inclusão de cenas, e gerencia os métodos necessários para o funcionamento do game. Ele fica armazenada na tabela global do interpretador, para assim ser acessado em qualquer local
+* DataPersistence - Tem o intuito de armazenar os dados de jogo para carregamento futuro, como checkpoints.
+* EnemiesController - Controller que armazena os inimigos, bem como faz a gerencia dos seus recursos.
+* GameDirector - Controller mais importante de todos, ele manipula todo o jogo, faz a inclusão de cenas, e gerencia os métodos necessários para o funcionamento do game. Ele fica armazenada na tabela global do interpretador, para assim ser acessado em qualquer local.
 
 ## src/libs
 Essa pasta contém os arquivos de biblioteca externos utilizados
@@ -21,6 +23,7 @@ Essa pasta contém os arquivos de biblioteca externos utilizados
 Pasta que contém todos os scripts de atores do jogo, como balas, inimigos, dentre outros
 
 * Bullet - Script que determina cada bala na tela de forma individual
+* Enemy - Classe que contém os sprites e funcionamento dos inimigos no jogo
 
 ## src/models/business
 Pasta que contém classes de modelagem que servem como uma abstração para manipulação de recursos importantes
