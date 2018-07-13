@@ -14,6 +14,10 @@ function EnemiesController:new(world)
     return setmetatable(this, EnemiesController)
 end
 
+function EnemiesController:artificialInteligence(actor)
+    
+end
+
 function EnemiesController:createEnemies()
     local seuBarrigaSprite = {}
     seuBarrigaSprite.left = gameDirector:configureSpriteSheet("assets/sprites/Seu_Barriga/Seu_Barriga.json", "assets/sprites/Seu_Barriga/Seu_Barriga.png", "infinity", 0.3);
@@ -25,6 +29,7 @@ end
 
 function EnemiesController:update(dt)
     for index, enemy in pairs(self.enemies) do
+        self:artificialInteligence(enemy)
         enemy:update(dt)
     end
 end

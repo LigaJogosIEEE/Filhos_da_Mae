@@ -33,6 +33,8 @@ Pasta que contém classes de modelagem que servem como uma abstração para mani
 
 ## src/scenes
 Pasta que contém as cenas do game, ou seja, cada uma das telas do jogo
+
+* CreditsScene - Transcorrer dos créditos da criação do game
 * MainMenuScene - Tela de Menu do Game
 
 ## src/util

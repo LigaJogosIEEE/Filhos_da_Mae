@@ -83,7 +83,6 @@ function Enemy:update(dt)
 end
 
 function Enemy:draw()
-    love.graphics.polygon("fill", {16, 0, 16, 64, 64, 64, 64, 0})
     if self.spriteSheet then
         local positionToDraw = self.looking == nil and self.orientation or self.looking
         self.spriteSheet[positionToDraw].draw(self.body:getX(), self.body:getY())

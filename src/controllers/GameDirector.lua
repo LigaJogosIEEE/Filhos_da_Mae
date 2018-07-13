@@ -1,5 +1,3 @@
-local MainMenuScene = require "scenes.MainMenuScene"
-
 --Models
 local World = require "models.business.World"
 local Ground = require "models.business.Ground"
@@ -40,7 +38,6 @@ function GameDirector:new()
         bulletsInWorld = {},
         world = world,
         ground = Ground:new(world.world),
-        mainMenu = MainMenuScene:new(),
         mainCharacter = CharacterController:new(mainCharacterSpriteSheet, world.world),
         enemiesController = EnemiesController:new(world),
         gameStatus = "paused"
