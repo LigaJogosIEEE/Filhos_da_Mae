@@ -7,7 +7,12 @@ function Bullet:new(world, x, y, orientation, speed, texture, category)
         world = world or love.physics.newWorld(0, 9.81 * 64),
         orientation = orientation or "right",
         speed = speed or 100,
-        texture = texture
+        elapsedTime = 0,
+        lifeTime = 1,
+        texture = texture,
+        body = nil,
+        shape = nil,
+        fixture = nil
     }
     
     --aplying physics
@@ -18,24 +23,20 @@ function Bullet:new(world, x, y, orientation, speed, texture, category)
     this.fixture:setCategory(category or 2)
     
     if this.orientation == "right" then
-        this.update = function(dt)
+        this.updateFunction = function(dt)
             this.body:setX(this.body:getX() + this.speed)
-            this.speed = this.speed + 1
         end
     elseif this.orientation == "left" then
-        this.update = function(dt)
+        this.updateFunction = function(dt)
             this.body:setX(this.body:getX() - this.speed)
-            this.speed = this.speed + 1
         end
     elseif this.orientation == "up" then
-        this.update = function(dt)
+        this.updateFunction = function(dt)
             this.body:setY(this.body:getY() - this.speed)
-            this.speed = this.speed + 1
         end
     elseif this.orientation == "down" then
-        this.update = function(dt)
+        this.updateFunction = function(dt)
             this.body:setY(this.body:getY() + this.speed)
-            this.speed = this.speed + 1
         end
     end
     
@@ -43,15 +44,21 @@ function Bullet:new(world, x, y, orientation, speed, texture, category)
 end
 
 function Bullet:update(dt)
-    self.update(dt)
+    self.updateFunction(dt)
+    self.speed = self.speed + 1
+    self.elapsedTime = self.elapsedTime + dt
+    if self.elapsedTime >= self.lifeTime then
+        gameDirector:removeBullet(self)
+    end
 end
 
 function Bullet:draw()
     if self.texture then
         love.graphics.draw(self.texture, self.body:getX(), self.body:getY())
     else
-        love.graphics.setColor(72, 160, 140)
+        love.graphics.setColor(72/255, 160/255, 140/255)
         love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+        love.graphics.setColor(255/255, 255/255, 255/255)
     end
 end
 

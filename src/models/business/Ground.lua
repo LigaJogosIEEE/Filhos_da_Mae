@@ -20,7 +20,7 @@ end
 
 function Ground:draw()
     if not self.groundTexture then
-        love.graphics.setColor(72, 160, 14)
+        love.graphics.setColor(255, 255, 255)
         love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
     end
 end

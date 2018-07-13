@@ -17,7 +17,7 @@ function Enemy:new(spriteSheet, world, x, y, enemyType)
     
     --aplying physics
     this.body = love.physics.newBody(this.world, x or 0, y or 0, "dynamic")
-    this.shape = love.physics.newPolygonShape({0, 0, 0, 64, 64, 64, 64, 0})
+    this.shape = love.physics.newPolygonShape({16, 0, 16, 64, 64, 64, 64, 0})
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData(enemyType or "Enemy")
     this.fixture:setMask(3)
@@ -25,9 +25,7 @@ function Enemy:new(spriteSheet, world, x, y, enemyType)
     return setmetatable(this, Enemy)
 end
 
-function Enemy:move()
-    local directions = {"up", "down", "left", "right"}
-    local key = directions[love.math.random(1, 4)]
+function Enemy:move(key)
     if key == "up" then
         self.looking = "up"
     elseif key == "down" then
@@ -85,6 +83,7 @@ function Enemy:update(dt)
 end
 
 function Enemy:draw()
+    love.graphics.polygon("fill", {16, 0, 16, 64, 64, 64, 64, 0})
     if self.spriteSheet then
         local positionToDraw = self.looking == nil and self.orientation or self.looking
         self.spriteSheet[positionToDraw].draw(self.body:getX(), self.body:getY())

@@ -14,4 +14,5 @@ Love2d - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . F
 
 ## Bibliotecas de terceiros
 
+* Gspöt - GUI library for Love -> https://notabug.org/pgimeno/Gspot/src/master
 * JSON - Lua Parser for Json files -> https://github.com/rxi/json.lua

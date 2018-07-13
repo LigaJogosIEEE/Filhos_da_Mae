@@ -61,6 +61,15 @@ function GameDirector:addBullet(x, y, orientation, speed, category)
     table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed, nil, category))
 end
 
+function GameDirector:removeBullet(bullet, fixture)
+    for index = 1, #self.bulletsInWorld do
+        if (bullet and self.bulletsInWorld[index] == bullet) or (fixture and self.bulletsInWorld[index].fixture == fixture) then
+            table.remove(self.bulletsInWorld, index)
+            return index
+        end
+    end
+end
+
 function GameDirector:getMainCharacter()
     return self.mainCharacter
 end

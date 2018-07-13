@@ -6,6 +6,10 @@ local beginContact = function(a, b, coll)
     if (a:getUserData() == "MainCharacter" and b:getUserData() == "Ground") or (a:getUserData() == "Ground" and b:getUserData() == "MainCharacter") then
         gameDirector:getMainCharacter().inGround = true
     end
+    local bulletFixture = a:getUserData() == "Bullet" and a or b:getUserData() == "Bullet" and b or nil
+    if bulletFixture then
+    	gameDirector:removeBullet(nil, bulletFixture)
+    end
 end
 
 function World:new()
