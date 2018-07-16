@@ -16,11 +16,12 @@ local GameDirector = {}
 
 GameDirector.__index = GameDirector
 
-function GameDirector:configureSpriteSheet(jsonFile, imageFile, animationType, duration)
+function GameDirector:configureSpriteSheet(jsonFile, imageFile, animationType, duration, scaleX, scaleY)
     local newSprite = SpriteSheet:new(duration)
     newSprite.loadSprite(jsonFile, imageFile)
     newSprite.splitFrame()
     newSprite.setType(animationType)
+    newSprite.setScale(scaleX, scaleY)
     return newSprite
 end
 
@@ -28,10 +29,10 @@ function GameDirector:new()
     love.physics.setMeter(64)
     
     local mainCharacterSpriteSheet = {}
-    mainCharacterSpriteSheet.right = GameDirector:configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Direita.json", "assets/sprites/Franjostei/Franjostei_Direita.png", "infinity")
-    mainCharacterSpriteSheet.left = GameDirector:configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Esquerda.json", "assets/sprites/Franjostei/Franjostei_Esquerda.png", "infinity")
-    mainCharacterSpriteSheet.down = GameDirector:configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Frente.json", "assets/sprites/Franjostei/Franjostei_Frente.png", "infinity")
-    mainCharacterSpriteSheet.up = GameDirector:configureSpriteSheet("assets/sprites/Franjostei/Franjostei_Costas.json", "assets/sprites/Franjostei/Franjostei_Costas.png", "infinity")
+    mainCharacterSpriteSheet.right = GameDirector:configureSpriteSheet("assets/sprites/Player/Mother_1.json", "assets/sprites/Player/Mother_1.png", "infinity")
+    mainCharacterSpriteSheet.left = GameDirector:configureSpriteSheet("assets/sprites/Player/Mother_1.json", "assets/sprites/Player/Mother_1.png", "infinity", nil, -1, 1)
+    mainCharacterSpriteSheet.down = GameDirector:configureSpriteSheet("assets/sprites/Player/Mother_1.json", "assets/sprites/Player/Mother_1.png", "infinity")
+    mainCharacterSpriteSheet.up = GameDirector:configureSpriteSheet("assets/sprites/Player/Mother_1.json", "assets/sprites/Player/Mother_1.png", "infinity")
     
     local world = World:new()
     this = {

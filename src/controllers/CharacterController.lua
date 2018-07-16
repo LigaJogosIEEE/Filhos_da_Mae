@@ -17,6 +17,7 @@ function CharacterController:new(spriteSheet, world)
     
     --aplying physics
     this.body = love.physics.newBody(this.world, 0, 0, "dynamic")
+    this.body:setFixedRotation(true)
     this.shape = love.physics.newPolygonShape({0, 0, 0, 64, 64, 64, 64, 0})
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData("MainCharacter")
@@ -45,7 +46,7 @@ function CharacterController:keypressed(key, scancode, isrepeat)
     end
     
     if key == "z" then
-        local verticalDirection = self.looking == "up" and - 20 or self.looking == "down" and 70 or 0
+        local verticalDirection = self.looking == "up" and - 20 or self.looking == "down" and 70 or 25
         local horizontalDirection = verticalDirection ~= 0 and 30 or self.orientation == "right" and 75 or self.orientation == "left" and - 10 or 0
         
         local positionToDraw = self.looking == nil and self.orientation or self.looking
@@ -88,6 +89,7 @@ function CharacterController:draw()
     if self.spriteSheet then
         local positionToDraw = self.looking == nil and self.orientation or self.looking
         self.spriteSheet[positionToDraw].draw(self.body:getX(), self.body:getY())
+        --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
     end
 end
 

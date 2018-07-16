@@ -8,7 +8,7 @@ function SpriteSheet:new(duration)
     local duration = duration or 0.2
     local execution = "infinity"
     
-    local self = {spriteFrames = {}, firstFrame = nil, currentFrame = nil, amountFrames = 0, completeSpriteSheet = nil, currentTime = 0, duration = duration, execution = execution}
+    local self = {spriteFrames = {}, firstFrame = nil, currentFrame = nil, amountFrames = 0, completeSpriteSheet = nil, currentTime = 0, duration = duration, execution = execution, transform = love.math.newTransform(0, 0, 0, 1, 1), scaleX = 1, scaleY = 1}
     
     local __genOrderedIndex = function(tableToOrder)
         local orderedIndex = {}
@@ -37,7 +37,7 @@ function SpriteSheet:new(duration)
             --[[Here will start the circle list for the frames--]]
             local firstFrame = frameStack.pop()
             local currentFrame = firstFrame
-            local frameAfter = frameStack.pop()
+            local frameAfter = frameStack.pop() or firstFrame
             while not frameStack.isEmpty() do
                 currentFrame.nextFrame = frameAfter
                 currentFrame = currentFrame.nextFrame
@@ -79,6 +79,13 @@ function SpriteSheet:new(duration)
             self.execution = execution
         end
     end
+
+    local setScale = function(scaleX, scaleY)
+        if scaleX and scaleY then
+            self.scaleX = scaleX
+            self.scaleY = scaleY
+        end
+    end
     
     local resetCurrent = function()
         self.currentFrame = self.firstFrame
@@ -104,10 +111,11 @@ function SpriteSheet:new(duration)
     
     local draw = function(x, y)
         if self.currentFrame.nextFrame ~= self.firstFrame or self.execution == "infinity" then
-            x = x or 300
-            y = y or 300
+            local x = x or 300
+            local y = y or 300
             if self.currentFrame.quad then
-                love.graphics.draw(self.completeSpriteSheet, self.currentFrame.quad, x, y)
+                self.transform:setTransformation(x, y, 0, self.scaleX, self.scaleY)
+                love.graphics.draw(self.completeSpriteSheet, self.currentFrame.quad, self.transform)
             end
         end
     end
@@ -118,6 +126,7 @@ function SpriteSheet:new(duration)
         setFirst = setFirst;
         setDuration = setDuration;
         setType = setType;
+        setScale = setScale;
         resetCurrent = resetCurrent;
         nextFrame = nextFrame;
         update = update;
