@@ -1,58 +1,43 @@
-local MainMenuScene = require "scenes.MainMenuScene"
-
+local SceneDirector = require "controllers.SceneDirector"
 local GameDirector = require "controllers.GameDirector"
 
 function love.load()
-    love.window.setTitle("Filhos da Mãe")
     gameDirector = GameDirector:new()
     gameDirector.enemiesController:createEnemies()
-    mainMenu = MainMenuScene:new()
-    currentScene = "mainMenu"
+    sceneDirector = SceneDirector:new()
 end
 
 function love.keypressed(key, scancode, isrepeat)
     if key == "escape" then
         love.event.quit()
     end
-    if currentScene == "mainMenu" then
-        mainMenu:keypressed(key, scancode, isrepeat)
-    else
-        gameDirector:keypressed(key, scancode, isrepeat)
-    end
+    sceneDirector:keypressed(key, scancode, isrepeat)
 end
 
 function love.keyreleased(key, scancode)
-    if currentScene == "mainMenu" then
-        mainMenu:keyreleased(key, scancode)
-    else
-        gameDirector:keyreleased(key, scancode)
-    end
+    sceneDirector:keyreleased(key, scancode)
+end
+
+function love.mousemoved(x, y, dx, dy, istouch)
+    sceneDirector:mousemoved(x, y, dx, dy, istouch)
 end
 
 function love.mousepressed(x, y, button)
-    mainMenu:mousepressed(x, y, button)
+    sceneDirector:mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
-    mainMenu:mousereleased(x, y, button)
+    sceneDirector:mousereleased(x, y, button)
 end
 
 function love.wheelmoved(x, y)
-    mainMenu:wheelmoved(x, y)
+    sceneDirector:wheelmoved(x, y)
 end
 
 function love.update(dt)
-    if currentScene == "mainMenu" then
-        mainMenu:update(dt)
-    else
-        gameDirector:update(dt)
-    end
+    sceneDirector:update(dt)
 end
 
 function love.draw()
-    if currentScene == "mainMenu" then
-        mainMenu:draw()
-    else
-        gameDirector:draw()
-    end
+    sceneDirector:draw()
 end

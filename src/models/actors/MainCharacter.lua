@@ -1,8 +1,8 @@
-local CharacterController = {}
+local MainCharacter = {}
 
-CharacterController.__index = CharacterController
+MainCharacter.__index = MainCharacter
 
-function CharacterController:new(spriteSheet, world)
+function MainCharacter:new(spriteSheet, world)
     
     local this = {
         move = false,
@@ -23,10 +23,10 @@ function CharacterController:new(spriteSheet, world)
     this.fixture:setUserData("MainCharacter")
     this.fixture:setMask(2)
     
-    return setmetatable(this, CharacterController)
+    return setmetatable(this, MainCharacter)
 end
 
-function CharacterController:keypressed(key, scancode, isrepeat)
+function MainCharacter:keypressed(key, scancode, isrepeat)
     if key == "up" then
         self.looking = "up"
     elseif key == "down" then
@@ -47,14 +47,14 @@ function CharacterController:keypressed(key, scancode, isrepeat)
     
     if key == "z" then
         local verticalDirection = self.looking == "up" and - 20 or self.looking == "down" and 70 or 25
-        local horizontalDirection = verticalDirection ~= 0 and 30 or self.orientation == "right" and 75 or self.orientation == "left" and - 10 or 0
+        local horizontalDirection = verticalDirection ~= 25 and 30 or self.orientation == "right" and 75 or self.orientation == "left" and - 10 or 0
         
         local positionToDraw = self.looking == nil and self.orientation or self.looking
         gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 15, 2)
     end
 end
 
-function CharacterController:keyreleased(key, scancode)
+function MainCharacter:keyreleased(key, scancode)
     if key == "left" or key == "right" then
         if key == self.orientation then
             self.move = false
@@ -67,7 +67,7 @@ function CharacterController:keyreleased(key, scancode)
     end
 end
 
-function CharacterController:update(dt)
+function MainCharacter:update(dt)
     if self.spriteSheet then
         if self.move then
             if self.orientation == "left" then
@@ -85,7 +85,7 @@ function CharacterController:update(dt)
     end
 end
 
-function CharacterController:draw()
+function MainCharacter:draw()
     if self.spriteSheet then
         local positionToDraw = self.looking == nil and self.orientation or self.looking
         self.spriteSheet[positionToDraw].draw(self.body:getX(), self.body:getY())
@@ -93,4 +93,4 @@ function CharacterController:draw()
     end
 end
 
-return CharacterController
+return MainCharacter

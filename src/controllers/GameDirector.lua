@@ -4,12 +4,12 @@ local Ground = require "models.business.Ground"
 
 --Actors
 local Bullet = require "models.actors.Bullet"
+local MainCharacter = require "models.actors.MainCharacter"
 
 --Util
 local SpriteSheet = require "util.SpriteSheet"
 
 --Controllers
-local CharacterController = require "controllers.CharacterController"
 local EnemiesController = require "controllers.EnemiesController"
 
 local GameDirector = {}
@@ -39,7 +39,7 @@ function GameDirector:new()
         bulletsInWorld = {},
         world = world,
         ground = Ground:new(world.world),
-        mainCharacter = CharacterController:new(mainCharacterSpriteSheet, world.world),
+        mainCharacter = MainCharacter:new(mainCharacterSpriteSheet, world.world),
         enemiesController = EnemiesController:new(world),
         gameStatus = "paused"
     }

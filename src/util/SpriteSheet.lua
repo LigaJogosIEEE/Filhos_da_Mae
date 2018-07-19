@@ -8,7 +8,7 @@ function SpriteSheet:new(duration)
     local duration = duration or 0.2
     local execution = "infinity"
     
-    local self = {spriteFrames = {}, firstFrame = nil, currentFrame = nil, amountFrames = 0, completeSpriteSheet = nil, currentTime = 0, duration = duration, execution = execution, transform = love.math.newTransform(0, 0, 0, 1, 1), scaleX = 1, scaleY = 1}
+    local self = {spriteFrames = {}, firstFrame = nil, currentFrame = nil, amountFrames = 0, completeSpriteSheet = nil, currentTime = 0, duration = duration, execution = execution, scaleX = 1, scaleY = 1}
     
     local __genOrderedIndex = function(tableToOrder)
         local orderedIndex = {}
@@ -114,8 +114,7 @@ function SpriteSheet:new(duration)
             local x = x or 300
             local y = y or 300
             if self.currentFrame.quad then
-                self.transform:setTransformation(x, y, 0, self.scaleX, self.scaleY)
-                love.graphics.draw(self.completeSpriteSheet, self.currentFrame.quad, self.transform)
+                love.graphics.draw(self.completeSpriteSheet, self.currentFrame.quad, x, y, 0, self.scaleX, self.scaleY)
             end
         end
     end
