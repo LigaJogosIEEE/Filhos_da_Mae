@@ -35,14 +35,14 @@ function ScaleDimension:directScale(width, height)
     return self.graphicsDimensions.width / width, self.graphicsDimensions.height / height
 end
 
-function ScaleDimension:centralize(itemName, x, y, isImage)
+function ScaleDimension:centralize(itemName, x, y, isImage, centerOffset)
     if self.scaleItems[itemName] then
         local item = self.scaleItems[itemName]
         if x then
-            item.x = (self.graphicsDimensions.width / 2) - ((isImage and item.originalInfo[1] or item.width) / 2)
+            item.x = (self.graphicsDimensions.width / 2) - ((isImage and item.originalInfo[1] or centerOffset and 0 or item.width) / 2)
         end
         if y then
-            item.y = (self.graphicsDimensions.height / 2) - ((isImage and item.originalInfo[2] or item.height) / 2)
+            item.y = (self.graphicsDimensions.height / 2) - ((isImage and item.originalInfo[2] or centerOffset and 0 or item.height) / 2)
         end
     end
 end

@@ -15,7 +15,7 @@ Love2d - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . F
 * Ananias Nascimento
 * Manuella
 
-### Musica
+### Efeitos Sonoros
 * Kevin
 
 ## Bibliotecas de terceiros

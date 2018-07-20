@@ -10,6 +10,7 @@ local MainCharacter = require "models.actors.MainCharacter"
 local SpriteSheet = require "util.SpriteSheet"
 
 --Controllers
+local CharacterController = require "controllers.CharacterController"
 local EnemiesController = require "controllers.EnemiesController"
 
 local GameDirector = {}
@@ -38,8 +39,9 @@ function GameDirector:new()
     this = {
         bulletsInWorld = {},
         world = world,
-        ground = Ground:new(world.world),
+        ground = Ground:new(world.world, nil, 800, 30, 400, 570),
         mainCharacter = MainCharacter:new(mainCharacterSpriteSheet, world.world),
+        characterController = CharacterController:new(),
         enemiesController = EnemiesController:new(world),
         gameStatus = "run",
         --Libraries
@@ -61,8 +63,10 @@ function GameDirector:keyreleased(key, scancode)
     self.mainCharacter:keyreleased(key, scancode)
 end
 
-function GameDirector:addBullet(x, y, orientation, speed, category)
-    table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed, nil, category))
+function GameDirector:addBullet(x, y, orientation, speed, category, fromPlayer)
+    if not fromPlayer or (fromPlayer and self.characterController:shot()) then
+        table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed, nil, category))
+    end
 end
 
 function GameDirector:removeBullet(bullet, fixture)

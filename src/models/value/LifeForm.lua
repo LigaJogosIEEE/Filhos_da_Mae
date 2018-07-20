@@ -1,17 +1,15 @@
-local LifeForm = {}
+local Class = require "models.Class"
+local LifeForm = Class:extends("LifeForm")
 
-LifeForm.__index = LifeForm
-
-function LifeForm:new()
-	local self = {
-		life = {have = 3, total = 3},
-		agility = 4,
-		havingBullets = 300,
+function LifeForm:new(name, money)
+	local this = {
+		name = name or "Generic LifeForm",
+		life = {have = 15, total = 15},
 		healthInsurance = nil,
-		money = 0
+		money = money or 10
 	}
 
-	return setmetatable(self, LifeForm)
+	return this
 end
 
 function LifeForm:takeDamage(amountDamage)
@@ -19,8 +17,9 @@ function LifeForm:takeDamage(amountDamage)
 	return self.life.have <= 0
 end
 
-function LifeForm:shot()
-	self.havingBullets = self.havingBullets - 1
+function LifeForm:shot(shotValue)
+	self.money = self.money - shotValue
+	return self.money >= 0
 end
 
 return LifeForm

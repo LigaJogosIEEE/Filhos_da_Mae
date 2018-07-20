@@ -50,7 +50,7 @@ function MainCharacter:keypressed(key, scancode, isrepeat)
         local horizontalDirection = verticalDirection ~= 25 and 30 or self.orientation == "right" and 75 or self.orientation == "left" and - 10 or 0
         
         local positionToDraw = self.looking == nil and self.orientation or self.looking
-        gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 15, 2)
+        gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 15, 2, true)
     end
 end
 

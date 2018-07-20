@@ -33,7 +33,17 @@ Pasta que contém todos os scripts de atores do jogo, como balas, inimigos, dent
 * Enemy - Classe que contém os sprites e funcionamento dos inimigos no jogo
 * MainCharacter - Classe que detecta os eventos de input no teclado para que o jogador possa se locomover e realizar ações
 
-## src/models/business
+## src/models
+Pasta que contém os arquivos de modelagem do game
+
+* Class - Arquivo que auxilia na geração de classes e objetos, bem como herança entre os mesmos utilizando o conceito de POO
+
+### src/models/value
+Pasta que contém os arquivos de armazenamento de dados do sistema
+
+* LifeForm - Classe que armazena as informações que uma forma de vida do jogo necessita ter
+
+### src/models/business
 Pasta que contém classes de modelagem que servem como uma abstração para manipulação de recursos importantes
 
 * Ground - Manipula o terreno do game
@@ -42,6 +52,7 @@ Pasta que contém classes de modelagem que servem como uma abstração para mani
 ## src/scenes
 Pasta que contém as cenas do game, ou seja, cada uma das telas do jogo
 
+* ConfigurationScene - Cena que contém as informações de configuração do game, como tamanho da tela, controles, dentre outros
 * CreditsScene - Transcorrer dos créditos da criação do game
 * MainMenuScene - Tela de Menu do Game
 
