@@ -48,6 +48,7 @@ Pasta que contém as cenas do game, ou seja, cada uma das telas do jogo
 ## src/util
 Pasta que contém os scripts para auxiliar o desenvolvimento do jogo
 
+* ScaleDimension - Arquivo que realiza os cáculos de redimensionamento de tela para que o jogo possa ser portado em telas de tamanhos distintos
 * Stack - Uma pilha, estrutura de dados do tipo LIFO
 * SpriteSheet - Script para gerenciamento dos sprites do jogo. Foi desenvolvido para configurar esses sprites a partir de um arquivo JSON gerado a partir da ferramenta Piskell na versão 0.14
 

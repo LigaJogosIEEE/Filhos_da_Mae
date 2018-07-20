@@ -1,7 +1,9 @@
 local SceneDirector = require "controllers.SceneDirector"
 local GameDirector = require "controllers.GameDirector"
+local ScaleDimension = require "util.ScaleDimension"
 
 function love.load()
+    scaleDimension = ScaleDimension:new()
     gameDirector = GameDirector:new()
     gameDirector.enemiesController:createEnemies()
     sceneDirector = SceneDirector:new()

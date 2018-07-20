@@ -94,9 +94,10 @@ function Button:draw()
         self.animation[self.state].draw(self.x, self.y)
     elseif self.image[self.state] then
         if self.originalImage then
-            local x, y, height, width = self.image[self.state]:getViewport()
+            local x, y, width, height = self.image[self.state]:getViewport()
             local scaleX, scaleY = self:calculateScale(width, height)
             love.graphics.draw(self.originalImage, self.image[self.state], self.x, self.y, 0, scaleX, scaleY)
+            love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 200, "center", 0, scaleX, scaleY)
         else
             local scaleX, scaleY = self:calculateScale(self.image[self.state]:getDimensions())
             love.graphics.draw(self.image[self.state], self.x, self.y, 0, scaleX, scaleY)

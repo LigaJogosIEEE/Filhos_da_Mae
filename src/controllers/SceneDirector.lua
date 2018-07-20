@@ -9,7 +9,8 @@ function SceneDirector:new()
         currentScene = "mainMenu", 
         mainMenu = MainMenuScene:new()
     }
-        
+    scaleDimension:setGameScreenScale(800, 600)
+    love.graphics.setNewFont("assets/fonts/kirbyss.ttf", 18)
     return setmetatable(this, SceneDirector)
 end
 

@@ -4,65 +4,87 @@ local MainMenuScene = {}
 
 MainMenuScene.__index = MainMenuScene
 
+local addButton = function(this, buttonName, sceneName, buttonDimensions)
+    scaleDimension:calculeScales("menu" .. buttonName, unpack(buttonDimensions))
+    scaleDimension:centralize("menu" .. buttonName, true, false, false)
+    local scales = scaleDimension:getScale("menu" .. buttonName)
+
+    --buttonName, x, y, width, height, image, originalImage, animation, 70
+    local button = this.buttonManager:addButton(buttonName, scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
+    button.callback = function(this) sceneDirector:setCurrentScene(sceneName) end
+end
+
 function MainMenuScene:new()
     local this = {
         background = love.graphics.newImage("assets/background.png"),
         logo = love.graphics.newImage("assets/menuLogo.png"),
-        buttons = ButtonManager:new(),
-        actualScene = "MainMenu"
+        buttonManager = ButtonManager:new(),
+        actualScene = "MainMenu",
+        buttonsImage = nil,
+        buttonsQuads = nil
     }
-    --buttonName, x, y, width, height, image, originalImage, animation, 70
-    local button = this.buttons:addButton('Start Game', 350, 320, 128, 60, love.graphics.newImage("assets/gui/start_button_normal.png"))
-    button:setButtonImage(love.graphics.newImage("assets/gui/start_button_hover.png"), "hover")
-    button:setButtonImage(love.graphics.newImage("assets/gui/start_button_pressed.png"), "pressed")
-    button.callback = function(this, x, y)
-        sceneDirector:setCurrentScene("inGame")
+    scaleDimension:calculeScales("menuBackground", this.background:getWidth(), this.background:getHeight(), 0, 0)
+    scaleDimension:calculeScales("menuLogo", 260, 150, 0, 50)
+    scaleDimension:centralize("menuLogo", true, false, true)
+
+    local Json = gameDirector:getLibraries("Json")
+    local file = love.filesystem.read("assets/gui/buttons.json")
+    local buttonSprite = nil
+    if file then
+        buttonSprite = Json.decode(file)
     end
-    
-    button = this.buttons:addButton('Configurations', 350, 390, 128, 60, love.graphics.newImage("assets/gui/start_button_normal.png"))
-    button:setButtonImage(love.graphics.newImage("assets/gui/start_button_hover.png"), "hover")
-    button:setButtonImage(love.graphics.newImage("assets/gui/start_button_pressed.png"), "pressed")
-    button.callback = function(this, x, y)
-        sceneDirector:setCurrentScene("configuration")
-    end
+    local imageSize = buttonSprite.meta.size
+    local framesInfo = buttonSprite.frames
+    this.buttonsQuads = {
+        normal = love.graphics.newQuad(framesInfo.normal.frame.x, framesInfo.normal.frame.y, framesInfo.normal.frame.w, framesInfo.normal.frame.h, imageSize.w, imageSize.h),
+        hover = love.graphics.newQuad(framesInfo.hover.frame.x, framesInfo.hover.frame.y, framesInfo.hover.frame.w, framesInfo.hover.frame.h, imageSize.w, imageSize.h),
+        pressed = love.graphics.newQuad(framesInfo.pressed.frame.x, framesInfo.pressed.frame.y, framesInfo.pressed.frame.w, framesInfo.pressed.frame.h, imageSize.w, imageSize.h),
+        disabled = love.graphics.newQuad(framesInfo.disabled.frame.x, framesInfo.disabled.frame.y, framesInfo.disabled.frame.w, framesInfo.disabled.frame.h, imageSize.w, imageSize.h)
+    }
+    this.buttonsImage = love.graphics.newImage("assets/gui/" .. buttonSprite.meta.image)
+
+    addButton(this, 'Start Game', "inGame", {128, 60, 350, 320})
+    addButton(this, 'Configurations', "configurations", {128, 60, 350, 390})
+    addButton(this, 'Credits', "credits", {128, 60, 350, 460})
 
     return setmetatable(this, MainMenuScene)
 end
 
 function MainMenuScene:keypressed(key, scancode, isrepeat)
-    self.buttons:keypressed(key, scancode, isrepeat)
+    self.buttonManager:keypressed(key, scancode, isrepeat)
 end
 
 function MainMenuScene:keyreleased(key, scancode)
-    self.buttons:keyreleased(key, scancode)
+    self.buttonManager:keyreleased(key, scancode)
 end
 
 function MainMenuScene:mousemoved(x, y, dx, dy, istouch)
-    self.buttons:mousemoved(x, y, dx, dy, istouch)
+    self.buttonManager:mousemoved(x, y, dx, dy, istouch)
 end
 
 function MainMenuScene:mousepressed(x, y, button)
-    self.buttons:mousepressed(x, y, button)
+    self.buttonManager:mousepressed(x, y, button)
 end
 
 function MainMenuScene:mousereleased(x, y, button)
-    self.buttons:mousereleased(x, y, button)
+    self.buttonManager:mousereleased(x, y, button)
 end
 
 function MainMenuScene:wheelmoved(x, y)
 end
 
 function MainMenuScene:update(dt)
-    self.buttons:update(dt)
+    self.buttonManager:update(dt)
 end
 
 function MainMenuScene:draw()
-    love.graphics.draw(self.background)
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.rectangle("fill", 250, 50, 320, 150)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(self.logo, 250, 50, 0, 0.2)
-    self.buttons:draw()
+    local width, height = love.graphics.getDimensions()
+    local scales = scaleDimension:getScale("menuBackground")
+    love.graphics.draw(self.background, 0, 0, 0, scales.scaleX, scales.scaleY)
+    scales = scaleDimension:getScale("menuLogo")
+    local directScaleX, directScaleY = scaleDimension:directScale(self.logo:getDimensions()) 
+    love.graphics.draw(self.logo, scales.x, scales.y, 0, directScaleX / scales.scaleX, directScaleY / scales.scaleY)
+    self.buttonManager:draw()
 end
 
 return MainMenuScene

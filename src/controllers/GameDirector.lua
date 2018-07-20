@@ -41,10 +41,16 @@ function GameDirector:new()
         ground = Ground:new(world.world),
         mainCharacter = MainCharacter:new(mainCharacterSpriteSheet, world.world),
         enemiesController = EnemiesController:new(world),
-        gameStatus = "paused"
+        gameStatus = "run",
+        --Libraries
+        libraries = {Json = require "libs.Json"}
     }
     
     return setmetatable(this, GameDirector)
+end
+
+function GameDirector:getLibraries(library)
+    return self.libraries[library]
 end
 
 function GameDirector:keypressed(key, scancode, isrepeat)

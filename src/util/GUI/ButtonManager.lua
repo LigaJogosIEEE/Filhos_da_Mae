@@ -40,7 +40,7 @@ function ButtonManager:keypressed(key, scancode, isrepeat)
     end
     if valid then
         self.previousState = self.buttons[self.currentOption]:getState() == "disabled" and "disabled" or "normal"
-    elseif key == "space" or key == "return" or key == "kpenter" then
+    elseif (key == "space" or key == "return" or key == "kpenter") and self.buttons[self.currentOption]:getState() ~= "disabled" then
         self.buttons[self.currentOption]:executeCallback()
     end
 end
