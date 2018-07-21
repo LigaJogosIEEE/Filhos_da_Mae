@@ -8,6 +8,7 @@ local MainCharacter = require "models.actors.MainCharacter"
 
 --Util
 local SpriteSheet = require "util.SpriteSheet"
+local SpriteAnimation = require "util.SpriteAnimation"
 
 --Controllers
 local CharacterController = require "controllers.CharacterController"
@@ -17,35 +18,35 @@ local GameDirector = {}
 
 GameDirector.__index = GameDirector
 
-function GameDirector:configureSpriteSheet(jsonFile, imageFile, animationType, duration, scaleX, scaleY)
-    local newSprite = SpriteSheet:new(duration)
-    newSprite.loadSprite(jsonFile, imageFile)
-    newSprite.splitFrame()
-    newSprite.setType(animationType)
-    newSprite.setScale(scaleX, scaleY)
-    return newSprite
+function GameDirector:configureSpriteSheet(jsonFile, directory, animationType, duration, scaleX, scaleY)
+    local newSprite = SpriteSheet:new(jsonFile, directory)
+    local frameTable, frameStack = newSprite:getFrames()
+    local newAnimation = SpriteAnimation:new(frameStack, newSprite:getAtlas(), duration)
+    newAnimation:setType(animationType)
+    newAnimation:setScale(scaleX, scaleY)
+    return newAnimation
 end
 
 function GameDirector:new()
     love.physics.setMeter(64)
     
-    local mainCharacterSpriteSheet = {}
-    mainCharacterSpriteSheet.right = GameDirector:configureSpriteSheet("assets/sprites/Player/Mother_1.json", "assets/sprites/Player/Mother_1.png", "infinity")
-    mainCharacterSpriteSheet.left = GameDirector:configureSpriteSheet("assets/sprites/Player/Mother_1.json", "assets/sprites/Player/Mother_1.png", "infinity", nil, -1, 1)
-    mainCharacterSpriteSheet.down = GameDirector:configureSpriteSheet("assets/sprites/Player/Mother_1.json", "assets/sprites/Player/Mother_1.png", "infinity")
-    mainCharacterSpriteSheet.up = GameDirector:configureSpriteSheet("assets/sprites/Player/Mother_1.json", "assets/sprites/Player/Mother_1.png", "infinity")
+    local mainCharacterAnimation = {}
+    mainCharacterAnimation.right = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", "infinity")
+    mainCharacterAnimation.left = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", "infinity", nil, -1, 1)
+    mainCharacterAnimation.down = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", "infinity")
+    mainCharacterAnimation.up = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", "infinity")
     
     local world = World:new()
     this = {
         bulletsInWorld = {},
         world = world,
         ground = Ground:new(world.world, nil, 800, 30, 400, 570),
-        mainCharacter = MainCharacter:new(mainCharacterSpriteSheet, world.world),
+        mainCharacter = MainCharacter:new(mainCharacterAnimation, world.world),
         characterController = CharacterController:new(),
         enemiesController = EnemiesController:new(world),
         gameStatus = "run",
         --Libraries
-        libraries = {Json = require "libs.Json"}
+        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation}
     }
     
     return setmetatable(this, GameDirector)

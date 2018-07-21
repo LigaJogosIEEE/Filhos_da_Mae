@@ -2,136 +2,53 @@ local Json = require "libs.Json";
 local Stack = require "util.Stack";
 
 local SpriteSheet = {}
+
 SpriteSheet.__index = SpriteSheet
 
-function SpriteSheet:new(duration)
-    local duration = duration or 0.2
-    local execution = "infinity"
-    
-    local self = {spriteFrames = {}, firstFrame = nil, currentFrame = nil, amountFrames = 0, completeSpriteSheet = nil, currentTime = 0, duration = duration, execution = execution, scaleX = 1, scaleY = 1}
-    
-    local __genOrderedIndex = function(tableToOrder)
-        local orderedIndex = {}
-        for key in pairs(tableToOrder) do
-            table.insert(orderedIndex, key)
-        end
-        table.sort(orderedIndex)
-        return orderedIndex
+function SpriteSheet:__genOrderedIndex(tableToOrder)
+    local orderedIndex = {}
+    for key in pairs(tableToOrder) do
+        table.insert(orderedIndex, key)
     end
-    
-    local loadSprite = function(jsonSprite, imageSprite)
-        local file = love.filesystem.read(jsonSprite)
-        local spriteConfigurations = nil
-        if file then
-            local frameStack = Stack:new()
-            spriteConfigurations = Json.decode(file)
-            local frames = spriteConfigurations.frames
-            local orderedIndex = __genOrderedIndex(frames)
-            for index = 1, #orderedIndex, 1 do
-                frameName = orderedIndex[index]
-                frameInfo = frames[frameName]
-                self.spriteFrames[frameName] = {name = frameName, nextFrame = nil, frameInfo = frameInfo.frame, quad = nil}
-                frameStack.push(self.spriteFrames[frameName])
-            end
-            self.amountFrames = frameStack.size()
-            --[[Here will start the circle list for the frames--]]
-            local firstFrame = frameStack.pop()
-            local currentFrame = firstFrame
-            local frameAfter = frameStack.pop() or firstFrame
-            while not frameStack.isEmpty() do
-                currentFrame.nextFrame = frameAfter
-                currentFrame = currentFrame.nextFrame
-                frameAfter = frameStack.pop()
-            end
-            currentFrame.nextFrame = frameAfter
-            frameAfter.nextFrame = firstFrame
-            
-            self.firstFrame = firstFrame
-            self.currentFrame = firstFrame
-            
-        end
-        self.completeSpriteSheet = love.graphics.newImage(imageSprite)
-    end
-    
-    local splitFrame = function()
-        local currentFrame = self.currentFrame
-        for count = 1, self.amountFrames + 1, 1 do
-            local frameInfo = currentFrame.frameInfo
-            local x, y, width, height = frameInfo.x, frameInfo.y, frameInfo.w, frameInfo.h
-            currentFrame.quad = love.graphics.newQuad(x, y, width, height, self.completeSpriteSheet:getDimensions())
-            currentFrame = currentFrame.nextFrame
-        end
-    end
-    
-    local setFirst = function(frameName)
-        local frameSelected = self.spriteFrames[frameName]
-        if frameSelected then
-            self.firstFrame = frameSelected
-        end
-    end
-    
-    local setDuration = function(newDuration)
-        self.duration = newDuration
-    end
-    
-    local setType = function(execution)
-        if execution == "infinity" or "once" then
-            self.execution = execution
-        end
-    end
+    table.sort(orderedIndex)
+    return orderedIndex
+end
 
-    local setScale = function(scaleX, scaleY)
-        if scaleX and scaleY then
-            self.scaleX = scaleX
-            self.scaleY = scaleY
+function SpriteSheet:new(jsonSprite, assetsDirectory)
+    local this = {atlas = nil, quads = {}}
+    local file = love.filesystem.read((assetsDirectory or "./") .. jsonSprite)
+    local spriteConfigurations = nil
+    if file then
+        local atlasInfo = Json.decode(file)
+        local imageSize = atlasInfo.meta.size
+        local framesInfo = atlasInfo.frames
+        for key, value in pairs(framesInfo) do
+            this.quads[key] = love.graphics.newQuad(value.frame.x, value.frame.y, value.frame.w, value.frame.h, imageSize.w, imageSize.h)
         end
+        this.atlas = love.graphics.newImage((assetsDirectory or "assets/sprites/") .. atlasInfo.meta.image)
     end
-    
-    local resetCurrent = function()
-        self.currentFrame = self.firstFrame
+    return setmetatable(this, SpriteSheet)
+end
+
+function SpriteSheet:getFrames(frameNames)
+    local frameOrder = frameNames or self:__genOrderedIndex(self.quads)
+    local frameStack = Stack:new()
+    local frameList = {}
+    for index = 1, #frameOrder, 1 do
+        frameName = frameOrder[index]
+        local frameInfo = {name = frameName, quad = self.quads[frameName]}
+        table.insert(frameList, frameInfo)
+        frameStack.push(frameInfo)
     end
-    
-    local nextFrame = function()
-        local frameReturned = self.currentFrame
-        self.currentFrame = self.currentFrame.nextFrame
-        return frameReturned.quad
-    end
-    
-    local update = function(dt)
-        if self.currentFrame.nextFrame ~= self.firstFrame or self.execution == "infinity" then
-            self.currentTime = self.currentTime + dt
-            if self.currentTime >= self.duration then
-                self.currentTime = self.currentTime - self.duration
-                nextFrame()
-            end
-        else
-            self.currentTime = 0
-        end
-    end
-    
-    local draw = function(x, y)
-        if self.currentFrame.nextFrame ~= self.firstFrame or self.execution == "infinity" then
-            local x = x or 300
-            local y = y or 300
-            if self.currentFrame.quad then
-                love.graphics.draw(self.completeSpriteSheet, self.currentFrame.quad, x, y, 0, self.scaleX, self.scaleY)
-            end
-        end
-    end
-    
-    return {
-        loadSprite = loadSprite;
-        splitFrame = splitFrame;
-        setFirst = setFirst;
-        setDuration = setDuration;
-        setType = setType;
-        setScale = setScale;
-        resetCurrent = resetCurrent;
-        nextFrame = nextFrame;
-        update = update;
-        draw = draw;
-    }
-    
+    return frameList, frameStack
+end
+
+function SpriteSheet:getQuads()
+    return self.quads
+end
+
+function SpriteSheet:getAtlas()
+    return self.atlas
 end
 
 return SpriteSheet

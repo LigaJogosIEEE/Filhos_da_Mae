@@ -2,7 +2,7 @@ local Enemy = {}
 
 Enemy.__index = Enemy
 
-function Enemy:new(spriteSheet, world, x, y, enemyType)
+function Enemy:new(spriteAnimation, world, x, y, enemyType)
     
     local this = {
         move = false,
@@ -12,7 +12,7 @@ function Enemy:new(spriteSheet, world, x, y, enemyType)
         orientation = "left",
         looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
-        spriteSheet = spriteSheet or nil
+        spriteAnimation = spriteAnimation or nil
     }
     
     --aplying physics
@@ -68,7 +68,7 @@ function Enemy:stopMoving(key)
 end
 
 function Enemy:update(dt)
-    if self.spriteSheet then
+    if self.spriteAnimation then
         if self.move then
             if self.orientation == "left" then
                 self.body:applyLinearImpulse(-1 * self.speed, 0)
@@ -76,17 +76,17 @@ function Enemy:update(dt)
                 self.body:applyLinearImpulse(self.speed, 0)
             end
         end
-        self.spriteSheet[self.orientation].update(dt)
+        self.spriteAnimation[self.orientation]:update(dt)
         if self.looking then
-            self.spriteSheet[self.looking].update(dt)
+            self.spriteAnimation[self.looking]:update(dt)
         end
     end
 end
 
 function Enemy:draw()
-    if self.spriteSheet then
+    if self.spriteAnimation then
         local positionToDraw = self.looking == nil and self.orientation or self.looking
-        self.spriteSheet[positionToDraw].draw(self.body:getX(), self.body:getY())
+        self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY())
         --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
     end
 end

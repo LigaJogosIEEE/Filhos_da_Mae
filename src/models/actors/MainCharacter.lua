@@ -2,7 +2,7 @@ local MainCharacter = {}
 
 MainCharacter.__index = MainCharacter
 
-function MainCharacter:new(spriteSheet, world)
+function MainCharacter:new(spriteAnimation, world)
     
     local this = {
         move = false,
@@ -12,7 +12,7 @@ function MainCharacter:new(spriteSheet, world)
         orientation = "right",
         looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
-        spriteSheet = spriteSheet or nil
+        spriteAnimation = spriteAnimation or nil
     }
     
     --aplying physics
@@ -68,27 +68,27 @@ function MainCharacter:keyreleased(key, scancode)
 end
 
 function MainCharacter:update(dt)
-    if self.spriteSheet then
+    if self.spriteAnimation then
         if self.move then
             if self.orientation == "left" then
                 self.body:applyLinearImpulse(-1 * self.speed, 0)
             elseif self.orientation == "right" then
                 self.body:applyLinearImpulse(self.speed, 0)
             end
-            self.spriteSheet[self.orientation].update(dt)
+            self.spriteAnimation[self.orientation]:update(dt)
         else
-            self.spriteSheet[self.orientation].resetCurrent()
+            self.spriteAnimation[self.orientation]:resetCurrent()
         end
         if self.looking then
-            self.spriteSheet[self.looking].update(dt)
+            self.spriteAnimation[self.looking]:update(dt)
         end
     end
 end
 
 function MainCharacter:draw()
-    if self.spriteSheet then
+    if self.spriteAnimation then
         local positionToDraw = self.looking == nil and self.orientation or self.looking
-        self.spriteSheet[positionToDraw].draw(self.body:getX(), self.body:getY())
+        self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY())
         --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
     end
 end

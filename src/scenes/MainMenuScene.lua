@@ -27,21 +27,15 @@ function MainMenuScene:new()
     scaleDimension:calculeScales("menuLogo", 260, 150, 0, 50)
     scaleDimension:centralize("menuLogo", true, false, true)
 
-    local Json = gameDirector:getLibraries("Json")
-    local file = love.filesystem.read("assets/gui/buttons.json")
-    local buttonSprite = nil
-    if file then
-        buttonSprite = Json.decode(file)
-    end
-    local imageSize = buttonSprite.meta.size
-    local framesInfo = buttonSprite.frames
+    local spriteSheet = gameDirector:getLibraries("SpriteSheet"):new("buttons.json", "assets/gui/")
+    local spriteQuads = spriteSheet:getQuads()
     this.buttonsQuads = {
-        normal = love.graphics.newQuad(framesInfo.normal.frame.x, framesInfo.normal.frame.y, framesInfo.normal.frame.w, framesInfo.normal.frame.h, imageSize.w, imageSize.h),
-        hover = love.graphics.newQuad(framesInfo.hover.frame.x, framesInfo.hover.frame.y, framesInfo.hover.frame.w, framesInfo.hover.frame.h, imageSize.w, imageSize.h),
-        pressed = love.graphics.newQuad(framesInfo.pressed.frame.x, framesInfo.pressed.frame.y, framesInfo.pressed.frame.w, framesInfo.pressed.frame.h, imageSize.w, imageSize.h),
-        disabled = love.graphics.newQuad(framesInfo.disabled.frame.x, framesInfo.disabled.frame.y, framesInfo.disabled.frame.w, framesInfo.disabled.frame.h, imageSize.w, imageSize.h)
+        normal = spriteQuads["normal"],
+        hover = spriteQuads["hover"],
+        pressed = spriteQuads["pressed"],
+        disabled = spriteQuads["disabled"]
     }
-    this.buttonsImage = love.graphics.newImage("assets/gui/" .. buttonSprite.meta.image)
+    this.buttonsImage = spriteSheet:getAtlas()
 
     addButton(this, 'Start Game', "inGame", {128, 60, 350, 320})
     addButton(this, 'Configurations', "configurations", {128, 60, 350, 390})
