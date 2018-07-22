@@ -2,11 +2,11 @@ local SpriteAnimation = {}
 
 SpriteAnimation.__index = SpriteAnimation
 
-function SpriteAnimation:new(frameStack, atlas, duration, execution)
+function SpriteAnimation:new(frameStack, atlas, duration, looping)
     local this = {
         firstFrame = nil, currentFrame = nil, amountFrames = 0,
         atlas = atlas, currentTime = 0, duration = duration or 0.2,
-        execution = execution or "infinity", scaleX = 1, scaleY = 1
+        looping = looping or false, scaleX = 1, scaleY = 1
     }
 
     this = setmetatable(this, SpriteAnimation)
@@ -43,14 +43,16 @@ function SpriteAnimation:setScale(scaleX, scaleY)
     end
 end
 
-function SpriteAnimation:setType(type)
-    if type == "infinity" or "once" then
-        self.type = type
-    end
+function SpriteAnimation:setType(looping)
+    self.looping = looping or false
 end
     
 function SpriteAnimation:setDuration(newDuration)
     self.duration = newDuration
+end
+
+function SpriteAnimation:isOver()
+    return self.currentFrame.nextFrame == self.firstFrame and not self.looping
 end
 
 function SpriteAnimation:nextFrame()
@@ -60,7 +62,7 @@ function SpriteAnimation:nextFrame()
 end
 
 function SpriteAnimation:update(dt)
-    if self.currentFrame.nextFrame ~= self.firstFrame or self.execution == "infinity" then
+    if self.currentFrame.nextFrame ~= self.firstFrame or self.looping then
         self.currentTime = self.currentTime + dt
         if self.currentTime >= self.duration then
             self.currentTime = self.currentTime - self.duration
@@ -72,7 +74,7 @@ function SpriteAnimation:update(dt)
 end
 
 function SpriteAnimation:draw(x, y, scaleX, scaleY)
-    if self.currentFrame.nextFrame ~= self.firstFrame or self.execution == "infinity" then
+    if self.currentFrame.nextFrame ~= self.firstFrame or self.looping then
         local x = x or 300
         local y = y or 300
         if self.currentFrame.quad then

@@ -14,15 +14,18 @@ local SpriteAnimation = require "util.SpriteAnimation"
 local CharacterController = require "controllers.CharacterController"
 local EnemiesController = require "controllers.EnemiesController"
 
+--Gui Components
+local ProgressBar = require "util.GUI.ProgressBar"
+
 local GameDirector = {}
 
 GameDirector.__index = GameDirector
 
-function GameDirector:configureSpriteSheet(jsonFile, directory, animationType, duration, scaleX, scaleY)
+function GameDirector:configureSpriteSheet(jsonFile, directory, looping, duration, scaleX, scaleY)
     local newSprite = SpriteSheet:new(jsonFile, directory)
     local frameTable, frameStack = newSprite:getFrames()
     local newAnimation = SpriteAnimation:new(frameStack, newSprite:getAtlas(), duration)
-    newAnimation:setType(animationType)
+    newAnimation:setType(looping)
     newAnimation:setScale(scaleX, scaleY)
     return newAnimation
 end
@@ -31,10 +34,10 @@ function GameDirector:new()
     love.physics.setMeter(64)
     
     local mainCharacterAnimation = {}
-    mainCharacterAnimation.right = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", "infinity")
-    mainCharacterAnimation.left = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", "infinity", nil, -1, 1)
-    mainCharacterAnimation.down = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", "infinity")
-    mainCharacterAnimation.up = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", "infinity")
+    mainCharacterAnimation.right = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true)
+    mainCharacterAnimation.left = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, -1, 1)
+    mainCharacterAnimation.down = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true)
+    mainCharacterAnimation.up = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true)
     
     local world = World:new()
     this = {

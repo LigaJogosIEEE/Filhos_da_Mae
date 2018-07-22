@@ -23,7 +23,8 @@ Haverão diferentes habilidades para que sejam lançados projéteis nos inimigos
 * A diferença de cada projétil será o tamanho do mesmo, e velocidade de movimento
 * Os projéteis poderão ser disparados no ar, olhando para cima, e agachado
 
-# Dificuldade
+## Dificuldade
+
 * Tem vida, e quando tiver com saúde baixa, tem de pagar pelo hospital
 * Plano de saúde - Funciona durante toda a fase (de forma que não tem de pagar toda hora o hospital)
 * No final da fase tem de pagar um valor
@@ -39,16 +40,19 @@ Cada tiro levado irá consumir um coração de vida. Ao total serão 4 coraçõe
 * Para facilitar a experiência do jogador, haverão checkpoints
 
 ## Habilidades
+
 * Pechincha - Faz que o jogador gaste menos
 * Mais Defesa
 
 ## Cenários
+
 * Tomba (Caixa d'água) - De fundo
 * Super Mercado
 * Bairro qualquer
 * SpaceX (Fase Bônus, para chegar tem que coletar bagulhos)
 
 ## Inteligência dos Inimigos
+
 Os inimigos irão cegamente para cima do jogador, atirando com tudo
 
 * Seu Barriga - Ele irá correr atrás do jogador, o qual deve fugir do mesmo para que dessa forma não precise pagar o dinheiro do aluguel naquele momento e economize para as fases posteriores. É possível atirar no mesmo para que dessa forma o atrase

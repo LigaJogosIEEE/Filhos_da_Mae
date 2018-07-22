@@ -11,7 +11,7 @@ local addButton = function(this, buttonName, sceneName, buttonDimensions)
 
     --buttonName, x, y, width, height, image, originalImage, animation, 70
     local button = this.buttonManager:addButton(buttonName, scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
-    button.callback = function(this) sceneDirector:setCurrentScene(sceneName) end
+    button.callback = function(this) sceneDirector:switchScene(sceneName) end
 end
 
 function MainMenuScene:new()

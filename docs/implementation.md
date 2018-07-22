@@ -1,19 +1,24 @@
 # Implementação
+
 Esse arquivo visa informar o papel de cada arquivo e pacote (pasta) para os futuros desenvolvedores que forem utilizar os códigos, e/ou contribuir com o projeto
 
 ## docs
+
 Pasta que armazena todos os arquivos Markdown de documentação do projeto
 
 ## src
+
 Pasta que contém todos os arquivos de código do game
 
 * main - Arquivo principal de execução, arquivo que será executado pela engine para rodar o jogo
 * conf - Arquivo que determina quais módulos serão utilizados durante a execução do game, visando dessa forma diminuir o processamento. Esse arquivo também é responsável por definir tamanho de tela, icone e nome da janela de execução do game. Esse arquivo será executado antes de qualquer outro, inclusive a main
 
 ## src/assets
+
 Essa pasta tem o intuito de armazenar todos os arquivos de imagem, áudio e fontes do jogo, visando dessa forma uma maior organização do projeto como um todo
 
 ## src/controllers
+
 Essa pasta contém os principais controladores que são utilizados no jogo.
 
 * CameraController - Controller que possui os scripts de camera para realizar a movimentação e manipulação do mundo do jogo.
@@ -24,9 +29,11 @@ Essa pasta contém os principais controladores que são utilizados no jogo.
 * SceneDirector - Controller que gerencia o uso das funções do Love2d através da cena atual de execução
 
 ## src/libs
+
 Essa pasta contém os arquivos de biblioteca externos utilizados
 
 ## src/models/actors
+
 Pasta que contém todos os scripts de atores do jogo, como balas, inimigos, dentre outros
 
 * Bullet - Script que determina cada bala na tela de forma individual
@@ -34,22 +41,26 @@ Pasta que contém todos os scripts de atores do jogo, como balas, inimigos, dent
 * MainCharacter - Classe que detecta os eventos de input no teclado para que o jogador possa se locomover e realizar ações
 
 ## src/models
+
 Pasta que contém os arquivos de modelagem do game
 
 * Class - Arquivo que auxilia na geração de classes e objetos, bem como herança entre os mesmos utilizando o conceito de POO
 
 ### src/models/value
+
 Pasta que contém os arquivos de armazenamento de dados do sistema
 
 * LifeForm - Classe que armazena as informações que uma forma de vida do jogo necessita ter
 
 ### src/models/business
+
 Pasta que contém classes de modelagem que servem como uma abstração para manipulação de recursos importantes
 
 * Ground - Manipula o terreno do game
 * World - Faz as manipulações no Mundo do game, alterando seus efeitos na física do mesmo
 
 ## src/scenes
+
 Pasta que contém as cenas do game, ou seja, cada uma das telas do jogo
 
 * ConfigurationScene - Cena que contém as informações de configuração do game, como tamanho da tela, controles, dentre outros
@@ -57,6 +68,7 @@ Pasta que contém as cenas do game, ou seja, cada uma das telas do jogo
 * MainMenuScene - Tela de Menu do Game
 
 ## src/util
+
 Pasta que contém os scripts para auxiliar o desenvolvimento do jogo
 
 * ScaleDimension - Arquivo que realiza os cáculos de redimensionamento de tela para que o jogo possa ser portado em telas de tamanhos distintos
@@ -65,7 +77,9 @@ Pasta que contém os scripts para auxiliar o desenvolvimento do jogo
 * SpriteAnimation - Script para realizar uma animação dos sprites baseado no SpriteSheet gerado anteriormente. Para funcionamento do mesmo, é necessário que ele receba uma pilha contendo tabelas com o nome do frame e o Quad gerado para aquele frame.
 
 ### src/util/GUI
+
 Pasta que contém os scrpits de itens de interface de usuário
 
 * Button - Classe que contém o botão e sua detecção, bem como manipulação dos sprites
 * ButtonManager - Classe que faz a gerencia dos botões, e manipula os mesmos para que possam ser usados tanto pelo mouse, como pelo teclado
+* ProgressBar - Classe que permite a criação e visualização de uma barra de progresso durante o jogo

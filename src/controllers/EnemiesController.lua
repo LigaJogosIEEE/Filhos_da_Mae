@@ -20,10 +20,10 @@ end
 
 function EnemiesController:createEnemies()
     local seuBarrigaSprite = {}
-    seuBarrigaSprite.left = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", "infinity", 0.3);
-    seuBarrigaSprite.right = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", "infinity", 0.3);
-    seuBarrigaSprite.up = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", "infinity", 0.3);
-    seuBarrigaSprite.down = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", "infinity", 0.3);
+    seuBarrigaSprite.left = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", true, 0.3);
+    seuBarrigaSprite.right = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", true, 0.3);
+    seuBarrigaSprite.up = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", true, 0.3);
+    seuBarrigaSprite.down = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", true, 0.3);
     table.insert(self.enemies, Enemy:new(seuBarrigaSprite, self.world, 600, 0, "Seu_Barriga"))
 end
 
