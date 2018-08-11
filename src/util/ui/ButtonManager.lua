@@ -1,4 +1,4 @@
-local Button = require "util/GUI/Button"
+local Button = require "util/ui/Button"
 
 local ButtonManager = {}
 

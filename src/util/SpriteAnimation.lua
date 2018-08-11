@@ -6,7 +6,7 @@ function SpriteAnimation:new(frameStack, atlas, duration, looping)
     local this = {
         firstFrame = nil, currentFrame = nil, amountFrames = 0,
         atlas = atlas, currentTime = 0, duration = duration or 0.2,
-        looping = looping or false, scaleX = 1, scaleY = 1
+        looping = looping or false, scaleX = 1, scaleY = 1, originX = 0, originY = 0
     }
 
     this = setmetatable(this, SpriteAnimation)
@@ -38,8 +38,13 @@ end
 
 function SpriteAnimation:setScale(scaleX, scaleY)
     if scaleX and scaleY then
-        self.scaleX = scaleX
-        self.scaleY = scaleY
+        self.scaleX, self.scaleY = scaleX, scaleY
+    end
+end
+
+function SpriteAnimation:setOrigin(originX, originY)
+    if originX and originY then
+        self.originX, self.originY = originX, originY
     end
 end
 
@@ -73,12 +78,12 @@ function SpriteAnimation:update(dt)
     end
 end
 
-function SpriteAnimation:draw(x, y, scaleX, scaleY)
+function SpriteAnimation:draw(x, y, scaleX, scaleY, originX, originY)
     if self.currentFrame.nextFrame ~= self.firstFrame or self.looping then
         local x = x or 300
         local y = y or 300
         if self.currentFrame.quad then
-            love.graphics.draw(self.atlas, self.currentFrame.quad, x, y, 0, scaleX or self.scaleX, scaleY or self.scaleY)
+            love.graphics.draw(self.atlas, self.currentFrame.quad, x, y, 0, scaleX or self.scaleX, scaleY or self.scaleY, originX or self.originX, originY or self.originY)
         end
     end
 end

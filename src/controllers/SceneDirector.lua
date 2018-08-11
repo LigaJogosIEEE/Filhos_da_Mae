@@ -10,7 +10,8 @@ function SceneDirector:new()
         currentScene = nil, 
         mainMenu = MainMenuScene:new(),
         configurationScene = ConfigurationScene:new(),
-        sceneObjects = {}
+        sceneObjects = {},
+        sceneStack = gameDirector:getLibraries("Stack"):new()
     }
 
     this.currentScene = this.mainMenu
@@ -25,7 +26,20 @@ end
 
 function SceneDirector:switchScene(scene)
     assert(self.sceneObjects[scene], "Unable to find required scene: '" .. tostring(scene) .. "'")
+    self.sceneStack.push(self.currentScene)
     self.currentScene = self.sceneObjects[scene] or self.currentScene
+end
+
+function SceneDirector:previousScene()
+    if self.sceneStack.peek() then
+        self.currentScene = self.sceneStack.pop()
+    end
+end
+
+function SceneDirector:clearStack()
+    while self.sceneStack.peek() do
+        self.currentScene = self.sceneStack.pop()
+    end
 end
 
 function SceneDirector:keypressed(key, scancode, isrepeat)
@@ -73,6 +87,12 @@ end
 function SceneDirector:draw()
     if self.currentScene.draw then
         self.currentScene:draw()
+    end
+end
+
+function SceneDirector:resize(w, h)
+    if self.currentScene.resize then
+        self.currentScene:resize(w, h)
     end
 end
 

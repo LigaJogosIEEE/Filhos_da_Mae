@@ -18,7 +18,7 @@ function MainCharacter:new(spriteAnimation, world)
     --aplying physics
     this.body = love.physics.newBody(this.world, 0, 0, "dynamic")
     this.body:setFixedRotation(true)
-    this.shape = love.physics.newPolygonShape({0, 0, 0, 64, 64, 64, 64, 0})
+    this.shape = love.physics.newRectangleShape(64, 64)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData("MainCharacter")
     this.fixture:setMask(2)

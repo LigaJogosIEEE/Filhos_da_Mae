@@ -36,4 +36,7 @@ end
 function ConfigurationScene:draw()
 end
 
+function ConfigurationScene:resize(w, h)
+end
+
 return ConfigurationScene

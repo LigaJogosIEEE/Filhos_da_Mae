@@ -19,7 +19,7 @@ end
 function ScaleDimension:calculeScales(itemName, width, height, x, y, originalScale)
     local originalScale = originalScale or self.gameScreenScale
     if not self.scaleItems[itemName] then
-        self.scaleItems[itemName] = {scaleX = 1, scaleY = 1, x = x, y = y, width = width, height = height, originalInfo = {width, height, x, y, originalScale}}
+        self.scaleItems[itemName] = {scaleX = 1, scaleY = 1, x = x, y = y, width = width, height = height, originalInfo = {width, height, x, y, originalScale}, centralizeOptions = {x = false, y = false, isImage = false , centerOffset = false}, relative = nil}
     end
     local item = self.scaleItems[itemName]
     item.scaleX, item.scaleY = self.graphicsDimensions.width / width, self.graphicsDimensions.height / height
@@ -31,6 +31,12 @@ function ScaleDimension:calculeScales(itemName, width, height, x, y, originalSca
     item.height = (height * self.graphicsDimensions.height) / originalScale.height
 end
 
+function ScaleDimension:relativeScale(itemName, originalSize)
+    local scales = self.scaleItems[itemName]
+    local newScale = {x = scales.width / originalSize.width, y = scales.height / originalSize.height, originalSize = originalSize}
+    scales.relative = newScale
+end
+
 function ScaleDimension:directScale(width, height)
     return self.graphicsDimensions.width / width, self.graphicsDimensions.height / height
 end
@@ -38,6 +44,7 @@ end
 function ScaleDimension:centralize(itemName, x, y, isImage, centerOffset)
     if self.scaleItems[itemName] then
         local item = self.scaleItems[itemName]
+        item.centralizeOptions.x, item.centralizeOptions.y, item.centralizeOptions.isImage, item.centralizeOptions.centerOffset = x, y, isImage, centerOffset
         if x then
             item.x = (self.graphicsDimensions.width / 2) - ((isImage and item.originalInfo[1] or centerOffset and 0 or item.width) / 2)
         end
@@ -51,9 +58,14 @@ function ScaleDimension:getScale(itemName)
     return self.scaleItems[itemName]
 end
 
-function ScaleDimension:screenResize()
-    for itemName, item in ipairs(self.scaleItems) do
+function ScaleDimension:screenResize(width, height)
+    self.graphicsDimensions.width, self.graphicsDimensions.height = width, height
+    for itemName, item in pairs(self.scaleItems) do
         self:calculeScales(itemName, unpack(item.originalInfo))
+        self:centralize(itemName, item.centralizeOptions.x, item.centralizeOptions.y, item.centralizeOptions.isImage, item.centralizeOptions.centerOffset)
+        if item.relative then
+            self:relativeScale(itemName, item.relative.originalSize)
+        end
     end
 end
 

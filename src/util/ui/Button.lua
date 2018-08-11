@@ -7,7 +7,7 @@ function Button:new(buttonName, x, y, width, height, image, originalImage, anima
         name = buttonName, x = x or 0, y = y or 0, width = width or 100, height = height or 50,
         image = type(image) == "table" and image or {normal = image, pressed = image, hover = image, disabled = image},
         state = "normal", pressed = false, callback = function() return "Clicked" end,
-        animation = animation or {normal = nil, pressed = nil, hover = nil},
+        animation = animation or {normal = nil, pressed = nil, hover = nil}, scaleX = 1, scaleY = 1,
         originalImage = originalImage
     }
 
@@ -45,16 +45,20 @@ function Button:setXY(x, y)
     self.x, self.y = x, y
 end
 
+function Button:setScale(scaleX, scaleY)
+    self.scaleX, self.scaleY = scaleX, scaleY
+end
+
+function Button:setDimensions(width, height)
+    self.width, self.height = width, height
+end
+
 function Button:getState()
     return self.state
 end
 
 function Button:setState(newState)
     self.state = newState
-end
-
-function Button:calculateScale(width, height)
-    return self.width / width, self.height / height
 end
 
 function Button:mousemoved(x, y, dx, dy, istouch)
@@ -94,13 +98,10 @@ function Button:draw()
         self.animation[self.state].draw(self.x, self.y)
     elseif self.image[self.state] then
         if self.originalImage then
-            local x, y, width, height = self.image[self.state]:getViewport()
-            local scaleX, scaleY = self:calculateScale(width, height)
-            love.graphics.draw(self.originalImage, self.image[self.state], self.x, self.y, 0, scaleX, scaleY)
-            love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 200, "center", 0, scaleX, scaleY)
+            love.graphics.draw(self.originalImage, self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
+            love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 200, "center", 0, self.scaleX, self.scaleY)
         else
-            local scaleX, scaleY = self:calculateScale(self.image[self.state]:getDimensions())
-            love.graphics.draw(self.image[self.state], self.x, self.y, 0, scaleX, scaleY)
+            love.graphics.draw(self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
         end
     end
 end

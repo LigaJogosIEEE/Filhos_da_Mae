@@ -15,17 +15,22 @@ function SpriteSheet:__genOrderedIndex(tableToOrder)
 end
 
 function SpriteSheet:new(jsonSprite, assetsDirectory)
-    local this = {atlas = nil, quads = {}}
+    local this = {atlas = nil, quads = {}, origin = nil}
     local file = love.filesystem.read((assetsDirectory or "./") .. jsonSprite)
     local spriteConfigurations = nil
     if file then
         local atlasInfo = Json.decode(file)
         local imageSize = atlasInfo.meta.size
         local framesInfo = atlasInfo.frames
+        local lastKey = nil
         for key, value in pairs(framesInfo) do
             this.quads[key] = love.graphics.newQuad(value.frame.x, value.frame.y, value.frame.w, value.frame.h, imageSize.w, imageSize.h)
+            lastKey = key
         end
-        this.atlas = love.graphics.newImage((assetsDirectory or "assets/sprites/") .. atlasInfo.meta.image)
+        local imagePath = (assetsDirectory or "assets/sprites/") .. atlasInfo.meta.image
+        local imageData = atlasInfo.meta.image:match("%.dds") and love.image.newCompressedData(imagePath) or imagePath
+        this.atlas = love.graphics.newImage(imageData)
+        this.origin = {w = framesInfo[lastKey].frame.w, h = framesInfo[lastKey].frame.h}
     end
     return setmetatable(this, SpriteSheet)
 end
@@ -41,6 +46,10 @@ function SpriteSheet:getFrames(frameNames)
         frameStack.push(frameInfo)
     end
     return frameList, frameStack
+end
+
+function SpriteSheet:getCenterOrigin()
+    return self.origin.w / 2, self.origin.h / 2
 end
 
 function SpriteSheet:getQuads()

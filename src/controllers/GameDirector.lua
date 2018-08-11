@@ -9,22 +9,26 @@ local MainCharacter = require "models.actors.MainCharacter"
 --Util
 local SpriteSheet = require "util.SpriteSheet"
 local SpriteAnimation = require "util.SpriteAnimation"
+local Stack = require "util.Stack"
 
 --Controllers
 local CharacterController = require "controllers.CharacterController"
 local EnemiesController = require "controllers.EnemiesController"
 
 --Gui Components
-local ProgressBar = require "util.GUI.ProgressBar"
+local ProgressBar = require "util.ui.ProgressBar"
 
 local GameDirector = {}
 
 GameDirector.__index = GameDirector
 
-function GameDirector:configureSpriteSheet(jsonFile, directory, looping, duration, scaleX, scaleY)
+function GameDirector:configureSpriteSheet(jsonFile, directory, looping, duration, scaleX, scaleY, centerOrigin)
     local newSprite = SpriteSheet:new(jsonFile, directory)
     local frameTable, frameStack = newSprite:getFrames()
     local newAnimation = SpriteAnimation:new(frameStack, newSprite:getAtlas(), duration)
+    if centerOrigin then
+        newAnimation:setOrigin(newSprite:getCenterOrigin())
+    end
     newAnimation:setType(looping)
     newAnimation:setScale(scaleX, scaleY)
     return newAnimation
@@ -34,10 +38,10 @@ function GameDirector:new()
     love.physics.setMeter(64)
     
     local mainCharacterAnimation = {}
-    mainCharacterAnimation.right = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true)
-    mainCharacterAnimation.left = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, -1, 1)
-    mainCharacterAnimation.down = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true)
-    mainCharacterAnimation.up = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true)
+    mainCharacterAnimation.right = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
+    mainCharacterAnimation.left = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, -1, 1, true)
+    mainCharacterAnimation.down = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
+    mainCharacterAnimation.up = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
     
     local world = World:new()
     this = {
@@ -49,9 +53,9 @@ function GameDirector:new()
         enemiesController = EnemiesController:new(world),
         gameStatus = "run",
         --Libraries
-        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation}
+        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation, Stack = Stack}
     }
-    
+
     return setmetatable(this, GameDirector)
 end
 

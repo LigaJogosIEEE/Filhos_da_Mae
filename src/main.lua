@@ -43,3 +43,8 @@ end
 function love.draw()
     sceneDirector:draw()
 end
+
+function love.resize(w, h)
+    scaleDimension:screenResize(w, h)
+    sceneDirector:resize(w, h)
+end
