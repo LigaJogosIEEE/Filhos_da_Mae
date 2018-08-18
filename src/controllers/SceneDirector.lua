@@ -11,7 +11,7 @@ function SceneDirector:new()
         mainMenu = MainMenuScene:new(),
         configurationScene = ConfigurationScene:new(),
         sceneObjects = {},
-        sceneStack = gameDirector:getLibraries("Stack"):new()
+        sceneStack = gameDirector:getLibrary("Stack"):new()
     }
 
     this.currentScene = this.mainMenu

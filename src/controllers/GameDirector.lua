@@ -38,28 +38,30 @@ function GameDirector:new()
     love.physics.setMeter(64)
     
     local mainCharacterAnimation = {}
-    mainCharacterAnimation.right = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
-    mainCharacterAnimation.left = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, -1, 1, true)
+    mainCharacterAnimation.idle = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
+    mainCharacterAnimation.running = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
     mainCharacterAnimation.down = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
     mainCharacterAnimation.up = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
-    
+    mainCharacterAnimation.jumping = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
+
+    local LifeForm = require "models.value.LifeForm"
     local world = World:new()
-    this = {
+    local this = {
         bulletsInWorld = {},
         world = world,
         ground = Ground:new(world.world, nil, 800, 30, 400, 570),
         mainCharacter = MainCharacter:new(mainCharacterAnimation, world.world),
-        characterController = CharacterController:new(),
+        characterController = CharacterController:new(LifeForm),
         enemiesController = EnemiesController:new(world),
         gameStatus = "run",
         --Libraries
-        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation, Stack = Stack}
+        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm}
     }
 
     return setmetatable(this, GameDirector)
 end
 
-function GameDirector:getLibraries(library)
+function GameDirector:getLibrary(library)
     return self.libraries[library]
 end
 
@@ -84,6 +86,13 @@ function GameDirector:removeBullet(bullet, fixture)
             return index
         end
     end
+end
+
+function GameDirector:getEntityByFixture(fixture)
+    if fixture:getUserData() == "MainCharacter" then
+        return self.characterController
+    end
+    return self.enemiesController:getEnemyByFixture(fixture)
 end
 
 function GameDirector:getMainCharacter()

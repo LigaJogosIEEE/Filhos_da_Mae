@@ -18,7 +18,7 @@ Será possível customizar os controles utilizados numa tela de configuração
 
 Haverão diferentes habilidades para que sejam lançados projéteis nos inimigos (como diferentes armas de jogo)
 
-* Haverá uma arma principal que irá possuir munição infinita
+* Haverá uma arma principal que irá possuir, teoricamente, munição infinita, porém a quantidade de tiros a ser dado, depende da quantidade de dinheiro que o jogador possui
 * Quando a munição de uma arma especial acabar, deverá ser utilizada novamente a arma principal
 * A diferença de cada projétil será o tamanho do mesmo, e velocidade de movimento
 * Os projéteis poderão ser disparados no ar, olhando para cima, e agachado
@@ -50,6 +50,14 @@ Cada tiro levado irá consumir um coração de vida. Ao total serão 4 coraçõe
 * Super Mercado
 * Bairro qualquer
 * SpaceX (Fase Bônus, para chegar tem que coletar bagulhos)
+
+## Camera
+
+O script de camera funciona da seguinte forma:
+
+* Começará a seguir o personagem principal sempre que o mesmo chega ao meio da tela depois de mudar a orientação
+* Caso o personagem se encontre nas bordas da tela, a camera permanecerá fixa e não seguirá o mesmo
+* A camera não seguirá o personagem quando o mesmo salta, apenas quando o mesmo cai em uma plataforma que a posição vertical da camera será atualizada
 
 ## Inteligência dos Inimigos
 

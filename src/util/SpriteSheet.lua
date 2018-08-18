@@ -30,6 +30,7 @@ function SpriteSheet:new(jsonSprite, assetsDirectory)
         local imagePath = (assetsDirectory or "assets/sprites/") .. atlasInfo.meta.image
         local imageData = atlasInfo.meta.image:match("%.dds") and love.image.newCompressedData(imagePath) or imagePath
         this.atlas = love.graphics.newImage(imageData)
+        this.atlas:setFilter("nearest")
         this.origin = {w = framesInfo[lastKey].frame.w, h = framesInfo[lastKey].frame.h}
     end
     return setmetatable(this, SpriteSheet)

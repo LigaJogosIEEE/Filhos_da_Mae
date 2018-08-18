@@ -12,7 +12,8 @@ function Enemy:new(spriteAnimation, world, x, y, enemyType)
         orientation = "left",
         looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
-        spriteAnimation = spriteAnimation or nil
+        spriteAnimation = spriteAnimation or nil,
+        lifeForm = gameDirector:getLibrary("LifeForm")(enemyType, 5, 2)
     }
     
     --aplying physics
@@ -24,6 +25,20 @@ function Enemy:new(spriteAnimation, world, x, y, enemyType)
     this.fixture:setMask(3)
     
     return setmetatable(this, Enemy)
+end
+
+function Enemy:compareFixture(fixture)
+    return self.fixture == fixture
+end
+
+function Enemy:takeDamage(amount)
+    local isDead = self.lifeForm:takeDamage(amount)
+    if isDead then
+        self.fixture:destroy()
+        self.shape = nil
+        self.body:destroy()
+        gameDirector.enemiesController:remove(self)
+    end
 end
 
 function Enemy:move(key)

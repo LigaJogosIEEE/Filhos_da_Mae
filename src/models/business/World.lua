@@ -8,6 +8,15 @@ local beginContact = function(a, b, coll)
     end
     local bulletFixture = a:getUserData() == "Bullet" and a or b:getUserData() == "Bullet" and b or nil
     if bulletFixture then
+        local entity = nil
+        if bulletFixture == a then
+            entity = gameDirector:getEntityByFixture(b)
+        else
+            entity = gameDirector:getEntityByFixture(a)
+        end
+        if entity then
+            entity:takeDamage(1)
+        end
     	gameDirector:removeBullet(nil, bulletFixture)
     end
 end

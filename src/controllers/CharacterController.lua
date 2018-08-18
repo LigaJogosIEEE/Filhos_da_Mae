@@ -1,9 +1,7 @@
-local LifeForm = require "models.value.LifeForm"
-
 local CharacterController = {}
 CharacterController.__index = CharacterController
 
-function CharacterController:new()
+function CharacterController:new(LifeForm)
     local this = {stats = LifeForm()}
     return setmetatable(this, CharacterController)
 end

@@ -1,10 +1,10 @@
 local Class = require "models.Class"
 local LifeForm = Class:extends("LifeForm")
 
-function LifeForm:new(name, money)
+function LifeForm:new(name, money, life)
 	local this = {
 		name = name or "Generic LifeForm",
-		life = {have = 15, total = 15},
+		life = {have = life or 15, total = life or 15},
 		healthInsurance = nil,
 		money = money or 10
 	}
