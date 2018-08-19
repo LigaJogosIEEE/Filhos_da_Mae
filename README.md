@@ -21,3 +21,4 @@ Love2d - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . F
 ## Bibliotecas de terceiros
 
 * JSON - Lua Parser for Json files -> https://github.com/rxi/json.lua
+* gamera - A camera lib for LOVE2D -> https://github.com/kikito/gamera

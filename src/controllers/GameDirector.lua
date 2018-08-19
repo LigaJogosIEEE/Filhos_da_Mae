@@ -14,6 +14,7 @@ local Stack = require "util.Stack"
 --Controllers
 local CharacterController = require "controllers.CharacterController"
 local EnemiesController = require "controllers.EnemiesController"
+local CameraController = require "controllers.CameraController"
 
 --Gui Components
 local ProgressBar = require "util.ui.ProgressBar"
@@ -53,6 +54,7 @@ function GameDirector:new()
         mainCharacter = MainCharacter:new(mainCharacterAnimation, world.world),
         characterController = CharacterController:new(LifeForm),
         enemiesController = EnemiesController:new(world),
+        cameraController = CameraController:new(),
         gameStatus = "run",
         --Libraries
         libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm}
@@ -107,16 +109,20 @@ function GameDirector:update(dt)
     for index, bullet in pairs(self.bulletsInWorld) do
         bullet:update(dt)
     end
+
+    self.cameraController:update(dt)
 end
 
 function GameDirector:draw()
-    self.mainCharacter:draw()
-    self.ground:draw()
-    self.enemiesController:draw()
-    
-    for index, bullet in pairs(self.bulletsInWorld) do
-        bullet:draw()
-    end
+    self.cameraController:draw(function()
+        self.mainCharacter:draw()
+        self.ground:draw()
+        self.enemiesController:draw()
+        
+        for index, bullet in pairs(self.bulletsInWorld) do
+            bullet:draw()
+        end
+    end)
 end
 
 return GameDirector

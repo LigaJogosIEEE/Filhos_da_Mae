@@ -3,6 +3,7 @@ local GameDirector = require "controllers.GameDirector"
 local ScaleDimension = require "util.ScaleDimension"
 
 function love.load()
+    love.graphics.setDefaultFilter('nearest', 'nearest')
     scaleDimension = ScaleDimension:new()
     gameDirector = GameDirector:new()
     gameDirector.enemiesController:createEnemies()

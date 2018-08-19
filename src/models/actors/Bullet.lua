@@ -58,7 +58,7 @@ function Bullet:draw()
     else
         love.graphics.setColor(72 / 255, 160 / 255, 140 / 255)
         love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
-        love.graphics.setColor(255 / 255, 255 / 255, 255 / 255)
+        love.graphics.setColor(1, 1, 1)
     end
 end
 

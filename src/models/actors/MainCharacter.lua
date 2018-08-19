@@ -82,7 +82,7 @@ function MainCharacter:keyreleased(key, scancode)
 end
 
 function MainCharacter:getPosition()
-    return self.body:getX(), self.body.getY()
+    return self.body:getX(), self.body:getY()
 end
 
 function MainCharacter:setPosition(x, y)
