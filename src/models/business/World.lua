@@ -3,8 +3,14 @@ local World = {}
 World.__index = World
 
 local beginContact = function(a, b, coll)
-    if (a:getUserData() == "MainCharacter" and b:getUserData() == "Ground") or (a:getUserData() == "Ground" and b:getUserData() == "MainCharacter") then
-        gameDirector:getMainCharacter().inGround = true
+    local mainCharacterFixture = a:getUserData() == "MainCharacter" and a or b:getUserData() == "MainCharacter" and b or nil
+    if mainCharacterFixture then
+        if b:getUserData() == "Ground" or a:getUserData() == "Ground" then
+            gameDirector:getMainCharacter().inGround = true
+        elseif gameDirector:getEntityByFixture(mainCharacterFixture == a and b or a) then
+            gameDirector:getEntityByFixture(mainCharacterFixture):takeDamage(1)
+            gameDirector:getMainCharacter():retreat()
+        end
     end
     local bulletFixture = a:getUserData() == "Bullet" and a or b:getUserData() == "Bullet" and b or nil
     if bulletFixture then

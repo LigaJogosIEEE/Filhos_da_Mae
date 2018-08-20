@@ -51,7 +51,7 @@ function GameDirector:new()
     local this = {
         bulletsInWorld = {},
         world = world,
-        inGameScene = require "scenes.InGameScene":new(world.world, ProgressBar),
+        inGameScene = require "scenes.InGameScene":new(world.world),
         mainCharacter = MainCharacter:new(mainCharacterAnimation, world.world),
         lifeBar = ProgressBar:new(20, 20, 200, 40, {1, 0, 0}, 15, 15),
         characterController = CharacterController:new(LifeForm),
@@ -120,14 +120,19 @@ function GameDirector:getEnemiesController()
 end
 
 function GameDirector:update(dt)
-    self.world:update(dt)
-    self.inGameScene:update(dt)
-    
-    for index, bullet in pairs(self.bulletsInWorld) do
-        bullet:update(dt)
-    end
+    if self.lifeBar:getValue() > 0 then
+        self.world:update(dt)
+        self.inGameScene:update(dt)
+        
+        for index, bullet in pairs(self.bulletsInWorld) do
+            bullet:update(dt)
+        end
 
-    self.cameraController:update(dt)
+        self.cameraController:update(dt)
+    else
+        --here will call gameOver scene
+        sceneDirector:previousScene()
+    end
 end
 
 function GameDirector:draw()

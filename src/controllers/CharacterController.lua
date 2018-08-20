@@ -9,11 +9,9 @@ end
 function CharacterController:takeDamage()
     -- here will verify too damage type
     local damageAmount = 1
-    local takenDamage = self.stats:takeDamage(damageAmount)
-    if takenDamage then
-        gameDirector:updateLifebar(damageAmount, true)
-    end
-	return 
+    local isDead = self.stats:takeDamage(damageAmount)
+    gameDirector:updateLifebar(damageAmount, true)
+	return isDead
 end
 
 function CharacterController:shot()

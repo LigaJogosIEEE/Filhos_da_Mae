@@ -37,15 +37,19 @@ function MainCharacter:keypressed(key, scancode, isrepeat)
         self.orientation = "right"
         self.move = true
         self.animation = "running"
-    end
-    if key == "up" then
+    elseif key == "up" then
         self.looking = "up"
         self.animation = "up"
     elseif key == "down" then
         self.looking = "down"
         self.animation = "down"
     end
-    
+
+    if self.looking and self.move then
+        self.animation = self.looking == "up" and "runningUp" or "runningDown"
+    end
+    self.previousAnimation = self.animation
+
     if key == "space" and self.inGround then
         self.body:applyLinearImpulse(0, -430)
         self.inGround = false
@@ -53,9 +57,6 @@ function MainCharacter:keypressed(key, scancode, isrepeat)
         self.animation = "jumping"
     end
 
-    if self.looking and self.move then
-        self.animation = self.looking == "up" and "runningUp" or "runningDown"
-    end
     if not self.inGround then
         self.animation = "jumping"
     end
@@ -106,7 +107,10 @@ function MainCharacter:compareFixture(fixture)
     return self.fixture == fixture
 end
 
-function MainCharacter:takeDamage(amount)
+function MainCharacter:retreat()
+    local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
+    self.body:setLinearVelocity(0, yBodyVelocity)
+    self.body:applyLinearImpulse((self.orientation == "left" and 30 or -30) * self.speed, -400)
 end
 
 function MainCharacter:update(dt)
