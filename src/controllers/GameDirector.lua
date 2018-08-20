@@ -1,6 +1,5 @@
 --Models
 local World = require "models.business.World"
-local Ground = require "models.business.Ground"
 
 --Actors
 local Bullet = require "models.actors.Bullet"
@@ -36,7 +35,6 @@ function GameDirector:configureSpriteSheet(jsonFile, directory, looping, duratio
 end
 
 function GameDirector:new()
-    love.physics.setMeter(64)
     
     local mainCharacterAnimation = {}
     mainCharacterAnimation.idle = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
@@ -50,14 +48,15 @@ function GameDirector:new()
     local this = {
         bulletsInWorld = {},
         world = world,
-        ground = Ground:new(world.world, nil, 800, 30, 400, 570),
+        inGameScene = require "scenes.InGameScene":new(world.world, ProgressBar),
         mainCharacter = MainCharacter:new(mainCharacterAnimation, world.world),
+        lifeBar = ProgressBar:new(20, 20, 200, 40, {1, 0, 0}, 15, 15),
         characterController = CharacterController:new(LifeForm),
         enemiesController = EnemiesController:new(world),
         cameraController = CameraController:new(),
         gameStatus = "run",
         --Libraries
-        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm}
+        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm, ProgressBar = ProgressBar}
     }
 
     return setmetatable(this, GameDirector)
@@ -90,6 +89,14 @@ function GameDirector:removeBullet(bullet, fixture)
     end
 end
 
+function GameDirector:updateLifebar(amount, decrease)
+    if decrease then
+        self.lifeBar:decrement(amount)
+    else
+        self.lifeBar:increment(amount)
+    end
+end
+
 function GameDirector:getEntityByFixture(fixture)
     if fixture:getUserData() == "MainCharacter" then
         return self.characterController
@@ -101,10 +108,17 @@ function GameDirector:getMainCharacter()
     return self.mainCharacter
 end
 
+function GameDirector:getCameraController()
+    return self.cameraController
+end
+
+function GameDirector:getEnemiesController()
+    return self.enemiesController
+end
+
 function GameDirector:update(dt)
-    self.mainCharacter:update(dt)
     self.world:update(dt)
-    self.enemiesController:update(dt)
+    self.inGameScene:update(dt)
     
     for index, bullet in pairs(self.bulletsInWorld) do
         bullet:update(dt)
@@ -114,11 +128,10 @@ function GameDirector:update(dt)
 end
 
 function GameDirector:draw()
+    self.lifeBar:draw()
+    love.graphics.printf(string.format("Money: %d", self.characterController:getMoney()), 20, 60, 100, 'center')
     self.cameraController:draw(function()
-        self.mainCharacter:draw()
-        self.ground:draw()
-        self.enemiesController:draw()
-        
+        self.inGameScene:draw()
         for index, bullet in pairs(self.bulletsInWorld) do
             bullet:draw()
         end

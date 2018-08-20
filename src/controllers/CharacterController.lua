@@ -8,7 +8,12 @@ end
 
 function CharacterController:takeDamage()
     -- here will verify too damage type
-	return self.stats:takeDamage(1)
+    local damageAmount = 1
+    local takenDamage = self.stats:takeDamage(damageAmount)
+    if takenDamage then
+        gameDirector:updateLifebar(damageAmount, true)
+    end
+	return 
 end
 
 function CharacterController:shot()
@@ -16,10 +21,9 @@ function CharacterController:shot()
 	return self.stats:shot(1)
 end
 
-function CharacterController:update(dt)
+function CharacterController:getMoney()
+    return self.stats:getMoney()
 end
 
-function CharacterController:draw()
-end
 
 return CharacterController

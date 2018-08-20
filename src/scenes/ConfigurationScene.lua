@@ -4,12 +4,10 @@ ConfigurationScene.__index = ConfigurationScene
 
 function ConfigurationScene:new()
     local this = {
+        
     }
     
     return setmetatable(this, ConfigurationScene)
-end
-
-function ConfigurationScene:setCurrentScene(newScene)
 end
 
 function ConfigurationScene:keypressed(key, scancode, isrepeat)

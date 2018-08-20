@@ -32,19 +32,19 @@ Essa pasta contém os principais controladores que são utilizados no jogo.
 
 Essa pasta contém os arquivos de biblioteca externos utilizados
 
-## src/models/actors
+## src/models
+
+Pasta que contém os arquivos de modelagem do game
+
+* Class - Arquivo que auxilia na geração de classes e objetos, bem como herança entre os mesmos utilizando o conceito de POO
+
+### src/models/actors
 
 Pasta que contém todos os scripts de atores do jogo, como balas, inimigos, dentre outros
 
 * Bullet - Script que determina cada bala na tela de forma individual
 * Enemy - Classe que contém os sprites e funcionamento dos inimigos no jogo
 * MainCharacter - Classe que detecta os eventos de input no teclado para que o jogador possa se locomover e realizar ações
-
-## src/models
-
-Pasta que contém os arquivos de modelagem do game
-
-* Class - Arquivo que auxilia na geração de classes e objetos, bem como herança entre os mesmos utilizando o conceito de POO
 
 ### src/models/value
 
@@ -58,6 +58,13 @@ Pasta que contém classes de modelagem que servem como uma abstração para mani
 
 * Ground - Manipula o terreno do game
 * World - Faz as manipulações no Mundo do game, alterando seus efeitos na física do mesmo
+* KeyboardManager - Classe que contém todas as informações referentes à determinação de teclas necessárias para jogar o game, sendo que as mesmas podem vir a ser alteradas
+
+### src/models/submenus
+
+Pata que contém os submenus que irão aparecer durante o jogo, sem que haja a necessidade que tenha a cena atual do jogo alterada totalmente
+
+* PauseGame - Classe que conterá a GUI do submenu do game quando o mesmo for pausado
 
 ## src/scenes
 
@@ -65,6 +72,7 @@ Pasta que contém as cenas do game, ou seja, cada uma das telas do jogo
 
 * ConfigurationScene - Cena que contém as informações de configuração do game, como tamanho da tela, controles, dentre outros
 * CreditsScene - Transcorrer dos créditos da criação do game
+* InGameScene - Cena que possuirá todos os elementos do jogo e da fase
 * MainMenuScene - Tela de Menu do Game
 
 ## src/util
