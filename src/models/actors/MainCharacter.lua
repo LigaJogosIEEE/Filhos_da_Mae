@@ -11,13 +11,14 @@ function MainCharacter:new(spriteAnimation, world)
         jumpForce = 10,
         orientation = "right",
         animation = "idle",
+        previousAnimation = "idle",
         looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
         spriteAnimation = spriteAnimation or nil
     }
     
     --aplying physics
-    this.body = love.physics.newBody(this.world, 0, 0, "dynamic")
+    this.body = love.physics.newBody(this.world, 10, 700, "dynamic")
     this.body:setFixedRotation(true)
     this.shape = love.physics.newRectangleShape(64, 64)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
@@ -48,14 +49,22 @@ function MainCharacter:keypressed(key, scancode, isrepeat)
     if key == "space" and self.inGround then
         self.body:applyLinearImpulse(0, -430)
         self.inGround = false
+        self.previousAnimation = self.animation
+        self.animation = "jumping"
+    end
+
+    if self.looking and self.move then
+        self.animation = self.looking == "up" and "runningUp" or "runningDown"
+    end
+    if not self.inGround then
         self.animation = "jumping"
     end
     
     if key == "z" then
-        local verticalDirection = self.looking == "up" and - 20 or self.looking == "down" and 70 or 0
-        local horizontalDirection = verticalDirection ~= 0 and 30 or self.orientation == "right" and 75 or self.orientation == "left" and - 10 or 0
+        local verticalDirection = self.looking == "up" and - 20 or 0
+        local horizontalDirection = verticalDirection == 0 and self.orientation == "right" and 20 or self.orientation == "left" and - 10 or 0
         
-        local positionToDraw = self.looking == nil and self.orientation or self.looking
+        local positionToDraw = self.looking == "up" and self.looking or self.orientation
         gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 15, 2, true)
     end
 end
@@ -66,17 +75,17 @@ function MainCharacter:keyreleased(key, scancode)
             self.move = false
             local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
             self.body:setLinearVelocity(0, yBodyVelocity)
-            if self.looking then
-                self.animation = "idle"
+            self.animation = self.inGround and (self.looking or "idle") or "jumping"
+            if not self.inGround then
+                self.previousAnimation = self.looking or "idle"
             end
         end
     end
     if key == "up" or key == "down" then
         self.looking = nil
-        if self.move then
-            self.animation = "running"
-        else
-            self.animation = "idle"
+        self.animation = self.inGround and (self.move and "running" or "idle") or "jumping"
+        if not self.inGround then
+            self.previousAnimation = self.move and "running" or "idle"
         end
     end
 end
@@ -102,12 +111,11 @@ end
 
 function MainCharacter:update(dt)
     if self.spriteAnimation then
+        if self.inGround and self.animation == "jumping" then
+            self.animation = self.previousAnimation
+        end
         if self.move then
-            if self.orientation == "left" then
-                self.body:applyLinearImpulse(-1 * self.speed, 0)
-            elseif self.orientation == "right" then
-                self.body:applyLinearImpulse(self.speed, 0)
-            end
+            self.body:applyLinearImpulse((self.orientation == "left" and -1 or 1) * self.speed, 0)
             self.spriteAnimation[self.animation]:update(dt)
         else
             self.spriteAnimation[self.animation]:resetCurrent()

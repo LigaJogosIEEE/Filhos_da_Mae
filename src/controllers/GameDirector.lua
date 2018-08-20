@@ -36,12 +36,15 @@ end
 
 function GameDirector:new()
     
-    local mainCharacterAnimation = {}
-    mainCharacterAnimation.idle = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
-    mainCharacterAnimation.running = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
-    mainCharacterAnimation.down = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
-    mainCharacterAnimation.up = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
-    mainCharacterAnimation.jumping = GameDirector:configureSpriteSheet("Mother_1.json", "assets/sprites/Player/", true, nil, 1, 1, true)
+    local mainCharacterAnimation = {
+        idle = GameDirector:configureSpriteSheet("Mother_1_idle.json", "assets/sprites/Player/", true, nil, 1, 1, true),
+        running = GameDirector:configureSpriteSheet("Mother_1_Run.json", "assets/sprites/Player/", true, nil, 1, 1, true),
+        runningDown = GameDirector:configureSpriteSheet("Mother_1_Run_Down.json", "assets/sprites/Player/", true, nil, 1, 1, true),
+        runningUp = GameDirector:configureSpriteSheet("Mother_1_Run_Up.json", "assets/sprites/Player/", true, nil, 1, 1, true),
+        down = GameDirector:configureSpriteSheet("Mother_1_Idle_Down.json", "assets/sprites/Player/", true, 1, 1, 1, true),
+        up = GameDirector:configureSpriteSheet("Mother_1_Idle_Up.json", "assets/sprites/Player/", true, 1, 1, 1, true),
+        jumping = GameDirector:configureSpriteSheet("Mother_1_Jump.json", "assets/sprites/Player/", true, nil, 1, 1, true)
+    }
 
     local LifeForm = require "models.value.LifeForm"
     local world = World:new()
