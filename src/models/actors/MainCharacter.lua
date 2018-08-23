@@ -8,7 +8,7 @@ function MainCharacter:new(spriteAnimation, world)
         move = false,
         inGround = false,
         speed = 10,
-        jumpForce = 10,
+        jumpForce = -430,
         orientation = "right",
         animation = "idle",
         previousAnimation = "idle",
@@ -20,7 +20,7 @@ function MainCharacter:new(spriteAnimation, world)
     --aplying physics
     this.body = love.physics.newBody(this.world, 10, 700, "dynamic")
     this.body:setFixedRotation(true)
-    this.shape = love.physics.newRectangleShape(64, 64)
+    this.shape = love.physics.newRectangleShape(58, 54)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData("MainCharacter")
     this.fixture:setMask(2)
@@ -51,7 +51,7 @@ function MainCharacter:keypressed(key, scancode, isrepeat)
     self.previousAnimation = self.animation
 
     if key == "space" and self.inGround then
-        self.body:applyLinearImpulse(0, -430)
+        self.body:applyLinearImpulse(0, self.jumpForce)
         self.inGround = false
         self.previousAnimation = self.animation
         self.animation = "jumping"
@@ -99,6 +99,17 @@ function MainCharacter:setPosition(x, y)
     self.body:setX(x); self.body:setY(y)
 end
 
+function MainCharacter:reset()
+    self.move = false
+    self.inGround = true
+    self.looking = nil
+    self.body:setLinearVelocity(0, 0)
+    self.body:setX(10); self.body:setY(700)
+    self.orientation = "right"
+    self.animation = "idle"
+    self.previousAnimation = "idle"
+end
+
 function MainCharacter:getOrientation()
     return self.orientation
 end
@@ -108,9 +119,10 @@ function MainCharacter:compareFixture(fixture)
 end
 
 function MainCharacter:retreat()
-    local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
-    self.body:setLinearVelocity(0, yBodyVelocity)
+    --local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
+    self.body:setLinearVelocity(0, 0)
     self.body:applyLinearImpulse((self.orientation == "left" and 30 or -30) * self.speed, -400)
+    self.inGround = false
 end
 
 function MainCharacter:update(dt)
@@ -135,7 +147,7 @@ function MainCharacter:draw()
         local positionToDraw = self.animation
         local scaleX = self.orientation == "right" and 1 or -1
         self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX)
-        --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+        --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
     end
 end
 

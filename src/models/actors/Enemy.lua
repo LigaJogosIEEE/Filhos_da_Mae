@@ -2,8 +2,8 @@ local Enemy = {}
 
 Enemy.__index = Enemy
 
-function Enemy:new(spriteAnimation, world, x, y, enemyType)
-    
+function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions)
+    assert(colisorDimensions and type(colisorDimensions) == "table", "Enemy needs a colisor dimension and its need to be a table")
     local this = {
         move = false,
         inGround = false,
@@ -19,7 +19,7 @@ function Enemy:new(spriteAnimation, world, x, y, enemyType)
     --aplying physics
     this.body = love.physics.newBody(this.world, x or 0, y or 0, "dynamic")
     this.body:setFixedRotation(true)
-    this.shape = love.physics.newRectangleShape(64, 64)
+    this.shape = love.physics.newRectangleShape(unpack(colisorDimensions))
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData(enemyType or "Enemy")
     this.fixture:setMask(3)
@@ -102,7 +102,7 @@ function Enemy:draw()
     if self.spriteAnimation then
         local positionToDraw = self.looking == nil and self.orientation or self.looking
         self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY())
-        --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+        --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
     end
 end
 

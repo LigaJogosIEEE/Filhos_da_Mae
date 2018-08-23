@@ -9,23 +9,37 @@ function EnemiesController:new(world)
         enemies = {},
         world = world.world,
         timeForShot = 1,
-        enemiesUserData = {["Seu_Barriga"] = true}
+        enemiesUserData = {Seu_Barriga = true},
+        enemiesFactory = {Seu_Barriga = {colisor = {36, 54}, sprite = nil}}
     }
     
     return setmetatable(this, EnemiesController)
+end
+
+function EnemiesController:factory(enemyName)
+    local enemyAnimation = {
+        left = gameDirector:configureSpriteSheet(enemyName .. ".json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        right = gameDirector:configureSpriteSheet(enemyName .. ".json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        up = gameDirector:configureSpriteSheet(enemyName .. ".json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        down = gameDirector:configureSpriteSheet(enemyName .. ".json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true)    
+    }
+    return enemyAnimation
 end
 
 function EnemiesController:artificialInteligence(actor)
     
 end
 
-function EnemiesController:createEnemies()
-    local seuBarrigaSprite = {}
-    seuBarrigaSprite.left = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", true, 0.3, nil, nil, true);
-    seuBarrigaSprite.right = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", true, 0.3, nil, nil, true);
-    seuBarrigaSprite.up = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", true, 0.3, nil, nil, true);
-    seuBarrigaSprite.down = gameDirector:configureSpriteSheet("Seu_Barriga.json", "assets/sprites/Seu_Barriga/", true, 0.3, nil, nil, true);
-    table.insert(self.enemies, Enemy:new(seuBarrigaSprite, self.world, 600, 0, "Seu_Barriga"))
+function EnemiesController:startFactory()
+    for key, _ in pairs(self.enemiesUserData) do
+        self.enemiesFactory[key].sprite = self:factory(key)
+    end
+end
+
+function EnemiesController:createEnemy(enemyType, x, y)
+    assert(enemyType, "Needs to receive enemyType Parameter")
+    local enemy = self.enemiesFactory[enemyType]
+    table.insert(self.enemies, Enemy:new(enemy.sprite, self.world, x or 600, y or 500, enemyType, enemy.colisor))
 end
 
 function EnemiesController:getEnemyByFixture(fixture)

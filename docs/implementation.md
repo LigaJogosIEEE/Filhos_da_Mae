@@ -50,12 +50,14 @@ Pasta que contém todos os scripts de atores do jogo, como balas, inimigos, dent
 
 Pasta que contém os arquivos de armazenamento de dados do sistema
 
+* HealthInsurance - Classe que armazena os tipos de plano de saúde existents, bem como realiza a transação para efetivação do plano de saúde
 * LifeForm - Classe que armazena as informações que uma forma de vida do jogo necessita ter
 
 ### src/models/business
 
 Pasta que contém classes de modelagem que servem como uma abstração para manipulação de recursos importantes
 
+* GameState - Classe que contém os estados anteriores dos objetos, para que dessa forma seja possível carregar os mesmos para um estado anterior ao estado atual do game, dessa forma é possível realizar checkpoints e restartar o game sem que seja necessário finalizar o processo do game
 * Ground - Manipula o terreno do game
 * World - Faz as manipulações no Mundo do game, alterando seus efeitos na física do mesmo
 * KeyboardManager - Classe que contém todas as informações referentes à determinação de teclas necessárias para jogar o game, sendo que as mesmas podem vir a ser alteradas
@@ -70,8 +72,8 @@ Pata que contém os submenus que irão aparecer durante o jogo, sem que haja a n
 
 Pasta que contém as cenas do game, ou seja, cada uma das telas do jogo
 
-* ConfigurationScene - Cena que contém as informações de configuração do game, como tamanho da tela, controles, dentre outros
 * CreditsScene - Transcorrer dos créditos da criação do game
+* ConfigurationScene - Cena que contém as informações de configuração do game, como tamanho da tela, controles, dentre outros
 * InGameScene - Cena que possuirá todos os elementos do jogo e da fase
 * MainMenuScene - Tela de Menu do Game
 

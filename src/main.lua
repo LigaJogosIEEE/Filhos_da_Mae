@@ -6,7 +6,8 @@ function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     scaleDimension = ScaleDimension:new()
     gameDirector = GameDirector:new()
-    gameDirector.enemiesController:createEnemies()
+    gameDirector.enemiesController:startFactory()
+    gameDirector.enemiesController:createEnemy("Seu_Barriga", 600, 500)
     sceneDirector = SceneDirector:new()
 end
 

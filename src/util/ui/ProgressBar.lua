@@ -39,6 +39,10 @@ function ProgressBar:getValue()
     return self.value
 end
 
+function ProgressBar:fill()
+    self.value = self.limit
+end
+
 function ProgressBar:draw()
     love.graphics.setColor(unpack(self.color))
     love.graphics.rectangle("fill", self.x, self.y, (self:getPercentage() * self.width) / 100, self.height)

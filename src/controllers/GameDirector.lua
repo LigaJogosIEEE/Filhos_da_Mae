@@ -1,5 +1,6 @@
 --Models
 local World = require "models.business.World"
+local GameState = require "models.business.GameState"
 
 --Actors
 local Bullet = require "models.actors.Bullet"
@@ -58,11 +59,20 @@ function GameDirector:new()
         enemiesController = EnemiesController:new(world),
         cameraController = CameraController:new(),
         gameStatus = "run",
+        gameState = GameState:new(),
         --Libraries
-        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm, ProgressBar = ProgressBar}
+        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm, ProgressBar = ProgressBar, GameState = GameState}
     }
 
+    this.gameState:save(this.characterController, "characterController")
+    this.gameState:save(this.lifeBar, "lifebar")
     return setmetatable(this, GameDirector)
+end
+
+function GameDirector:reset()
+    self.lifeBar = self.gameState:load("lifebar")
+    self.characterController = self.gameState:load("characterController")
+    self.mainCharacter:reset()
 end
 
 function GameDirector:getLibrary(library)
