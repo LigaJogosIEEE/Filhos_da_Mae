@@ -13,7 +13,7 @@ local addButton = function(this, buttonName, sceneName, buttonDimensions, origin
 
     --buttonName, x, y, width, height, image, originalImage, animation, 70
     local button = this.buttonManager:addButton(buttonName, scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
-    button.callback = callback or function(this) sceneDirector:switchScene(sceneName) end
+    button.callback = callback or function(this) sceneDirector:reset(sceneName); sceneDirector:switchScene(sceneName) end
     button:setScale(scales.relative.x, scales.relative.y)
     
     this.buttonNames[scaleButtonName] = button
@@ -45,9 +45,7 @@ function MainMenuScene:new()
 
     local x, y, width, height = this.buttonsQuads["normal"]:getViewport()
     local originalSize = {width = width, height = height}
-    addButton(this, 'Start Game', "inGame", {128, 60, 350, 320}, originalSize, function(this)
-        gameDirector:reset(); sceneDirector:switchScene("inGame")
-    end)
+    addButton(this, 'Start Game', "inGame", {128, 60, 350, 320}, originalSize)
     addButton(this, 'Configurations', "configurations", {128, 60, 350, 390}, originalSize)
     addButton(this, 'Credits', "credits", {128, 60, 350, 460}, originalSize)
 
@@ -55,6 +53,9 @@ function MainMenuScene:new()
 end
 
 function MainMenuScene:keypressed(key, scancode, isrepeat)
+    if key == "escape" then
+        love.event.quit()
+    end
     self.buttonManager:keypressed(key, scancode, isrepeat)
 end
 

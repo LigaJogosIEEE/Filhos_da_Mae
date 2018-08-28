@@ -12,9 +12,6 @@ function love.load()
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    if key == "escape" then
-        love.event.quit()
-    end
     sceneDirector:keypressed(key, scancode, isrepeat)
 end
 
@@ -44,6 +41,7 @@ end
 
 function love.draw()
     sceneDirector:draw()
+    love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 end
 
 function love.resize(w, h)

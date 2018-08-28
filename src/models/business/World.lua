@@ -6,7 +6,7 @@ local beginContact = function(a, b, coll)
     local mainCharacterFixture = a:getUserData() == "MainCharacter" and a or b:getUserData() == "MainCharacter" and b or nil
     if mainCharacterFixture then
         if b:getUserData() == "Ground" or a:getUserData() == "Ground" then
-            gameDirector:getMainCharacter().inGround = true
+            gameDirector:getMainCharacter():touchGround(true)
         elseif gameDirector:getEntityByFixture(mainCharacterFixture == a and b or a) then
             gameDirector:getEntityByFixture(mainCharacterFixture):takeDamage(1)
             gameDirector:getMainCharacter():retreat()

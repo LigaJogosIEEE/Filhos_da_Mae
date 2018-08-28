@@ -11,6 +11,9 @@ function ConfigurationScene:new()
 end
 
 function ConfigurationScene:keypressed(key, scancode, isrepeat)
+    if key == "escape" then
+        sceneDirector:previousScene()
+    end
 end
 
 function ConfigurationScene:keyreleased(key, scancode)

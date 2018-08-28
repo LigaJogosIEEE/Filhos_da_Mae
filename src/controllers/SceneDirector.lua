@@ -1,5 +1,6 @@
 local MainMenuScene = require "scenes.MainMenuScene"
 local ConfigurationScene = require "scenes.ConfigurationScene"
+local CreditsScene = require "scenes.CreditsScene"
 
 local SceneDirector = {}
 
@@ -10,6 +11,7 @@ function SceneDirector:new()
         currentScene = nil, 
         mainMenu = MainMenuScene:new(),
         configurationScene = ConfigurationScene:new(),
+        creditsScene = CreditsScene:new(),
         sceneObjects = {},
         sceneStack = gameDirector:getLibrary("Stack"):new()
     }
@@ -18,10 +20,18 @@ function SceneDirector:new()
     this.sceneObjects["mainMenu"] = this.mainMenu
     this.sceneObjects["inGame"] = gameDirector
     this.sceneObjects["configurations"] = this.configurationScene
+    this.sceneObjects["credits"] = this.creditsScene
 
     scaleDimension:setGameScreenScale(800, 600)
     love.graphics.setNewFont("assets/fonts/kirbyss.ttf", 18)
     return setmetatable(this, SceneDirector)
+end
+
+function SceneDirector:reset(scene)
+    assert(self.sceneObjects[scene], "Unable to find required scene: '" .. tostring(scene) .. "'")
+    if self.sceneObjects[scene].reset then
+        self.sceneObjects[scene]:reset()
+    end
 end
 
 function SceneDirector:switchScene(scene)

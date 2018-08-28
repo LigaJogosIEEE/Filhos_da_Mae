@@ -23,5 +23,4 @@ function CharacterController:getMoney()
     return self.stats:getMoney()
 end
 
-
 return CharacterController

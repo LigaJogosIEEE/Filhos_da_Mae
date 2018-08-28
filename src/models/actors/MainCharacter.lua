@@ -7,7 +7,7 @@ function MainCharacter:new(spriteAnimation, world)
     local this = {
         move = false,
         inGround = false,
-        speed = 10,
+        speed = 150,
         jumpForce = -430,
         orientation = "right",
         animation = "idle",
@@ -48,7 +48,7 @@ function MainCharacter:keypressed(key, scancode, isrepeat)
     if self.looking and self.move then
         self.animation = self.looking == "up" and "runningUp" or "runningDown"
     end
-    self.previousAnimation = self.animation
+    self.previousAnimation = self.animation ~= "jumping" and self.animation or self.previousAnimation
 
     if key == "space" and self.inGround then
         self.body:applyLinearImpulse(0, self.jumpForce)
@@ -110,6 +110,15 @@ function MainCharacter:reset()
     self.previousAnimation = "idle"
 end
 
+function MainCharacter:touchGround(isTouching)
+    self.inGround = isTouching
+    if self.animation == "jumping" and not self.move then
+        if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
+            self.move = true
+        end
+    end
+end
+
 function MainCharacter:getOrientation()
     return self.orientation
 end
@@ -121,8 +130,10 @@ end
 function MainCharacter:retreat()
     --local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
     self.body:setLinearVelocity(0, 0)
-    self.body:applyLinearImpulse((self.orientation == "left" and 30 or -30) * self.speed, -400)
+    self.body:applyLinearImpulse((self.orientation == "left" and 1 or -1) * self.speed, self.jumpForce)
     self.inGround = false
+    self.move = false
+    self.animation = "jumping"
 end
 
 function MainCharacter:update(dt)
@@ -131,7 +142,8 @@ function MainCharacter:update(dt)
             self.animation = self.previousAnimation
         end
         if self.move then
-            self.body:applyLinearImpulse((self.orientation == "left" and -1 or 1) * self.speed, 0)
+            local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
+            self.body:setLinearVelocity((self.orientation == "left" and -1 or 1) * self.speed, yBodyVelocity)
             self.spriteAnimation[self.animation]:update(dt)
         else
             self.spriteAnimation[self.animation]:resetCurrent()
