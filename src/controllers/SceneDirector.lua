@@ -16,7 +16,7 @@ function SceneDirector:new()
         sceneStack = gameDirector:getLibrary("Stack"):new()
     }
 
-    this.currentScene = this.mainMenu
+    this.currentScene = require "scenes.SplashScreen":new()
     this.sceneObjects["mainMenu"] = this.mainMenu
     this.sceneObjects["inGame"] = gameDirector
     this.sceneObjects["configurations"] = this.configurationScene
@@ -46,10 +46,12 @@ function SceneDirector:previousScene()
     end
 end
 
-function SceneDirector:clearStack()
+function SceneDirector:clearStack(scene)
+    assert(scene and self.sceneObjects[scene], "Unable to find required scene: '" .. tostring(scene) .. "'")
     while self.sceneStack.peek() do
         self.currentScene = self.sceneStack.pop()
     end
+    self.sceneStack.push((scene and self.sceneObjects[scene]) or self.currentScene)
 end
 
 function SceneDirector:keypressed(key, scancode, isrepeat)

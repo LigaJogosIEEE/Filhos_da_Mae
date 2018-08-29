@@ -8,7 +8,7 @@ function CreditsScene:new()
         gameDesign = {"João Victor Oliveira Couto"},
         designers = {enemies = "Lucas Silva Lima", player = "Manuella Vieira", gui = "Lokisley"},
         levelDesign = {"João Victor Oliveira Couto"},
-        companyImage = nil,
+        companyImage = love.graphics.newImage("assets/company_logo.png"),
         y = love.graphics.getHeight(),
         elapsedTime = 0,
         finalY = love.graphics.getHeight()
@@ -75,7 +75,10 @@ function CreditsScene:draw()
         love.graphics.printf(levelDesign, x, y, 400, "center")
         y = y + 20
     end
-    self.finalY = y
+    y = y + 30
+    local scales = scaleDimension:getScale("splash_company")
+    love.graphics.draw(self.companyImage, scales.x, y, 0, scales.relative.x, scales.relative.y)
+    self.finalY = y + self.companyImage:getHeight()
 end
 
 return CreditsScene

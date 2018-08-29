@@ -8,7 +8,7 @@ function MainCharacter:new(spriteAnimation, world)
         move = false,
         inGround = false,
         speed = 150,
-        jumpForce = -430,
+        jumpForce = -320,
         orientation = "right",
         animation = "idle",
         previousAnimation = "idle",

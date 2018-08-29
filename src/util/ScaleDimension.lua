@@ -41,15 +41,41 @@ function ScaleDimension:directScale(width, height)
     return self.graphicsDimensions.width / width, self.graphicsDimensions.height / height
 end
 
+function ScaleDimension:generateAspectRatio(itemName, centralizeOptions)
+    if self.scaleItems[itemName] then
+        local item = self.scaleItems[itemName]
+        local x, y = false, false
+        if item.scaleX < item.scaleY then
+            item.scaleY = item.scaleX
+            y = true
+            if item.relative then
+                item.relative.y = item.relative.x
+            end
+        else
+            item.scaleX = item.scaleY
+            x = true
+            if item.relative then
+                item.relative.x = item.relative.y
+            end
+        end
+        if centralizeOptions then
+            self:centralize(itemName, x, y, centralizeOptions.isImage, centralizeOptions.centerOffset)
+        end
+    end
+end
+
 function ScaleDimension:centralize(itemName, x, y, isImage, centerOffset)
     if self.scaleItems[itemName] then
         local item = self.scaleItems[itemName]
-        item.centralizeOptions.x, item.centralizeOptions.y, item.centralizeOptions.isImage, item.centralizeOptions.centerOffset = x, y, isImage, centerOffset
+        item.centralizeOptions.x = x or item.centralizeOptions.x
+        item.centralizeOptions.y = y or item.centralizeOptions.y
+        item.centralizeOptions.isImage = isImage or item.centralizeOptions.isImage
+        item.centralizeOptions.centerOffset = centerOffset or item.centralizeOptions.centerOffset
         if x then
-            item.x = (self.graphicsDimensions.width / 2) - ((isImage and item.originalInfo[1] or centerOffset and 0 or item.width) / 2)
+            item.x = (self.graphicsDimensions.width / 2) - ((isImage and (type(isImage) == "table" and isImage.width or item.originalInfo[1]) * (item.relative and item.relative.x or item.scaleX) or centerOffset and 0 or item.width) / 2)
         end
         if y then
-            item.y = (self.graphicsDimensions.height / 2) - ((isImage and item.originalInfo[2] or centerOffset and 0 or item.height) / 2)
+            item.y = (self.graphicsDimensions.height / 2) - ((isImage and (type(isImage) == "table" and isImage.height or item.originalInfo[2]) * (item.relative and item.relative.y or item.scaleY) or centerOffset and 0 or item.height) / 2)
         end
     end
 end

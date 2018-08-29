@@ -26,7 +26,7 @@ GameDirector.__index = GameDirector
 function GameDirector:configureSpriteSheet(jsonFile, directory, looping, duration, scaleX, scaleY, centerOrigin)
     local newSprite = SpriteSheet:new(jsonFile, directory)
     local frameTable, frameStack = newSprite:getFrames()
-    local newAnimation = SpriteAnimation:new(frameStack, newSprite:getAtlas(), duration)
+    local newAnimation = SpriteAnimation:new(frameTable, newSprite:getAtlas(), duration)
     if centerOrigin then
         newAnimation:setOrigin(newSprite:getCenterOrigin())
     end

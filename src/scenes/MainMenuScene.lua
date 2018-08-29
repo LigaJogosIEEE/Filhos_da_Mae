@@ -30,8 +30,9 @@ function MainMenuScene:new()
         buttonNames = {}
     }
     scaleDimension:calculeScales("menuBackground", this.background:getWidth(), this.background:getHeight(), 0, 0)
-    scaleDimension:calculeScales("menuLogo", 260, 150, 0, 50)
-    scaleDimension:centralize("menuLogo", true, false, true)
+    scaleDimension:calculeScales("menuLogo", 150, 110, 0, 50)
+    scaleDimension:relativeScale("menuLogo", {width = this.logo:getWidth(), height = this.logo:getHeight()})
+    scaleDimension:centralize("menuLogo", true, false, false, false)
 
     local spriteSheet = gameDirector:getLibrary("SpriteSheet"):new("buttons.json", "assets/gui/")
     local spriteQuads = spriteSheet:getQuads()
@@ -87,8 +88,7 @@ function MainMenuScene:draw()
     local scales = scaleDimension:getScale("menuBackground")
     love.graphics.draw(self.background, 0, 0, 0, scales.scaleX, scales.scaleY)
     scales = scaleDimension:getScale("menuLogo")
-    local directScaleX, directScaleY = scaleDimension:directScale(self.logo:getDimensions()) 
-    love.graphics.draw(self.logo, scales.x, scales.y, 0, directScaleX / scales.scaleX, directScaleY / scales.scaleY)
+    love.graphics.draw(self.logo, scales.x, scales.y, 0, scales.relative.x, scales.relative.y)
     self.buttonManager:draw()
 end
 

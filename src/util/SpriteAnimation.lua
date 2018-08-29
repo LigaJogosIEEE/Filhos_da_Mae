@@ -2,7 +2,7 @@ local SpriteAnimation = {}
 
 SpriteAnimation.__index = SpriteAnimation
 
-function SpriteAnimation:new(frameStack, atlas, duration, looping)
+function SpriteAnimation:new(frameList, atlas, duration, looping)
     local this = {
         firstFrame = nil, currentFrame = nil, amountFrames = 0,
         atlas = atlas, currentTime = 0, duration = duration or 0.2,
@@ -10,20 +10,20 @@ function SpriteAnimation:new(frameStack, atlas, duration, looping)
     }
 
     this = setmetatable(this, SpriteAnimation)
-    this:load(frameStack)
+    this:load(frameList)
     return this
 end
 
-function SpriteAnimation:load(frameStack)
-    self.amountFrames = frameStack.size()
+function SpriteAnimation:load(frameList)
+    self.amountFrames = #frameList
     --[[Here will start the circle list for the frames--]]
-    local firstFrame = frameStack.pop()
+    local firstFrame = frameList[1]
     local currentFrame = firstFrame
-    local frameAfter = frameStack.pop() or firstFrame
-    while not frameStack.isEmpty() do
+    local frameAfter = frameList[2] or firstFrame
+    for index = 3, #frameList, 1 do
         currentFrame.nextFrame = frameAfter
         currentFrame = currentFrame.nextFrame
-        frameAfter = frameStack.pop()
+        frameAfter = frameList[index]
     end
     currentFrame.nextFrame = frameAfter
     frameAfter.nextFrame = firstFrame
