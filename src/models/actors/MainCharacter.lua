@@ -7,7 +7,7 @@ function MainCharacter:new(spriteAnimation, world)
     local this = {
         move = false,
         inGround = false,
-        speed = 150,
+        speed = 250,
         jumpForce = -320,
         orientation = "right",
         animation = "idle",
@@ -66,7 +66,7 @@ function MainCharacter:keypressed(key, scancode, isrepeat)
         local horizontalDirection = verticalDirection == 0 and self.orientation == "right" and 20 or self.orientation == "left" and - 10 or 0
         
         local positionToDraw = self.looking == "up" and self.looking or self.orientation
-        gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 15, 2, true)
+        gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 500, 2, true)
     end
 end
 
@@ -97,6 +97,11 @@ end
 
 function MainCharacter:setPosition(x, y)
     self.body:setX(x); self.body:setY(y)
+end
+
+function MainCharacter:stopMoving()
+    local xVelocity, yVelocity = self.body:getLinearVelocity()
+    self.body:setLinearVelocity(0, yVelocity)
 end
 
 function MainCharacter:reset()
@@ -144,13 +149,8 @@ function MainCharacter:update(dt)
         if self.move then
             local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
             self.body:setLinearVelocity((self.orientation == "left" and -1 or 1) * self.speed, yBodyVelocity)
-            self.spriteAnimation[self.animation]:update(dt)
-        else
-            self.spriteAnimation[self.animation]:resetCurrent()
         end
-        if self.looking then
-            self.spriteAnimation[self.looking]:update(dt)
-        end
+        self.spriteAnimation[self.animation]:update(dt)
     end
 end
 

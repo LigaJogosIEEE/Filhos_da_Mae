@@ -6,7 +6,7 @@ function Bullet:new(world, x, y, orientation, speed, texture, category)
     local this = {
         world = world or love.physics.newWorld(0, 9.81 * 64),
         orientation = orientation or "right",
-        speed = speed or 100,
+        speed = speed or 800,
         elapsedTime = 0,
         lifeTime = 1,
         texture = texture,
@@ -24,28 +24,34 @@ function Bullet:new(world, x, y, orientation, speed, texture, category)
     
     if this.orientation == "right" then
         this.updateFunction = function(dt)
-            this.body:setX(this.body:getX() + this.speed)
+            this.body:setLinearVelocity(this.speed, 0)
         end
     elseif this.orientation == "left" then
         this.updateFunction = function(dt)
-            this.body:setX(this.body:getX() - this.speed)
+            this.body:setLinearVelocity(-this.speed, 0)
         end
     elseif this.orientation == "up" then
         this.updateFunction = function(dt)
-            this.body:setY(this.body:getY() - this.speed)
+            this.body:setLinearVelocity(0, -this.speed)
         end
     elseif this.orientation == "down" then
         this.updateFunction = function(dt)
-            this.body:setY(this.body:getY() + this.speed)
+            this.body:setLinearVelocity(0, this.speed)
         end
     end
     
     return setmetatable(this, Bullet)
 end
 
+function Bullet:destroy()
+    self.fixture:destroy()
+    self.shape = nil
+    self.body:destroy()
+end
+
 function Bullet:update(dt)
+    self.speed = self.speed + 10
     self.updateFunction(dt)
-    self.speed = self.speed + 1
     self.elapsedTime = self.elapsedTime + dt
     if self.elapsedTime >= self.lifeTime then
         gameDirector:removeBullet(self)

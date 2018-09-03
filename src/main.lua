@@ -7,7 +7,7 @@ function love.load()
     scaleDimension = ScaleDimension:new()
     gameDirector = GameDirector:new()
     gameDirector.enemiesController:startFactory()
-    gameDirector.enemiesController:createEnemy("Seu_Barriga", 600, 500)
+    gameDirector.enemiesController:createEnemy("Bill", 600, 500)
     sceneDirector = SceneDirector:new()
 end
 

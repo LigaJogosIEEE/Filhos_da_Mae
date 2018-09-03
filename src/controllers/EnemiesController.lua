@@ -7,10 +7,18 @@ EnemiesController.__index = EnemiesController
 function EnemiesController:new(world)
     local this = {
         enemies = {},
+        ai = {types = {
+            Bill = require "models.business.enemies_ai.BillAi"
+        }},
         world = world.world,
-        timeForShot = 1,
-        enemiesUserData = {Seu_Barriga = true},
-        enemiesFactory = {Seu_Barriga = {colisor = {36, 54}, sprite = nil}}
+        enemiesUserData = {
+            Bill = true,
+            --Seu_Barriga = true
+        },
+        enemiesFactory = {
+            Seu_Barriga = {colisor = {36, 54}, sprite = nil},
+            Bill = {colisor = {26, 30}, sprite = nil}
+        }
     }
     
     return setmetatable(this, EnemiesController)
@@ -18,16 +26,12 @@ end
 
 function EnemiesController:factory(enemyName)
     local enemyAnimation = {
-        left = gameDirector:configureSpriteSheet(enemyName .. ".json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
-        right = gameDirector:configureSpriteSheet(enemyName .. ".json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
-        up = gameDirector:configureSpriteSheet(enemyName .. ".json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
-        down = gameDirector:configureSpriteSheet(enemyName .. ".json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true)    
+        idle = gameDirector:configureSpriteSheet(enemyName .. "_Idle.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        running = gameDirector:configureSpriteSheet(enemyName .. "_Running.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        up = gameDirector:configureSpriteSheet(enemyName .. "_Idle.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        down = gameDirector:configureSpriteSheet(enemyName .. "_Idle.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true)    
     }
     return enemyAnimation
-end
-
-function EnemiesController:artificialInteligence(actor)
-    
 end
 
 function EnemiesController:startFactory()
@@ -38,8 +42,10 @@ end
 
 function EnemiesController:createEnemy(enemyType, x, y)
     assert(enemyType, "Needs to receive enemyType Parameter")
-    local enemy = self.enemiesFactory[enemyType]
-    table.insert(self.enemies, Enemy:new(enemy.sprite, self.world, x or 600, y or 500, enemyType, enemy.colisor))
+    local enemyConfig = self.enemiesFactory[enemyType]
+    local enemy = Enemy:new(enemyConfig.sprite, self.world, x or 600, y or 500, enemyType, enemyConfig.colisor)
+    table.insert(self.enemies, enemy)
+    self.ai[enemy] = self.ai.types[enemyType]:new(enemy)
 end
 
 function EnemiesController:getEnemyByFixture(fixture)
@@ -57,6 +63,7 @@ function EnemiesController:remove(enemy)
     for index = 1, #self.enemies do
         if self.enemies[index] == enemy then
             table.remove(self.enemies, index)
+            self.ai[enemy] = nil
             return true
         end
     end
@@ -64,7 +71,7 @@ end
 
 function EnemiesController:update(dt)
     for index, enemy in pairs(self.enemies) do
-        self:artificialInteligence(enemy)
+        self.ai[enemy]:update(dt)
         enemy:update(dt)
     end
 end

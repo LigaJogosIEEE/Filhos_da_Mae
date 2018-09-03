@@ -78,7 +78,7 @@ function CreditsScene:draw()
     y = y + 30
     local scales = scaleDimension:getScale("splash_company")
     love.graphics.draw(self.companyImage, scales.x, y, 0, scales.relative.x, scales.relative.y)
-    self.finalY = y + self.companyImage:getHeight()
+    self.finalY = y + self.companyImage:getHeight() * scales.relative.y
 end
 
 return CreditsScene

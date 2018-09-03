@@ -62,6 +62,12 @@ Pasta que contém classes de modelagem que servem como uma abstração para mani
 * World - Faz as manipulações no Mundo do game, alterando seus efeitos na física do mesmo
 * KeyboardManager - Classe que contém todas as informações referentes à determinação de teclas necessárias para jogar o game, sendo que as mesmas podem vir a ser alteradas
 
+#### src/models/business/enemies_ai
+
+Pasta que contém as inteligências artificiais de todos os inimigos do jogo de forma separada, para que assim possa ser criados inimigos que agem de formas distintas
+
+* BillAi - Classe que controla a movimentação e ações do inimigo do tipo "Bill"
+
 ### src/models/submenus
 
 Pata que contém os submenus que irão aparecer durante o jogo, sem que haja a necessidade que tenha a cena atual do jogo alterada totalmente

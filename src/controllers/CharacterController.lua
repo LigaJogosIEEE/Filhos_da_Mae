@@ -14,6 +14,10 @@ function CharacterController:takeDamage()
 	return isDead
 end
 
+function CharacterController:endContact()
+    gameDirector:getMainCharacter():stopMoving()
+end
+
 function CharacterController:shot()
     -- here will verify bullet type for shot
 	return self.stats:shot(1)

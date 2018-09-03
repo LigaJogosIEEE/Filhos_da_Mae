@@ -42,8 +42,8 @@ function GameDirector:new()
         running = GameDirector:configureSpriteSheet("Mother_1_Run.json", "assets/sprites/Player/", true, nil, 1, 1, true),
         runningDown = GameDirector:configureSpriteSheet("Mother_1_Run_Down.json", "assets/sprites/Player/", true, nil, 1, 1, true),
         runningUp = GameDirector:configureSpriteSheet("Mother_1_Run_Up.json", "assets/sprites/Player/", true, nil, 1, 1, true),
-        down = GameDirector:configureSpriteSheet("Mother_1_Idle_Down.json", "assets/sprites/Player/", true, 1, 1, 1, true),
-        up = GameDirector:configureSpriteSheet("Mother_1_Idle_Up.json", "assets/sprites/Player/", true, 1, 1, 1, true),
+        down = GameDirector:configureSpriteSheet("Mother_1_Idle_Down.json", "assets/sprites/Player/", true, nil, 1, 1, true),
+        up = GameDirector:configureSpriteSheet("Mother_1_Idle_Up.json", "assets/sprites/Player/", true, nil, 1, 1, true),
         jumping = GameDirector:configureSpriteSheet("Mother_1_Jump.json", "assets/sprites/Player/", true, nil, 1, 1, true)
     }
 
@@ -96,6 +96,7 @@ end
 function GameDirector:removeBullet(bullet, fixture)
     for index = 1, #self.bulletsInWorld do
         if (bullet and self.bulletsInWorld[index] == bullet) or (fixture and self.bulletsInWorld[index].fixture == fixture) then
+            self.bulletsInWorld[index]:destroy()
             table.remove(self.bulletsInWorld, index)
             return index
         end
