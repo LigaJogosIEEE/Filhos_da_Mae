@@ -1,3 +1,11 @@
+# Ignore sprite project files
 *.piskel
+
+# Ignore compressed game file
 *.love
 *.zip
+
+# Ignore tilemap files
+*.tsx
+*.tmx
+*xml

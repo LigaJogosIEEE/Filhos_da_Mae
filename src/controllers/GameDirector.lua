@@ -10,6 +10,7 @@ local MainCharacter = require "models.actors.MainCharacter"
 local SpriteSheet = require "util.SpriteSheet"
 local SpriteAnimation = require "util.SpriteAnimation"
 local Stack = require "util.Stack"
+local TilemapLoader = require "util.TilemapLoader"
 
 --Controllers
 local CharacterController = require "controllers.CharacterController"
@@ -61,7 +62,7 @@ function GameDirector:new()
         gameStatus = "run",
         gameState = GameState:new(),
         --Libraries
-        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm, ProgressBar = ProgressBar, GameState = GameState}
+        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, TilemapLoader = TilemapLoader, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm, ProgressBar = ProgressBar, GameState = GameState}
     }
 
     this.gameState:save(this.characterController, "characterController")
