@@ -12,14 +12,14 @@ return {
   properties = {},
   tilesets = {
     {
-      name = "plataformas",
+      name = "platforms",
       firstgid = 1,
-      filename = "plataformas.tsx",
+      filename = "platforms.tsx",
       tilewidth = 64,
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "FDM- Tileset rua copy.png",
+      image = "street.png",
       imagewidth = 256,
       imageheight = 256,
       tileoffset = {
@@ -148,6 +148,118 @@ return {
           }
         },
         {
+          id = 4,
+          objectGroup = {
+            type = "objectgroup",
+            name = "",
+            visible = true,
+            opacity = 1,
+            offsetx = 0,
+            offsety = 0,
+            draworder = "index",
+            properties = {},
+            objects = {
+              {
+                id = 1,
+                name = "",
+                type = "",
+                shape = "rectangle",
+                x = 3,
+                y = 0,
+                width = 62,
+                height = 64,
+                rotation = 0,
+                visible = true,
+                properties = {}
+              }
+            }
+          }
+        },
+        {
+          id = 6,
+          objectGroup = {
+            type = "objectgroup",
+            name = "",
+            visible = true,
+            opacity = 1,
+            offsetx = 0,
+            offsety = 0,
+            draworder = "index",
+            properties = {},
+            objects = {
+              {
+                id = 1,
+                name = "",
+                type = "",
+                shape = "rectangle",
+                x = -1,
+                y = -1,
+                width = 64,
+                height = 66,
+                rotation = 0,
+                visible = true,
+                properties = {}
+              }
+            }
+          }
+        },
+        {
+          id = 8,
+          objectGroup = {
+            type = "objectgroup",
+            name = "",
+            visible = true,
+            opacity = 1,
+            offsetx = 0,
+            offsety = 0,
+            draworder = "index",
+            properties = {},
+            objects = {
+              {
+                id = 1,
+                name = "",
+                type = "",
+                shape = "rectangle",
+                x = 2,
+                y = 0,
+                width = 62,
+                height = 61,
+                rotation = 0,
+                visible = true,
+                properties = {}
+              }
+            }
+          }
+        },
+        {
+          id = 10,
+          objectGroup = {
+            type = "objectgroup",
+            name = "",
+            visible = true,
+            opacity = 1,
+            offsetx = 0,
+            offsety = 0,
+            draworder = "index",
+            properties = {},
+            objects = {
+              {
+                id = 1,
+                name = "",
+                type = "",
+                shape = "rectangle",
+                x = -1,
+                y = -1,
+                width = 64,
+                height = 61,
+                rotation = 0,
+                visible = true,
+                properties = {}
+              }
+            }
+          }
+        },
+        {
           id = 12,
           objectGroup = {
             type = "objectgroup",
@@ -262,14 +374,14 @@ return {
       }
     },
     {
-      name = "cxdagua",
+      name = "tomba_water_tank",
       firstgid = 17,
-      filename = "cxdagua.tsx",
+      filename = "tomba_water_tank.tsx",
       tilewidth = 64,
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "caixatomba2x.png",
+      image = "tomba_water_tank.png",
       imagewidth = 256,
       imageheight = 384,
       tileoffset = {
@@ -287,14 +399,14 @@ return {
       tiles = {}
     },
     {
-      name = "houses_cxdagua",
+      name = "houses_watertank",
       firstgid = 41,
-      filename = "houses_cxdagua.tsx",
+      filename = "houses_watertank.tsx",
       tilewidth = 64,
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "houses_cxdagua.png",
+      image = "houses_watertank.png",
       imagewidth = 576,
       imageheight = 320,
       tileoffset = {
@@ -312,14 +424,14 @@ return {
       tiles = {}
     },
     {
-      name = "cenario",
+      name = "scenary",
       firstgid = 86,
-      filename = "cenario.tsx",
+      filename = "scenary.tsx",
       tilewidth = 64,
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "FDM- itens cenario.png",
+      image = "scenary_objects.png",
       imagewidth = 256,
       imageheight = 192,
       tileoffset = {
