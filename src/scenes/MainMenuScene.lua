@@ -34,7 +34,7 @@ function MainMenuScene:new()
     scaleDimension:relativeScale("menuLogo", {width = this.logo:getWidth(), height = this.logo:getHeight()})
     scaleDimension:centralize("menuLogo", true, false, false, false)
 
-    local spriteSheet = gameDirector:getLibrary("SpriteSheet"):new("buttons.json", "assets/gui/")
+    local spriteSheet = gameDirector:getLibrary("SpriteSheet"):new("buttons.json", "assets/gui/", gameDirector:getLibrary("Json").decode)
     local spriteQuads = spriteSheet:getQuads()
     this.buttonsQuads = {
         normal = spriteQuads["normal"],

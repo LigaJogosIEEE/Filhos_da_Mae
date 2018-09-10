@@ -27,7 +27,7 @@ end
 function EnemiesController:factory(enemyName)
     local enemyAnimation = {
         idle = gameDirector:configureSpriteSheet(enemyName .. "_Idle.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
-        running = gameDirector:configureSpriteSheet(enemyName .. "_Running.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        running = gameDirector:configureSpriteSheet(enemyName .. "_Running.json", "assets/sprites/" .. enemyName .. "/", true, 0.2, nil, nil, true),
         up = gameDirector:configureSpriteSheet(enemyName .. "_Idle.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
         down = gameDirector:configureSpriteSheet(enemyName .. "_Idle.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true)    
     }

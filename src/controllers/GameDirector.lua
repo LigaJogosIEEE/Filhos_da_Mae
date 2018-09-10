@@ -6,6 +6,9 @@ local GameState = require "models.business.GameState"
 local Bullet = require "models.actors.Bullet"
 local MainCharacter = require "models.actors.MainCharacter"
 
+--Libs
+local Json = require "libs.Json"
+
 --Util
 local SpriteSheet = require "util.SpriteSheet"
 local SpriteAnimation = require "util.SpriteAnimation"
@@ -25,7 +28,7 @@ local GameDirector = {}
 GameDirector.__index = GameDirector
 
 function GameDirector:configureSpriteSheet(jsonFile, directory, looping, duration, scaleX, scaleY, centerOrigin)
-    local newSprite = SpriteSheet:new(jsonFile, directory)
+    local newSprite = SpriteSheet:new(jsonFile, directory, Json.decode)
     local frameTable, frameStack = newSprite:getFrames()
     local newAnimation = SpriteAnimation:new(frameTable, newSprite:getAtlas(), duration)
     if centerOrigin then
@@ -40,7 +43,7 @@ function GameDirector:new()
     
     local mainCharacterAnimation = {
         idle = GameDirector:configureSpriteSheet("Mother_1_idle.json", "assets/sprites/Player/", true, nil, 1, 1, true),
-        running = GameDirector:configureSpriteSheet("Mother_1_Run.json", "assets/sprites/Player/", true, nil, 1, 1, true),
+        running = GameDirector:configureSpriteSheet("Mother_1_Run.json", "assets/sprites/Player/", true, 0.1, 1, 1, true),
         runningDown = GameDirector:configureSpriteSheet("Mother_1_Run_Down.json", "assets/sprites/Player/", true, nil, 1, 1, true),
         runningUp = GameDirector:configureSpriteSheet("Mother_1_Run_Up.json", "assets/sprites/Player/", true, nil, 1, 1, true),
         down = GameDirector:configureSpriteSheet("Mother_1_Idle_Down.json", "assets/sprites/Player/", true, nil, 1, 1, true),
@@ -51,6 +54,7 @@ function GameDirector:new()
     local LifeForm = require "models.value.LifeForm"
     local world = World:new()
     local this = {
+        elapsedTime = 0,
         bulletsInWorld = {},
         world = world,
         inGameScene = require "scenes.InGameScene":new(world.world),
@@ -62,7 +66,7 @@ function GameDirector:new()
         gameStatus = "run",
         gameState = GameState:new(),
         --Libraries
-        libraries = {Json = require "libs.Json", SpriteSheet = SpriteSheet, TilemapLoader = TilemapLoader, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm, ProgressBar = ProgressBar, GameState = GameState}
+        libraries = {Json = Json, SpriteSheet = SpriteSheet, TilemapLoader = TilemapLoader, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm, ProgressBar = ProgressBar, GameState = GameState}
     }
 
     this.gameState:save(this.characterController, "characterController")
@@ -132,19 +136,23 @@ function GameDirector:getEnemiesController()
 end
 
 function GameDirector:update(dt)
-    if self.lifeBar:getValue() > 0 then
-        self.world:update(dt)
-        self.inGameScene:update(dt)
-        
-        for index, bullet in pairs(self.bulletsInWorld) do
-            bullet:update(dt)
-        end
+    self.elapsedTime = self.elapsedTime + dt
+    if self.elapsedTime > 0.01 then
+        if self.lifeBar:getValue() > 0 then
+            self.world:update(dt)
+            self.inGameScene:update(dt)
+            
+            for index, bullet in pairs(self.bulletsInWorld) do
+                bullet:update(dt)
+            end
 
-        self.cameraController:update(dt)
-    else
-        --here will call gameOver scene
-        sceneDirector:previousScene()
+            self.cameraController:update(dt)
+        else
+            --here will call gameOver scene
+            sceneDirector:previousScene()
+        end
     end
+    self.elapsedTime = 0
 end
 
 function GameDirector:draw()

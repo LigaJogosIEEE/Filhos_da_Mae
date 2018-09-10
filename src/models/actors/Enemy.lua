@@ -81,10 +81,10 @@ end
 
 function Enemy:shot()
     local verticalDirection = self.looking == "up" and - 20 or self.looking == "down" and 70 or 0
-    local horizontalDirection = verticalDirection ~= 0 and 30 or self.orientation == "right" and 75 or self.orientation == "left" and - 10 or 0
+    local horizontalDirection = verticalDirection ~= 0 and 0 or self.orientation == "right" and 10 or self.orientation == "left" and - 10 or 0
     
     local positionToDraw = self.looking == nil and self.orientation or self.looking
-    gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 400, 3)
+    gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 300, 3)
 end
 
 function Enemy:stopMoving(key)
@@ -117,7 +117,7 @@ end
 function Enemy:draw()
     if self.spriteAnimation then
         local positionToDraw = self.animation
-        local scaleX = self.orientation == "right" and 1 or -1
+        local scaleX = self.orientation == "right" and -1 or 1
         self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX)
         --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
     end

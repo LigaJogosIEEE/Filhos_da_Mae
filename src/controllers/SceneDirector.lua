@@ -8,11 +8,13 @@ SceneDirector.__index = SceneDirector
 
 function SceneDirector:new()
     local this = {
-        currentScene = nil, 
+        currentScene = nil,
+        currentSubscene = nil,
         mainMenu = MainMenuScene:new(),
         configurationScene = ConfigurationScene:new(),
         creditsScene = CreditsScene:new(),
         sceneObjects = {},
+        subsceneObjects = {},
         sceneStack = gameDirector:getLibrary("Stack"):new()
     }
 
@@ -54,6 +56,15 @@ function SceneDirector:clearStack(scene)
     self.sceneStack.push((scene and self.sceneObjects[scene]) or self.currentScene)
 end
 
+function SceneDirector:switchSubscene(subscene)
+    self.currentSubscene = self.subsceneObjects[subscene]
+    assert(self.currentSubscene, string.format("Unable to find requested subscene \"%s\"", tostring(subscene)))
+end
+
+function SceneDirector:exitSubscene()
+    self.currentSubscene = nil
+end
+
 function SceneDirector:keypressed(key, scancode, isrepeat)
     if self.currentScene.keypressed then
         self.currentScene:keypressed(key, scancode, isrepeat)
@@ -91,14 +102,21 @@ function SceneDirector:wheelmoved(x, y)
 end
 
 function SceneDirector:update(dt)
-    if self.currentScene.update then
-        self.currentScene:update(dt)
+    if not self.currentSubscene then
+        if self.currentScene.update then
+            self.currentScene:update(dt)
+        end
+    elseif self.currentSubscene.update then
+        self.currentSubscene:update(dt)
     end
 end
 
 function SceneDirector:draw()
     if self.currentScene.draw then
         self.currentScene:draw()
+    end
+    if self.currentSubscene and self.currentSubscene.draw then
+        self.currentSubscene:draw()
     end
 end
 
