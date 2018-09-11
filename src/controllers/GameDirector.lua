@@ -57,16 +57,18 @@ function GameDirector:new()
         elapsedTime = 0,
         bulletsInWorld = {},
         world = world,
-        inGameScene = require "scenes.InGameScene":new(world.world),
         mainCharacter = MainCharacter:new(mainCharacterAnimation, world.world),
         lifeBar = ProgressBar:new(20, 20, 200, 40, {1, 0, 0}, 15, 15),
         characterController = CharacterController:new(LifeForm),
         enemiesController = EnemiesController:new(world),
         cameraController = CameraController:new(),
-        gameStatus = "run",
         gameState = GameState:new(),
         --Libraries
-        libraries = {Json = Json, SpriteSheet = SpriteSheet, TilemapLoader = TilemapLoader, SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm, ProgressBar = ProgressBar, GameState = GameState}
+        libraries = {
+            Json = Json, SpriteSheet = SpriteSheet, TilemapLoader = TilemapLoader,
+            SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm,
+            ProgressBar = ProgressBar, GameState = GameState
+        }
     }
 
     this.gameState:save(this.characterController, "characterController")
@@ -124,7 +126,11 @@ function GameDirector:getEntityByFixture(fixture)
 end
 
 function GameDirector:getMainCharacter()
-    return self.mainCharacter
+    return self.mainCharacter, self.characterController
+end
+
+function GameDirector:getLifeBar()
+    return self.lifeBar
 end
 
 function GameDirector:getCameraController()
@@ -135,13 +141,21 @@ function GameDirector:getEnemiesController()
     return self.enemiesController
 end
 
+function GameDirector:getWorld()
+    return self.world
+end
+
+function GameDirector:runGame()
+    return self.elapsedTime > 0.01 and self.lifeBar:getValue() > 0
+end
+
 function GameDirector:update(dt)
     self.elapsedTime = self.elapsedTime + dt
     if self.elapsedTime > 0.01 then
         if self.lifeBar:getValue() > 0 then
             self.world:update(dt)
-            self.inGameScene:update(dt)
-            
+            self.mainCharacter:update(dt)
+            self.enemiesController:update(dt)            
             for index, bullet in pairs(self.bulletsInWorld) do
                 bullet:update(dt)
             end
@@ -155,15 +169,14 @@ function GameDirector:update(dt)
     self.elapsedTime = 0
 end
 
+function GameDirector:drawBullets()
+    for index, bullet in pairs(self.bulletsInWorld) do
+        bullet:draw()
+    end
+end
+
 function GameDirector:draw()
-    self.lifeBar:draw()
-    love.graphics.printf(string.format("Money: %d", self.characterController:getMoney()), 20, 60, 100, 'center')
-    self.cameraController:draw(function()
-        self.inGameScene:draw()
-        for index, bullet in pairs(self.bulletsInWorld) do
-            bullet:draw()
-        end
-    end)
+    
 end
 
 return GameDirector

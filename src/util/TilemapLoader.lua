@@ -5,7 +5,7 @@ TilemapLoader.__index = TilemapLoader
 function TilemapLoader:new(tilemapName, path)
     assert(tilemapName and path, "filename and path required")
     local this = setmetatable({
-        tilemap = require(string.format("%s.%s", path, tilemapName)),
+        tilemap = require(string.format("%s.%s", path:gsub("/", "%."), tilemapName)),
         tileBatch = {},
         tilesets = {},
         quads = {},

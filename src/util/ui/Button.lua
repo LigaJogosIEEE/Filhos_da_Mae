@@ -99,7 +99,7 @@ function Button:draw()
     elseif self.image[self.state] then
         if self.originalImage then
             love.graphics.draw(self.originalImage, self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
-            love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 200, "center", 0, self.scaleX, self.scaleY)
+            love.graphics.printf(self.name, self.x, self.y + (self.height / 3), 210, "center", 0, 1, 1)
         else
             love.graphics.draw(self.image[self.state], self.x, self.y, 0, self.scaleX, self.scaleY)
         end

@@ -1,7 +1,3 @@
-local MainMenuScene = require "scenes.MainMenuScene"
-local ConfigurationScene = require "scenes.ConfigurationScene"
-local CreditsScene = require "scenes.CreditsScene"
-
 local SceneDirector = {}
 
 SceneDirector.__index = SceneDirector
@@ -10,19 +6,19 @@ function SceneDirector:new()
     local this = {
         currentScene = nil,
         currentSubscene = nil,
-        mainMenu = MainMenuScene:new(),
-        configurationScene = ConfigurationScene:new(),
-        creditsScene = CreditsScene:new(),
-        sceneObjects = {},
-        subsceneObjects = {},
+        sceneObjects = {
+            mainMenu = require "scenes.MainMenuScene":new(),
+            credits = require "scenes.CreditsScene":new(),
+            configurations = require "scenes.ConfigurationScene":new(),
+            inGame = require "scenes.InGameScene":new(gameDirector:getWorld().world)
+        },
+        subsceneObjects = {
+            pause = require "scenes.subscenes.PauseGame":new()
+        },
         sceneStack = gameDirector:getLibrary("Stack"):new()
     }
 
     this.currentScene = require "scenes.SplashScreen":new()
-    this.sceneObjects["mainMenu"] = this.mainMenu
-    this.sceneObjects["inGame"] = gameDirector
-    this.sceneObjects["configurations"] = this.configurationScene
-    this.sceneObjects["credits"] = this.creditsScene
 
     scaleDimension:setGameScreenScale(800, 600)
     love.graphics.setNewFont("assets/fonts/kirbyss.ttf", 18)
@@ -40,11 +36,13 @@ function SceneDirector:switchScene(scene)
     assert(self.sceneObjects[scene], "Unable to find required scene: '" .. tostring(scene) .. "'")
     self.sceneStack.push(self.currentScene)
     self.currentScene = self.sceneObjects[scene] or self.currentScene
+    self.currentSubscene = nil
 end
 
 function SceneDirector:previousScene()
     if self.sceneStack.peek() then
         self.currentScene = self.sceneStack.pop()
+        self.currentSubscene = nil
     end
 end
 
@@ -54,6 +52,7 @@ function SceneDirector:clearStack(scene)
         self.currentScene = self.sceneStack.pop()
     end
     self.sceneStack.push((scene and self.sceneObjects[scene]) or self.currentScene)
+    self.currentSubscene = nil
 end
 
 function SceneDirector:switchSubscene(subscene)
@@ -66,38 +65,62 @@ function SceneDirector:exitSubscene()
 end
 
 function SceneDirector:keypressed(key, scancode, isrepeat)
-    if self.currentScene.keypressed then
-        self.currentScene:keypressed(key, scancode, isrepeat)
+    if not self.currentSubscene then
+        if self.currentScene.keypressed then
+            self.currentScene:keypressed(key, scancode, isrepeat)
+        end
+    elseif self.currentSubscene.keypressed then
+        self.currentSubscene:keypressed(key, scancode, isrepeat)
     end
 end
 
 function SceneDirector:keyreleased(key, scancode)
-    if self.currentScene.keyreleased then
-        self.currentScene:keyreleased(key, scancode)
+    if not self.currentSubscene then
+        if self.currentScene.keyreleased then
+            self.currentScene:keyreleased(key, scancode)
+        end
+    elseif self.currentSubscene.keyreleased then
+        self.currentSubscene:keyreleased(key, scancode)
     end
 end
 
 function SceneDirector:mousemoved(x, y, dx, dy, istouch)
-    if self.currentScene.mousemoved then
-        self.currentScene:mousemoved(x, y, dx, dy, istouch)
+    if not self.currentSubscene then
+        if self.currentScene.mousemoved then
+            self.currentScene:mousemoved(x, y, dx, dy, istouch)
+        end
+    elseif self.currentSubscene.mousemoved then
+        self.currentSubscene:mousemoved(x, y, dx, dy, istouch)
     end
 end
 
 function SceneDirector:mousepressed(x, y, button)
-    if self.currentScene.mousepressed then
-        self.currentScene:mousepressed(x, y, button)
+    if not self.currentSubscene then
+        if self.currentScene.mousepressed then
+            self.currentScene:mousepressed(x, y, button)
+        end
+    elseif self.currentSubscene.mousepressed then
+        self.currentSubscene:mousepressed(x, y, button)
     end
 end
 
 function SceneDirector:mousereleased(x, y, button)
-    if self.currentScene.mousereleased then
-        self.currentScene:mousereleased(x, y, button)
+    if not self.currentSubscene then
+        if self.currentScene.mousereleased then
+            self.currentScene:mousereleased(x, y, button)
+        end
+    elseif self.currentSubscene.mousereleased then
+        self.currentSubscene:mousereleased(x, y, button)
     end
 end
 
 function SceneDirector:wheelmoved(x, y)
-    if self.currentScene.wheelmoved then
-        self.currentScene:wheelmoved(x, y)
+    if not self.currentSubscene then
+        if self.currentScene.wheelmoved then
+            self.currentScene:wheelmoved(x, y)
+        end
+    elseif self.currentSubscene.wheelmoved then
+        self.currentSubscene:wheelmoved(x, y)
     end
 end
 
