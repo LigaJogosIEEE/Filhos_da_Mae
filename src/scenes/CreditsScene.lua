@@ -7,10 +7,11 @@ function CreditsScene:new()
         enemyAi = {"Atônio Crispin", "João Victor Oliveira Couto"},
         gameDesign = {"João Victor Oliveira Couto"},
         designers = {enemies = "Lucas Silva Lima", player = "Manuella Vieira", gui = "Lokisley"},
-        levelDesign = {"João Victor Oliveira Couto"},
+        levelDesign = {"João Victor Oliveira Couto", "Lokisley Oliveira", "Manuella Vieira"},
         companyImage = love.graphics.newImage("assets/company_logo.png"),
         y = love.graphics.getHeight(),
         elapsedTime = 0,
+        speed = 1,
         finalY = love.graphics.getHeight()
     }
 
@@ -24,13 +25,21 @@ end
 function CreditsScene:keypressed(key, scancode, isrepeat)
     if key == "escape" then
         sceneDirector:previousScene()
+    elseif key == "space" then
+        self.speed = 4
+    end
+end
+
+function CreditsScene:keyreleased(key, scancode)
+    if key == "space" then
+        self.speed = 1
     end
 end
 
 function CreditsScene:update(dt)
     self.elapsedTime = self.elapsedTime + dt
     if self.elapsedTime >= 0.01 then
-        self.y = self.y - 1
+        self.y = self.y - self.speed
         self.elapsedTime = 0
     end
     if self.finalY <= 0 then

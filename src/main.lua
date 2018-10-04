@@ -3,12 +3,20 @@ local GameDirector = require "controllers.GameDirector"
 local ScaleDimension = require "util.ScaleDimension"
 
 function love.load()
+    --set default constants
     love.graphics.setDefaultFilter('nearest', 'nearest')
+    love.graphics.setNewFont("assets/fonts/kirbyss.ttf", 18)
+    --Creating Main Controllers
     scaleDimension = ScaleDimension:new()
+    scaleDimension:setGameScreenScale(800, 600)
     gameDirector = GameDirector:new()
     gameDirector.enemiesController:startFactory()
-    gameDirector.enemiesController:createEnemy("Bill", 600, 500)
-    sceneDirector = SceneDirector:new()
+    sceneDirector = SceneDirector:new(require "scenes.SplashScreen":new())
+    --Adding Scenes to SceneDirector
+    sceneDirector:addScene("mainMenu", require "scenes.MainMenuScene":new())
+    sceneDirector:addScene("credits", require "scenes.CreditsScene":new())
+    sceneDirector:addScene("configurations", require "scenes.ConfigurationScene":new())
+    sceneDirector:addScene("inGame", require "scenes.InGameScene":new(gameDirector:getWorld().world))
 end
 
 function love.keypressed(key, scancode, isrepeat)

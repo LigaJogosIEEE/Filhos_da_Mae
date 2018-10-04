@@ -22,8 +22,8 @@ function Button:setCallback(callback)
     self.callback = callback
 end
 
-function Button:executeCallback()
-    self.callback()
+function Button:executeCallback(...)
+    self.callback(...)
 end
 
 function Button:disableButton()

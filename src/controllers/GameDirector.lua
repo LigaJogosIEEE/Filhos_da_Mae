@@ -21,6 +21,7 @@ local EnemiesController = require "controllers.EnemiesController"
 local CameraController = require "controllers.CameraController"
 
 --Gui Components
+local ButtonManager = require "util/ui/ButtonManager"
 local ProgressBar = require "util.ui.ProgressBar"
 
 local GameDirector = {}
@@ -67,7 +68,7 @@ function GameDirector:new()
         libraries = {
             Json = Json, SpriteSheet = SpriteSheet, TilemapLoader = TilemapLoader,
             SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm,
-            ProgressBar = ProgressBar, GameState = GameState
+            ProgressBar = ProgressBar, GameState = GameState, ButtonManager = ButtonManager
         }
     }
 
@@ -165,8 +166,8 @@ function GameDirector:update(dt)
             --here will call gameOver scene
             sceneDirector:previousScene()
         end
+        self.elapsedTime = 0
     end
-    self.elapsedTime = 0
 end
 
 function GameDirector:drawBullets()

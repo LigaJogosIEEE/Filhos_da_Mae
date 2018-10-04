@@ -2,26 +2,18 @@ local SceneDirector = {}
 
 SceneDirector.__index = SceneDirector
 
-function SceneDirector:new()
+function SceneDirector:new(firstScene)
+    assert(firstScene, "SceneDirector needs a initial scene to work properly")
     local this = {
         currentScene = nil,
         currentSubscene = nil,
-        sceneObjects = {
-            mainMenu = require "scenes.MainMenuScene":new(),
-            credits = require "scenes.CreditsScene":new(),
-            configurations = require "scenes.ConfigurationScene":new(),
-            inGame = require "scenes.InGameScene":new(gameDirector:getWorld().world)
-        },
-        subsceneObjects = {
-            pause = require "scenes.subscenes.PauseGame":new()
-        },
+        sceneObjects = {},
+        subsceneObjects = {},
         sceneStack = gameDirector:getLibrary("Stack"):new()
     }
 
-    this.currentScene = require "scenes.SplashScreen":new()
+    this.currentScene = firstScene
 
-    scaleDimension:setGameScreenScale(800, 600)
-    love.graphics.setNewFont("assets/fonts/kirbyss.ttf", 18)
     return setmetatable(this, SceneDirector)
 end
 
@@ -29,6 +21,18 @@ function SceneDirector:reset(scene)
     assert(self.sceneObjects[scene], "Unable to find required scene: '" .. tostring(scene) .. "'")
     if self.sceneObjects[scene].reset then
         self.sceneObjects[scene]:reset()
+    end
+end
+
+function SceneDirector:addScene(sceneName, sceneObject, override)
+    if override or not self.sceneObjects[sceneName] then
+        self.sceneObjects[sceneName] = sceneObject
+    end
+end
+
+function SceneDirector:addSubscene(subsceneName, subsceneObject, override)
+    if override or not self.subsceneObjects[subsceneName] then
+        self.subsceneObjects[subsceneName] = subsceneObject
     end
 end
 
@@ -48,10 +52,11 @@ end
 
 function SceneDirector:clearStack(scene)
     assert(scene and self.sceneObjects[scene], "Unable to find required scene: '" .. tostring(scene) .. "'")
-    while self.sceneStack.peek() do
+    while not self.sceneStack.isEmpty() do
         self.currentScene = self.sceneStack.pop()
     end
-    self.sceneStack.push((scene and self.sceneObjects[scene]) or self.currentScene)
+    self.currentScene = (scene and self.sceneObjects[scene]) or self.currentScene
+    self.sceneStack.push(self.currentScene)
     self.currentSubscene = nil
 end
 

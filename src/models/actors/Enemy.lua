@@ -44,13 +44,17 @@ function Enemy:reset()
     self.previousAnimation = "idle"
 end
 
+function Enemy:destroy()
+    self.fixture:destroy()
+    self.shape = nil
+    self.body:destroy()
+    gameDirector.enemiesController:remove(self)
+end
+
 function Enemy:takeDamage(amount)
     local isDead = self.lifeForm:takeDamage(amount)
     if isDead then
-        self.fixture:destroy()
-        self.shape = nil
-        self.body:destroy()
-        gameDirector.enemiesController:remove(self)
+        self:destroy()
     end
 end
 
@@ -77,6 +81,14 @@ end
 function Enemy:jump()
     self.body:applyLinearImpulse(0, -430)
     self.inGround = false
+end
+
+function Enemy:getSpeed()
+    return self.speed
+end
+
+function Enemy:setSpeed(speed)
+    self.speed = speed
 end
 
 function Enemy:shot()

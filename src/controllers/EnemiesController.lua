@@ -8,7 +8,8 @@ function EnemiesController:new(world)
     local this = {
         enemies = {},
         ai = {types = {
-            Bill = require "models.business.enemies_ai.BillAi"
+            Bill = require "models.business.enemies_ai.BillAi",
+            Seu_Barriga = require "models.business.enemies_ai.SeuBarrigaAi"
         }},
         world = world.world,
         enemiesUserData = {
@@ -38,6 +39,13 @@ function EnemiesController:startFactory()
     for key, _ in pairs(self.enemiesUserData) do
         self.enemiesFactory[key].sprite = self:factory(key)
     end
+end
+
+function EnemiesController:clearEnemies()
+    for _, enemy in pairs(self.enemies) do
+        enemy:destroy()
+    end
+    self.enemies = {}
 end
 
 function EnemiesController:createEnemy(enemyType, x, y)

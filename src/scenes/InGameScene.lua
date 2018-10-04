@@ -9,6 +9,8 @@ function InGameScene:new(world)
         ground = Ground:new(world, nil, 800, 30, 400, 570),
         level_1_map = gameDirector:getLibrary("TilemapLoader"):new("level_1_map", "assets/tilesets")
     }
+    sceneDirector:addSubscene("pause", require "scenes.subscenes.PauseGame":new())
+    this.level_1_map:parse()
 
     return setmetatable(this, InGameScene)
 end
@@ -26,6 +28,8 @@ end
 
 function InGameScene:reset()
     gameDirector:reset()
+    gameDirector.enemiesController:clearEnemies()
+    gameDirector.enemiesController:createEnemy("Bill", 600, 500)
 end
 
 function InGameScene:update(dt)

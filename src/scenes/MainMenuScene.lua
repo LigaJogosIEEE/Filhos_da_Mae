@@ -1,5 +1,3 @@
-local ButtonManager = require "util/ui/ButtonManager"
-
 local MainMenuScene = {}
 
 MainMenuScene.__index = MainMenuScene
@@ -13,7 +11,7 @@ local addButton = function(this, buttonName, sceneName, buttonDimensions, origin
 
     --buttonName, x, y, width, height, image, originalImage, animation, 70
     local button = this.buttonManager:addButton(buttonName, scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
-    button.callback = callback or function(this) sceneDirector:reset(sceneName); sceneDirector:switchScene(sceneName) end
+    button.callback = callback or function(this) sceneDirector:switchScene(sceneName); sceneDirector:reset(sceneName) end
     button:setScale(scales.relative.x, scales.relative.y)
     
     this.buttonNames[scaleButtonName] = button
@@ -23,8 +21,7 @@ function MainMenuScene:new()
     local this = {
         background = love.graphics.newImage("assets/background.png"),
         logo = love.graphics.newImage("assets/menuLogo.png"),
-        buttonManager = ButtonManager:new(),
-        actualScene = "MainMenu",
+        buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
         buttonsImage = nil,
         buttonsQuads = nil,
         buttonNames = {}

@@ -36,7 +36,7 @@ function SplashScreen:update(dt)
     if self.elapsedTime > 2 then
         self.current = self.current + 1
         self.elapsedTime = 0
-        if self.current >= #self.all then
+        if self.current > #self.all then
             sceneDirector:clearStack("mainMenu")
         end
     end

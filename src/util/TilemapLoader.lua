@@ -43,12 +43,12 @@ function TilemapLoader:spriteBatchConstruct(sequence)
         for __, quadIndex in pairs(layerInfo.data) do
             table.insert(completeFrame, self.quads[quadIndex])
         end
-        self.tileBatch[layerInfo.name] = love.graphics.newSpriteBatch(image,maxsprites) --needs to search the specific image
+        --self.tileBatch[layerInfo.name] = love.graphics.newSpriteBatch(image,maxsprites) --needs to search the specific image
     end
 end
 
 function TilemapLoader:parse(renderingLayerSequence)
-    for _, tileset in pairs(self.tilemap) do
+    for _, tileset in pairs(self.tilemap.tilesets) do
         self:loadRequiredTiles(tileset)
     end
     self:spriteBatchConstruct(renderingLayerSequence)

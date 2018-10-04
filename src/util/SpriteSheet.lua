@@ -18,7 +18,7 @@ function SpriteSheet:new(jsonSprite, assetsDirectory, jsonDecoder)
     local file = love.filesystem.read(this.filename)
     local spriteConfigurations = nil
     local atlasInfo = {}
-    if file then
+    if file and jsonDecoder then
         assert(type(jsonDecoder) == "function", "Needs a json decoder funtion to work properly")
         atlasInfo = jsonDecoder(file)
     else
