@@ -1,14 +1,14 @@
-local MainCharacter = {}
+local Player = {}
 
-MainCharacter.__index = MainCharacter
+Player.__index = Player
 
-function MainCharacter:new(spriteAnimation, world)
+function Player:new(spriteAnimation, world)
     
     local this = {
         move = false,
         inGround = false,
         speed = 250,
-        jumpForce = -320,
+        jumpForce = -380,
         orientation = "right",
         animation = "idle",
         previousAnimation = "idle",
@@ -22,13 +22,14 @@ function MainCharacter:new(spriteAnimation, world)
     this.body:setFixedRotation(true)
     this.shape = love.physics.newRectangleShape(58, 54)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
-    this.fixture:setUserData("MainCharacter")
+    this.fixture:setUserData("Player")
+    this.fixture:setCategory(1)
     this.fixture:setMask(2)
     
-    return setmetatable(this, MainCharacter)
+    return setmetatable(this, Player)
 end
 
-function MainCharacter:keypressed(key, scancode, isrepeat)
+function Player:keypressed(key, scancode, isrepeat)
     if key == "left" then
         self.orientation = "left"
         self.move = true
@@ -70,7 +71,7 @@ function MainCharacter:keypressed(key, scancode, isrepeat)
     end
 end
 
-function MainCharacter:keyreleased(key, scancode)
+function Player:keyreleased(key, scancode)
     if key == "left" or key == "right" then
         if key == self.orientation then
             self.move = false
@@ -91,31 +92,31 @@ function MainCharacter:keyreleased(key, scancode)
     end
 end
 
-function MainCharacter:getPosition()
+function Player:getPosition()
     return self.body:getX(), self.body:getY()
 end
 
-function MainCharacter:setPosition(x, y)
+function Player:setPosition(x, y)
     self.body:setX(x); self.body:setY(y)
 end
 
-function MainCharacter:stopMoving()
+function Player:stopMoving()
     local xVelocity, yVelocity = self.body:getLinearVelocity()
     self.body:setLinearVelocity(0, yVelocity)
 end
 
-function MainCharacter:reset()
+function Player:reset()
     self.move = false
     self.inGround = true
     self.looking = nil
     self.body:setLinearVelocity(0, 0)
-    self.body:setX(10); self.body:setY(700)
+    self.body:setX(540); self.body:setY(100)
     self.orientation = "right"
     self.animation = "idle"
     self.previousAnimation = "idle"
 end
 
-function MainCharacter:touchGround(isTouching)
+function Player:touchGround(isTouching)
     self.inGround = isTouching
     if self.animation == "jumping" and not self.move then
         if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
@@ -124,15 +125,15 @@ function MainCharacter:touchGround(isTouching)
     end
 end
 
-function MainCharacter:getOrientation()
+function Player:getOrientation()
     return self.orientation
 end
 
-function MainCharacter:compareFixture(fixture)
+function Player:compareFixture(fixture)
     return self.fixture == fixture
 end
 
-function MainCharacter:retreat()
+function Player:retreat()
     --local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
     self.body:setLinearVelocity(0, 0)
     self.body:applyLinearImpulse((self.orientation == "left" and 1 or -1) * self.speed, self.jumpForce)
@@ -141,26 +142,30 @@ function MainCharacter:retreat()
     self.animation = "jumping"
 end
 
-function MainCharacter:update(dt)
+function Player:update(dt)
     if self.spriteAnimation then
         if self.inGround and self.animation == "jumping" then
             self.animation = self.previousAnimation
         end
         if self.move then
             local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
-            self.body:setLinearVelocity((self.orientation == "left" and -1 or 1) * self.speed, yBodyVelocity)
+            if self.body:getX() >= 540 then
+                self.body:setLinearVelocity((self.orientation == "left" and -1 or 1) * self.speed, yBodyVelocity)
+            else
+                self.body:setX(540)
+            end
         end
         self.spriteAnimation[self.animation]:update(dt)
     end
 end
 
-function MainCharacter:draw()
+function Player:draw()
     if self.spriteAnimation then
         local positionToDraw = self.animation
         local scaleX = self.orientation == "right" and 1 or -1
         self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX)
-        --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
+        love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
     end
 end
 
-return MainCharacter
+return Player

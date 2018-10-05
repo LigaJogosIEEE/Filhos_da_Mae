@@ -1,19 +1,20 @@
 --Models
 local World = require "models.business.World"
 local GameState = require "models.business.GameState"
+local LevelLoader = require "models.business.LevelLoader"
 
 --Actors
 local Bullet = require "models.actors.Bullet"
-local MainCharacter = require "models.actors.MainCharacter"
+local Player = require "models.actors.Player"
 
 --Libs
 local Json = require "libs.Json"
+local STI = require "libs.sti"
 
 --Util
 local SpriteSheet = require "util.SpriteSheet"
 local SpriteAnimation = require "util.SpriteAnimation"
 local Stack = require "util.Stack"
-local TilemapLoader = require "util.TilemapLoader"
 
 --Controllers
 local CharacterController = require "controllers.CharacterController"
@@ -42,7 +43,7 @@ end
 
 function GameDirector:new()
     
-    local mainCharacterAnimation = {
+    local playerAnimation = {
         idle = GameDirector:configureSpriteSheet("Mother_1_idle.json", "assets/sprites/Player/", true, nil, 1, 1, true),
         running = GameDirector:configureSpriteSheet("Mother_1_Run.json", "assets/sprites/Player/", true, 0.1, 1, 1, true),
         runningDown = GameDirector:configureSpriteSheet("Mother_1_Run_Down.json", "assets/sprites/Player/", true, nil, 1, 1, true),
@@ -58,7 +59,7 @@ function GameDirector:new()
         elapsedTime = 0,
         bulletsInWorld = {},
         world = world,
-        mainCharacter = MainCharacter:new(mainCharacterAnimation, world.world),
+        player = Player:new(playerAnimation, world.world),
         lifeBar = ProgressBar:new(20, 20, 200, 40, {1, 0, 0}, 15, 15),
         characterController = CharacterController:new(LifeForm),
         enemiesController = EnemiesController:new(world),
@@ -66,7 +67,7 @@ function GameDirector:new()
         gameState = GameState:new(),
         --Libraries
         libraries = {
-            Json = Json, SpriteSheet = SpriteSheet, TilemapLoader = TilemapLoader,
+            Json = Json, SpriteSheet = SpriteSheet, LevelLoader = LevelLoader, sti = STI,
             SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm,
             ProgressBar = ProgressBar, GameState = GameState, ButtonManager = ButtonManager
         }
@@ -80,7 +81,7 @@ end
 function GameDirector:reset()
     self.lifeBar = self.gameState:load("lifebar")
     self.characterController = self.gameState:load("characterController")
-    self.mainCharacter:reset()
+    self.player:reset()
 end
 
 function GameDirector:getLibrary(library)
@@ -88,11 +89,11 @@ function GameDirector:getLibrary(library)
 end
 
 function GameDirector:keypressed(key, scancode, isrepeat)
-    self.mainCharacter:keypressed(key, scancode, isrepeat)
+    self.player:keypressed(key, scancode, isrepeat)
 end
 
 function GameDirector:keyreleased(key, scancode)
-    self.mainCharacter:keyreleased(key, scancode)
+    self.player:keyreleased(key, scancode)
 end
 
 function GameDirector:addBullet(x, y, orientation, speed, category, fromPlayer)
@@ -120,14 +121,14 @@ function GameDirector:updateLifebar(amount, decrease)
 end
 
 function GameDirector:getEntityByFixture(fixture)
-    if fixture:getUserData() == "MainCharacter" then
+    if fixture:getUserData() == "Player" then
         return self.characterController
     end
     return self.enemiesController:getEnemyByFixture(fixture)
 end
 
 function GameDirector:getMainCharacter()
-    return self.mainCharacter, self.characterController
+    return self.player, self.characterController
 end
 
 function GameDirector:getLifeBar()
@@ -155,7 +156,7 @@ function GameDirector:update(dt)
     if self.elapsedTime > 0.01 then
         if self.lifeBar:getValue() > 0 then
             self.world:update(dt)
-            self.mainCharacter:update(dt)
+            self.player:update(dt)
             self.enemiesController:update(dt)            
             for index, bullet in pairs(self.bulletsInWorld) do
                 bullet:update(dt)

@@ -1,17 +1,13 @@
-local Ground = require "models.business.Ground"
-
 local InGameScene = {}
 
 InGameScene.__index = InGameScene
 
 function InGameScene:new(world)
     local this = {
-        ground = Ground:new(world, nil, 800, 30, 400, 570),
-        level_1_map = gameDirector:getLibrary("TilemapLoader"):new("level_1_map", "assets/tilesets")
+        level_1_map = gameDirector:getLibrary("LevelLoader"):new("level_1_map", "assets/tilesets", world)
     }
-    sceneDirector:addSubscene("pause", require "scenes.subscenes.PauseGame":new())
-    this.level_1_map:parse()
 
+    sceneDirector:addSubscene("pause", require "scenes.subscenes.PauseGame":new())
     return setmetatable(this, InGameScene)
 end
 
@@ -34,6 +30,7 @@ end
 
 function InGameScene:update(dt)
     gameDirector:update(dt)
+    self.level_1_map:update(dt)
 end
 
 function InGameScene:draw()
@@ -41,9 +38,9 @@ function InGameScene:draw()
     gameDirector:getLifeBar():draw()
     love.graphics.printf(string.format("Money: %d", characterController:getMoney()), 20, 60, 100, 'center')
     gameDirector:getCameraController():draw(function()
+        self.level_1_map:draw()
         mainCharacter:draw()
         gameDirector:getEnemiesController():draw()
-        self.ground:draw()
         gameDirector:drawBullets()
     end)
 end
