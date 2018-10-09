@@ -17,8 +17,8 @@ function EnemiesController:new(world)
             --Seu_Barriga = true
         },
         enemiesFactory = {
-            Seu_Barriga = {colisor = {36, 54}, sprite = nil},
-            Bill = {colisor = {26, 30}, sprite = nil}
+            Seu_Barriga = {colisor = {36, 54}, sprite = nil, category = {body = 4, bullet = 4}},
+            Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}}
         }
     }
     
@@ -51,7 +51,7 @@ end
 function EnemiesController:createEnemy(enemyType, x, y)
     assert(enemyType, "Needs to receive enemyType Parameter")
     local enemyConfig = self.enemiesFactory[enemyType]
-    local enemy = Enemy:new(enemyConfig.sprite, self.world, x or 600, y or 500, enemyType, enemyConfig.colisor)
+    local enemy = Enemy:new(enemyConfig.sprite, self.world, x or 600, y or 500, enemyType, enemyConfig.colisor, enemyConfig.category.body, enemyConfig.category.bullet)
     table.insert(self.enemies, enemy)
     self.ai[enemy] = self.ai.types[enemyType]:new(enemy)
 end

@@ -8,7 +8,7 @@ function Player:new(spriteAnimation, world)
         move = false,
         inGround = false,
         speed = 250,
-        jumpForce = -380,
+        jumpForce = -200,
         orientation = "right",
         animation = "idle",
         previousAnimation = "idle",
@@ -19,12 +19,12 @@ function Player:new(spriteAnimation, world)
     
     --aplying physics
     this.body = love.physics.newBody(this.world, 10, 700, "dynamic")
-    this.body:setFixedRotation(true)
-    this.shape = love.physics.newRectangleShape(58, 54)
+    this.shape = love.physics.newCircleShape(26)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
+    this.body:setFixedRotation(true)
     this.fixture:setUserData("Player")
     this.fixture:setCategory(1)
-    this.fixture:setMask(2)
+    this.fixture:setMask(2, 3)
     
     return setmetatable(this, Player)
 end
@@ -54,8 +54,7 @@ function Player:keypressed(key, scancode, isrepeat)
     if key == "space" and self.inGround then
         self.body:applyLinearImpulse(0, self.jumpForce)
         self.inGround = false
-        self.previousAnimation = self.animation
-        self.animation = "jumping"
+        self.previousAnimation = self.animation ~= "jumping" and self.animation or self.previousAnimation
     end
 
     if not self.inGround then
@@ -78,6 +77,7 @@ function Player:keyreleased(key, scancode)
             local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
             self.body:setLinearVelocity(0, yBodyVelocity)
             self.animation = self.inGround and (self.looking or "idle") or "jumping"
+            self.previousAnimation = self.animation
             if not self.inGround then
                 self.previousAnimation = self.looking or "idle"
             end
@@ -86,6 +86,7 @@ function Player:keyreleased(key, scancode)
     if key == "up" or key == "down" then
         self.looking = nil
         self.animation = self.inGround and (self.move and "running" or "idle") or "jumping"
+        self.previousAnimation = self.animation
         if not self.inGround then
             self.previousAnimation = self.move and "running" or "idle"
         end
@@ -118,6 +119,7 @@ end
 
 function Player:touchGround(isTouching)
     self.inGround = isTouching
+    self.animation = self.previousAnimation
     if self.animation == "jumping" and not self.move then
         if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
             self.move = true
@@ -136,23 +138,22 @@ end
 function Player:retreat()
     --local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
     self.body:setLinearVelocity(0, 0)
-    self.body:applyLinearImpulse((self.orientation == "left" and 1 or -1) * self.speed, self.jumpForce)
+    self.body:applyLinearImpulse((self.orientation == "left" and 1 or -1) * self.speed / 1.5, self.jumpForce)
     self.inGround = false
     self.move = false
     self.animation = "jumping"
+    self.previousAnimation = "idle"
 end
 
 function Player:update(dt)
+    if self.body:getX() <= 540 then
+        self.body:setX(540)
+    end
     if self.spriteAnimation then
-        if self.inGround and self.animation == "jumping" then
-            self.animation = self.previousAnimation
-        end
         if self.move then
             local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
             if self.body:getX() >= 540 then
                 self.body:setLinearVelocity((self.orientation == "left" and -1 or 1) * self.speed, yBodyVelocity)
-            else
-                self.body:setX(540)
             end
         end
         self.spriteAnimation[self.animation]:update(dt)
@@ -164,7 +165,8 @@ function Player:draw()
         local positionToDraw = self.animation
         local scaleX = self.orientation == "right" and 1 or -1
         self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX)
-        love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
+        --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
+        love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius())
     end
 end
 

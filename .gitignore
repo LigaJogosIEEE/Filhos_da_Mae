@@ -1,3 +1,6 @@
+# Ignore Directories for binaries
+bin/
+
 # Ignore sprite project files
 *.piskel
 

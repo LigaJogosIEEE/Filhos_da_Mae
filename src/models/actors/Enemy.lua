@@ -2,11 +2,12 @@ local Enemy = {}
 
 Enemy.__index = Enemy
 
-function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions)
+function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions, category, bulletCategory)
     assert(colisorDimensions and type(colisorDimensions) == "table", "Enemy needs a colisor dimension and its need to be a table")
     local this = {
         isMoving = false,
         inGround = false,
+        bulletCategory = bulletCategory or 3,
         speed = 100,
         jumpForce = 320,
         orientation = "left",
@@ -21,10 +22,11 @@ function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions)
     --aplying physics
     this.body = love.physics.newBody(this.world, x or 0, y or 0, "dynamic")
     this.body:setFixedRotation(true)
-    this.shape = love.physics.newRectangleShape(unpack(colisorDimensions))
+    this.shape = #colisorDimensions > 1 and love.physics.newRectangleShape(unpack(colisorDimensions)) or love.physics.newCircleShape(unpack(colisorDimensions))
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.fixture:setUserData(enemyType or "Enemy")
-    this.fixture:setMask(3)
+    this.fixture:setCategory(category or 3)
+    this.fixture:setMask(category or 3, bulletCategory or 3)
     
     return setmetatable(this, Enemy)
 end
@@ -96,7 +98,7 @@ function Enemy:shot()
     local horizontalDirection = verticalDirection ~= 0 and 0 or self.orientation == "right" and 10 or self.orientation == "left" and - 10 or 0
     
     local positionToDraw = self.looking == nil and self.orientation or self.looking
-    gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 300, 3)
+    gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 300, self.bulletCategory)
 end
 
 function Enemy:stopMoving(key)
@@ -132,6 +134,7 @@ function Enemy:draw()
         local scaleX = self.orientation == "right" and -1 or 1
         self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX)
         --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
+        love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius())
     end
 end
 

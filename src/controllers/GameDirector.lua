@@ -112,12 +112,8 @@ function GameDirector:removeBullet(bullet, fixture)
     end
 end
 
-function GameDirector:updateLifebar(amount, decrease)
-    if decrease then
-        self.lifeBar:decrement(amount)
-    else
-        self.lifeBar:increment(amount)
-    end
+function GameDirector:getLifebar()
+    return self.lifeBar
 end
 
 function GameDirector:getEntityByFixture(fixture)
@@ -154,7 +150,7 @@ end
 function GameDirector:update(dt)
     self.elapsedTime = self.elapsedTime + dt
     if self.elapsedTime > 0.01 then
-        if self.lifeBar:getValue() > 0 then
+        if not self.characterController:isDead() then
             self.world:update(dt)
             self.player:update(dt)
             self.enemiesController:update(dt)            
