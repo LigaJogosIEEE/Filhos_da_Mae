@@ -10,7 +10,7 @@ function love.load()
     scaleDimension = ScaleDimension:new()
     scaleDimension:setGameScreenScale(800, 600)
     gameDirector = GameDirector:new()
-    gameDirector.enemiesController:startFactory()
+    gameDirector:getEnemiesController():startFactory()
     sceneDirector = SceneDirector:new(require "scenes.SplashScreen":new())
     --Adding Scenes to SceneDirector
     sceneDirector:addScene("mainMenu", require "scenes.MainMenuScene":new())
@@ -49,7 +49,7 @@ end
 
 function love.draw()
     sceneDirector:draw()
-    love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
+    --love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 end
 
 function love.resize(w, h)

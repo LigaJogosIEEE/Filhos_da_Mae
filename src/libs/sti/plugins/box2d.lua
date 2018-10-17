@@ -82,6 +82,7 @@ return {
 
 			local userdata = {
 				object     = o,
+				name       = tile.layer.name,
 				properties = object.properties
 			}
 

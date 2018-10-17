@@ -6,9 +6,9 @@ function CharacterController:new(LifeForm)
     return setmetatable(this, CharacterController)
 end
 
-function CharacterController:takeDamage()
-    -- here will verify too damage type
-    local damageAmount = 1
+function CharacterController:takeDamage(damageAmount)
+    -- here will verify how many damage are received
+    local damageAmount = damageAmount or 1
     local previousLife = self.stats:getLife()
     local isDead = self.stats:takeDamage(damageAmount)
     if previousLife > self.stats:getLife() then

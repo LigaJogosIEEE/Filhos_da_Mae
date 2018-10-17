@@ -17,8 +17,9 @@ function EnemiesController:new(world)
             --Seu_Barriga = true
         },
         enemiesFactory = {
-            Seu_Barriga = {colisor = {36, 54}, sprite = nil, category = {body = 4, bullet = 4}},
-            Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}}
+            Seu_Barriga = {colisor = {36, 54}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1},
+            Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}, damage = 1},
+            Two_Guys_In_a_Bike = {colisor = {16}, sprite = nil, category = {body = 4, bullet = 4}, damage = 2}
         }
     }
     
@@ -46,6 +47,10 @@ function EnemiesController:clearEnemies()
         enemy:destroy()
     end
     self.enemies = {}
+end
+
+function EnemiesController:getDamage(enemyType)
+    return self.enemiesFactory[enemyName].damage
 end
 
 function EnemiesController:createEnemy(enemyType, x, y)

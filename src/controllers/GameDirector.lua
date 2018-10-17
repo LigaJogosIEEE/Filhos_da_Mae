@@ -8,7 +8,6 @@ local Bullet = require "models.actors.Bullet"
 local Player = require "models.actors.Player"
 
 --Libs
-local Json = require "libs.Json"
 local STI = require "libs.sti"
 
 --Util
@@ -22,7 +21,7 @@ local EnemiesController = require "controllers.EnemiesController"
 local CameraController = require "controllers.CameraController"
 
 --Gui Components
-local ButtonManager = require "util/ui/ButtonManager"
+local ButtonManager = require "util.ui.ButtonManager"
 local ProgressBar = require "util.ui.ProgressBar"
 
 local GameDirector = {}
@@ -30,7 +29,7 @@ local GameDirector = {}
 GameDirector.__index = GameDirector
 
 function GameDirector:configureSpriteSheet(jsonFile, directory, looping, duration, scaleX, scaleY, centerOrigin)
-    local newSprite = SpriteSheet:new(jsonFile, directory, Json.decode)
+    local newSprite = SpriteSheet:new(jsonFile, directory, nil)
     local frameTable, frameStack = newSprite:getFrames()
     local newAnimation = SpriteAnimation:new(frameTable, newSprite:getAtlas(), duration)
     if centerOrigin then
@@ -67,7 +66,7 @@ function GameDirector:new()
         gameState = GameState:new(),
         --Libraries
         libraries = {
-            Json = Json, SpriteSheet = SpriteSheet, LevelLoader = LevelLoader, sti = STI,
+            SpriteSheet = SpriteSheet, LevelLoader = LevelLoader, sti = STI,
             SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm,
             ProgressBar = ProgressBar, GameState = GameState, ButtonManager = ButtonManager
         }
@@ -149,7 +148,7 @@ end
 
 function GameDirector:update(dt)
     self.elapsedTime = self.elapsedTime + dt
-    if self.elapsedTime > 0.01 then
+    if self.elapsedTime > 0.016 then
         if not self.characterController:isDead() then
             self.world:update(dt)
             self.player:update(dt)

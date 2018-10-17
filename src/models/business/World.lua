@@ -16,17 +16,21 @@ function World:BulletEntity(a, b, coll)
     return nil
 end
 
-function World:getUserData(userdata)
-    return type(userdata) == "table" and "Ground" or userdata
+function World:getUserData(fixture)
+    local userdata = fixture:getUserData()
+    return type(userdata) == "table" and userdata.name or userdata
 end
 
 local beginContact = function(a, b, coll)
     local mainCharacterFixture = a:getUserData() == "Player" and a or b:getUserData() == "Player" and b or nil
     if mainCharacterFixture then
-        if World:getUserData(b:getUserData()) == "Ground" or World:getUserData(a:getUserData()) == "Ground" then
+        if World:getUserData(b) == "platforms" or World:getUserData(a) == "platforms" then
             gameDirector:getMainCharacter():touchGround(true)
         elseif gameDirector:getEntityByFixture(mainCharacterFixture == a and b or a) then
-            gameDirector:getEntityByFixture(mainCharacterFixture):takeDamage(1)
+            local entityFixture = (mainCharacterFixture == a and b or a)
+            gameDirector:getEntityByFixture(mainCharacterFixture):takeDamage(
+                gameDirector:getEnemiesController():getDamage(World:getUserData(entityFixture))
+            )
             gameDirector:getMainCharacter():retreat()
         end
     end

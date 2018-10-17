@@ -21,7 +21,7 @@ function LevelLoader:draw()
     love.graphics.translate(-170, -128)
     self.tilemap:draw(-gameDirector:getMainCharacter():getPosition() + 512, 0)
     love.graphics.setColor(1, 0, 0)
-	self.tilemap:box2d_draw(0, 0)
+	--self.tilemap:box2d_draw(0, 0)
     love.graphics.setColor(1, 1, 1)
 end
 

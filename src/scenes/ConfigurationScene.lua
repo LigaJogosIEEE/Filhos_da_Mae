@@ -28,7 +28,7 @@ function ConfigurationScene:new()
         buttonNames = {}
     }
 
-    local spriteSheet = gameDirector:getLibrary("SpriteSheet"):new("buttons.json", "assets/gui/", gameDirector:getLibrary("Json").decode)
+    local spriteSheet = gameDirector:getLibrary("SpriteSheet"):new("buttons.json", "assets/gui/", nil)
     local spriteQuads = spriteSheet:getQuads()
     this.buttonsQuads = {
         normal = spriteQuads["normal"],
