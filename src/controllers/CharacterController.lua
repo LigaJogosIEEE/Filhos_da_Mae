@@ -19,6 +19,10 @@ function CharacterController:takeDamage(damageAmount)
 	return isDead
 end
 
+function CharacterController:instantDeath()
+    repeat until self:takeDamage(5000) --can be optmized?
+end
+
 function CharacterController:isDead()
     return self.stats:isDead()
 end

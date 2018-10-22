@@ -23,15 +23,18 @@ end
 
 local beginContact = function(a, b, coll)
     local mainCharacterFixture = a:getUserData() == "Player" and a or b:getUserData() == "Player" and b or nil
+    local otherFixture = mainCharacterFixture == a and b or a
     if mainCharacterFixture then
         if World:getUserData(b) == "platforms" or World:getUserData(a) == "platforms" then
             gameDirector:getMainCharacter():touchGround(true)
-        elseif gameDirector:getEntityByFixture(mainCharacterFixture == a and b or a) then
-            local entityFixture = (mainCharacterFixture == a and b or a)
+        elseif gameDirector:getEntityByFixture(otherFixture) then
+            local entityFixture = (otherFixture)
             gameDirector:getEntityByFixture(mainCharacterFixture):takeDamage(
                 gameDirector:getEnemiesController():getDamage(World:getUserData(entityFixture))
             )
             gameDirector:getMainCharacter():retreat()
+        elseif World:getUserData(otherFixture) == "death-sensor" then
+            gameDirector:getEntityByFixture(mainCharacterFixture):instantDeath()
         end
     end
     local entity, bulletFixture = World:BulletEntity(a, b, coll)

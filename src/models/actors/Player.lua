@@ -25,6 +25,7 @@ function Player:new(spriteAnimation, world)
     this.fixture:setUserData("Player")
     this.fixture:setCategory(1)
     this.fixture:setMask(2, 3)
+    this.fixture:setFriction(0)
     
     return setmetatable(this, Player)
 end
