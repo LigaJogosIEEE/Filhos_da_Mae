@@ -3,7 +3,7 @@ local Player = {}
 Player.__index = Player
 
 function Player:new(spriteAnimation, world)
-    
+    assert(spriteAnimation, "Is needed a animation for this actor")
     local this = {
         move = false,
         inGround = false,
@@ -14,7 +14,8 @@ function Player:new(spriteAnimation, world)
         previousAnimation = "idle",
         looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
-        spriteAnimation = spriteAnimation or nil
+        allAnimations = spriteAnimation,
+        spriteAnimation = spriteAnimation[love.math.random(2)]
     }
     
     --aplying physics
@@ -115,6 +116,7 @@ function Player:reset()
     self.body:setX(540); self.body:setY(100)
     self.orientation = "right"
     self.animation = "idle"
+    self.spriteAnimation = self.allAnimations[love.math.random(2)]
     self.previousAnimation = "idle"
 end
 

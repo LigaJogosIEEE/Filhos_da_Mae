@@ -38,7 +38,7 @@ local beginContact = function(a, b, coll)
         end
     end
     local entity, bulletFixture = World:BulletEntity(a, b, coll)
-    if bulletFixture then 
+    if bulletFixture then
         if entity then
             entity:takeDamage(1)
         end
