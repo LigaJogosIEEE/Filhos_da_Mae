@@ -17,6 +17,14 @@ function love.load()
     sceneDirector:addScene("credits", require "scenes.CreditsScene":new())
     sceneDirector:addScene("configurations", require "scenes.ConfigurationScene":new())
     sceneDirector:addScene("inGame", require "scenes.InGameScene":new(gameDirector:getWorld().world))
+        sceneDirector:addScene("ConfKeySceneLeft", require "scenes.ConfKeySceneLeft":new())
+                sceneDirector:addScene("ConfKeySceneRight", require "scenes.ConfKeySceneRight":new())
+        sceneDirector:addScene("ConfKeySceneUp", require "scenes.ConfKeySceneUp":new())
+        sceneDirector:addScene("ConfKeySceneDown", require "scenes.ConfKeySceneDown":new())
+        sceneDirector:addScene("ConfKeySceneJump", require "scenes.ConfKeySceneJump":new())
+        sceneDirector:addScene("ConfKeySceneAtack", require "scenes.ConfKeySceneAtack":new())
+
+
 end
 
 function love.keypressed(key, scancode, isrepeat)
