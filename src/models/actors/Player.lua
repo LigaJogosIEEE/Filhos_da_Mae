@@ -15,7 +15,8 @@ function Player:new(spriteAnimation, world)
         looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
         allAnimations = spriteAnimation,
-        spriteAnimation = spriteAnimation[love.math.random(2)]
+        spriteAnimation = spriteAnimation[love.math.random(2)],
+        controlKeys = {left = "left", right = "right", up = "up", down = "down", jump = "space", shot = "z"}
     }
     
     --aplying physics
@@ -32,18 +33,18 @@ function Player:new(spriteAnimation, world)
 end
 
 function Player:keypressed(key, scancode, isrepeat)
-    if key == "left" then
+    if key == self.controlKeys.left then
         self.orientation = "left"
         self.move = true
         self.animation = "running"
-    elseif key == "right" then
+    elseif key == self.controlKeys.right then
         self.orientation = "right"
         self.move = true
         self.animation = "running"
-    elseif key == "up" then
+    elseif key == self.controlKeys.up then
         self.looking = "up"
         self.animation = "up"
-    elseif key == "down" then
+    elseif key == self.controlKeys.down then
         self.looking = "down"
         self.animation = "down"
     end
@@ -53,7 +54,7 @@ function Player:keypressed(key, scancode, isrepeat)
     end
     self.previousAnimation = self.animation ~= "jumping" and self.animation or self.previousAnimation
 
-    if key == "space" and self.inGround then
+    if key == self.controlKeys.jump and self.inGround then
         self.body:applyLinearImpulse(0, self.jumpForce)
         self.inGround = false
         self.previousAnimation = self.animation ~= "jumping" and self.animation or self.previousAnimation
@@ -63,7 +64,7 @@ function Player:keypressed(key, scancode, isrepeat)
         self.animation = "jumping"
     end
     
-    if key == "z" then
+    if key == self.controlKeys.shot then
         local verticalDirection = self.looking == "up" and - 20 or 0
         local horizontalDirection = verticalDirection == 0 and self.orientation == "right" and 20 or self.orientation == "left" and - 10 or 0
         
@@ -73,8 +74,9 @@ function Player:keypressed(key, scancode, isrepeat)
 end
 
 function Player:keyreleased(key, scancode)
-    if key == "left" or key == "right" then
-        if key == self.orientation then
+    if key == self.controlKeys.left or key == self.controlKeys.right then
+        local pressedKey = key == self.controlKeys.left and "left" or "right"
+        if pressedKey == self.orientation then
             self.move = false
             local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
             self.body:setLinearVelocity(0, yBodyVelocity)
@@ -85,7 +87,7 @@ function Player:keyreleased(key, scancode)
             end
         end
     end
-    if key == "up" or key == "down" then
+    if key == self.controlKeys.up or key == self.controlKeys.down then
         self.looking = nil
         self.animation = self.inGround and (self.move and "running" or "idle") or "jumping"
         self.previousAnimation = self.animation
@@ -106,6 +108,10 @@ end
 function Player:stopMoving()
     local xVelocity, yVelocity = self.body:getLinearVelocity()
     self.body:setLinearVelocity(0, yVelocity)
+end
+
+function Player:configureKeys(action, key)
+    if self.controlKeys[action] then self.controlKeys[action] = key end
 end
 
 function Player:reset()

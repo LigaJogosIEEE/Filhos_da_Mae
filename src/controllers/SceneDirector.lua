@@ -36,10 +36,11 @@ function SceneDirector:addSubscene(subsceneName, subsceneObject, override)
     end
 end
 
-function SceneDirector:switchScene(scene)
+function SceneDirector:switchScene(scene, message)
     assert(self.sceneObjects[scene], "Unable to find required scene: '" .. tostring(scene) .. "'")
     self.sceneStack.push(self.currentScene)
     self.currentScene = self.sceneObjects[scene] or self.currentScene
+    self.currentScene.message = message
     self.currentSubscene = nil
 end
 

@@ -2,7 +2,7 @@ local ConfigurationScene = {}
 
 ConfigurationScene.__index = ConfigurationScene
 
-function ConfigurationScene:addButton(this, buttonName, buttonDimensions, originalSize, callback)
+function ConfigurationScene:addButton(this, buttonName, keyName ,buttonDimensions, originalSize, callback)
     local scaleButtonName = "configuration" .. buttonName
     scaleDimension:calculeScales(scaleButtonName, unpack(buttonDimensions))
     scaleDimension:centralize(scaleButtonName, true, false, false)
@@ -11,9 +11,7 @@ function ConfigurationScene:addButton(this, buttonName, buttonDimensions, origin
 
     --buttonName, x, y, width, height, image, originalImage, animation, 70
     local button = this.buttonManager:addButton(buttonName, scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
-    button:setCallback(function()
-        this.selected = buttonName
-    end)
+    button.callback = callback or function(this) sceneDirector:switchScene("configureKey", keyName) end
     button:setScale(scales.relative.x, scales.relative.y)
     this.buttonNames[scaleButtonName] = button
     return button
@@ -40,14 +38,15 @@ function ConfigurationScene:new()
 
     local x, y, width, height = this.buttonsQuads["normal"]:getViewport()
     local originalSize = {width = width, height = height}
-    self:addButton(this, 'Toggle Fullscreen', {128, 60, 350, 220}, originalSize):setCallback(function()
-        love.window.setFullscreen(not love.window.getFullscreen())
-    end)
-    self:addButton(this, 'Move Left', {128, 60, 350, 290}, originalSize)
-    self:addButton(this, 'Move Right', {128, 60, 350, 360}, originalSize)
-    self:addButton(this, 'Move Up', {128, 60, 350, 430}, originalSize)
-    self:addButton(this, 'Move Down', {128, 60, 350, 500}, originalSize)
-    
+   
+    self:addButton(this, 'Move Left', "left", {128, 60, 350, 90}, originalSize)
+    self:addButton(this, 'Move Right', "right", {128, 60, 350, 160}, originalSize)
+    self:addButton(this, 'Move Up', "up", {128, 60, 350, 230}, originalSize)
+    self:addButton(this, 'Move Down', "down", {128, 60, 350, 300}, originalSize)
+    self:addButton(this, 'Jump', "jump", {128, 60, 350, 370}, originalSize)
+    self:addButton(this, 'Attack', "shot", {128, 60, 350, 440}, originalSize)
+
+
     return setmetatable(this, ConfigurationScene)
 end
 
