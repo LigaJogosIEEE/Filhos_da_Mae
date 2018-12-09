@@ -20,7 +20,7 @@ function Player:new(spriteAnimation, world)
     }
     
     --aplying physics
-    this.body = love.physics.newBody(this.world, 10, 700, "dynamic")
+    this.body = love.physics.newBody(this.world, 0, 0, "dynamic")
     this.shape = love.physics.newCircleShape(26)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.body:setFixedRotation(true)
@@ -119,7 +119,7 @@ function Player:reset()
     self.inGround = true
     self.looking = nil
     self.body:setLinearVelocity(0, 0)
-    self.body:setX(540); self.body:setY(100)
+    self.body:setX(900); self.body:setY(900)
     self.orientation = "right"
     self.animation = "idle"
     self.spriteAnimation = self.allAnimations[love.math.random(2)]

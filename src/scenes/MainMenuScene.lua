@@ -24,9 +24,9 @@ function MainMenuScene:new()
         buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
         buttonsImage = nil,
         buttonsQuads = nil,
-        buttonNames = {}
+        buttonNames = {},
+        elapsedTime = 0
     }
-    scaleDimension:calculeScales("menuBackground", this.background:getWidth(), this.background:getHeight(), 0, 0)
     scaleDimension:calculeScales("menuLogo", 150, 110, 0, 50)
     scaleDimension:relativeScale("menuLogo", {width = this.logo:getWidth(), height = this.logo:getHeight()})
     scaleDimension:centralize("menuLogo", true, false, false, false)
@@ -77,6 +77,11 @@ function MainMenuScene:wheelmoved(x, y)
 end
 
 function MainMenuScene:update(dt)
+    self.elapsedTime = self.elapsedTime + dt
+    if self.elapsedTime >= 10 then
+        self.elapsedTime = 0
+        sceneDirector:clearStack("waitStart")
+    end
     self.buttonManager:update(dt)
 end
 

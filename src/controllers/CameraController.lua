@@ -5,7 +5,7 @@ function CameraController:new()
     local this = {
         previousOrientation = true, --[[ true if right, false is left --]]
         previousPosition = {x = 0, y = 0},
-        gamera = require "libs.gamera".new(0, 0, 6000, 1000)
+        gamera = require "libs.gamera".new(0, 0, 192 * 64, 1000)
     }
     this.gamera:setScale(1)
     this.gamera:setPosition(0, 570)

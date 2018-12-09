@@ -26,9 +26,7 @@ function SplashScreen:rescaleImage(name, image)
 end
 
 function SplashScreen:keypressed(key, scancode, isrepeat)
-    if key == "space" then
-        self.elapsedTime = 3
-    end
+    self.elapsedTime = 3
 end
 
 function SplashScreen:update(dt)
@@ -37,7 +35,7 @@ function SplashScreen:update(dt)
         self.current = self.current + 1
         self.elapsedTime = 0
         if self.current > #self.all then
-            sceneDirector:clearStack("mainMenu")
+            sceneDirector:clearStack("waitStart")
         end
     end
 end

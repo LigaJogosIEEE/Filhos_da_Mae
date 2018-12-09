@@ -36,18 +36,18 @@ end
 
 function InGameScene:draw()
     local mainCharacter, characterController = gameDirector:getMainCharacter()
-    gameDirector:getLifeBar():draw()
-    local player, characterController = gameDirector:getMainCharacter()
-    for counter = 1, characterController:getLives() do
-        love.graphics.draw(self.liveImage, 20 * counter - 1, 80)
-    end
-    love.graphics.printf(string.format("Money: %d", characterController:getMoney()), 20, 60, 100, 'center')
     gameDirector:getCameraController():draw(function()
         self.level_1_map:draw()
         mainCharacter:draw()
         gameDirector:getEnemiesController():draw()
         gameDirector:drawBullets()
     end)
+    gameDirector:getLifeBar():draw()
+    local player, characterController = gameDirector:getMainCharacter()
+    for counter = 1, characterController:getLives() do
+        love.graphics.draw(self.liveImage, 20 * counter - 1, 80)
+    end
+    love.graphics.printf(string.format("Money: %d", characterController:getMoney()), 20, 60, 100, 'center')
 end
 
 return InGameScene

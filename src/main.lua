@@ -13,6 +13,7 @@ function love.load()
     gameDirector:getEnemiesController():startFactory()
     sceneDirector = SceneDirector:new(require "scenes.SplashScreen":new())
     --Adding Scenes to SceneDirector
+    sceneDirector:addScene("waitStart", require "scenes.WaitStartScene":new())
     sceneDirector:addScene("mainMenu", require "scenes.MainMenuScene":new())
     sceneDirector:addScene("credits", require "scenes.CreditsScene":new())
     sceneDirector:addScene("configurations", require "scenes.ConfigurationScene":new())
