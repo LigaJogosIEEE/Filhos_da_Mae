@@ -2,52 +2,37 @@ local ConfigurationScene = {}
 
 ConfigurationScene.__index = ConfigurationScene
 
-function ConfigurationScene:addButton(this, buttonName, keyName ,buttonDimensions, originalSize, callback)
-    local scaleButtonName = "configuration" .. buttonName
-    scaleDimension:calculeScales(scaleButtonName, unpack(buttonDimensions))
-    scaleDimension:centralize(scaleButtonName, true, false, false)
-    scaleDimension:relativeScale(scaleButtonName, originalSize)
-    local scales = scaleDimension:getScale(scaleButtonName)
-
-    --buttonName, x, y, width, height, image, originalImage, animation, 70
-    local button = this.buttonManager:addButton(buttonName, scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
-    button.callback = callback or function(this) sceneDirector:switchScene("configureKey", keyName) end
-    button:setScale(scales.relative.x, scales.relative.y)
-    this.buttonNames[scaleButtonName] = button
-    return button
-end
-
 function ConfigurationScene:new()
-    local this = {
-        selected = nil,
+    local this = setmetatable({
         buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
-        buttonsImage = nil,
-        buttonsQuads = nil,
+        buttons = {parentName = "configurationScene"}, buttonsQuads = nil,
         buttonNames = {}
-    }
+    }, ConfigurationScene)
 
-    local spriteSheet = gameDirector:getLibrary("SpriteSheet"):new("buttons.json", "assets/gui/", nil)
+    sceneDirector:addSubscene("configureKey", require "scenes.subscenes.ConfigureKey":new())
+
+    local spriteSheet = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("buttons", "assets/gui/", nil)
     local spriteQuads = spriteSheet:getQuads()
     this.buttonsQuads = {
-        normal = spriteQuads["normal"],
-        hover = spriteQuads["hover"],
-        pressed = spriteQuads["pressed"],
-        disabled = spriteQuads["disabled"]
+        normal = spriteQuads["normal"], hover = spriteQuads["hover"],
+        pressed = spriteQuads["pressed"], disabled = spriteQuads["disabled"]
     }
     this.buttonsImage = spriteSheet:getAtlas()
 
     local x, y, width, height = this.buttonsQuads["normal"]:getViewport()
     local originalSize = {width = width, height = height}
    
-    self:addButton(this, 'Move Left', "left", {128, 60, 350, 90}, originalSize)
-    self:addButton(this, 'Move Right', "right", {128, 60, 350, 160}, originalSize)
-    self:addButton(this, 'Move Up', "up", {128, 60, 350, 230}, originalSize)
-    self:addButton(this, 'Move Down', "down", {128, 60, 350, 300}, originalSize)
-    self:addButton(this, 'Jump', "jump", {128, 60, 350, 370}, originalSize)
-    self:addButton(this, 'Attack', "shot", {128, 60, 350, 440}, originalSize)
+    gameDirector:addButton(this, this.buttons, 'Move Left', true, "left", {128, 60, 350, 90}, originalSize, function(self) sceneDirector:switchSubscene("configureKey", "left") end, false)
+    gameDirector:addButton(this, this.buttons, 'Move Right', true, "right", {128, 60, 350, 160}, originalSize, function(self) sceneDirector:switchSubscene("configureKey", "right") end, false)
+    gameDirector:addButton(this, this.buttons, 'Move Up', true, "up", {128, 60, 350, 230}, originalSize, function(self) sceneDirector:switchSubscene("configureKey", "up") end, false)
+    gameDirector:addButton(this, this.buttons, 'Move Down', true, "down", {128, 60, 350, 300}, originalSize, function(self) sceneDirector:switchSubscene("configureKey", "down") end, false)
+    gameDirector:addButton(this, this.buttons, 'Jump', true, "jump", {128, 60, 350, 370}, originalSize, function(self) sceneDirector:switchSubscene("configureKey", "jump") end, false)
+    gameDirector:addButton(this, this.buttons, 'Attack', true, "shot", {128, 60, 350, 440}, originalSize, function(self) sceneDirector:switchSubscene("configureKey", "shot") end, false)
+    this.buttons.parentName = nil
 
+    for _, button in pairs(this.buttons) do this.buttonManager:addButton(button) end
 
-    return setmetatable(this, ConfigurationScene)
+    return this
 end
 
 function ConfigurationScene:keypressed(key, scancode, isrepeat)

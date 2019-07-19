@@ -1,6 +1,4 @@
-local ProgressBar = {}
-
-ProgressBar.__index = ProgressBar
+local ProgressBar = {}; ProgressBar.__index = ProgressBar
 
 function ProgressBar:new(x, y, width, height, color, limit, startValue)
     assert(limit, "Progress Bar must needs a limit")

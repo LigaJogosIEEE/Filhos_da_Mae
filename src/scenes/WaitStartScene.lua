@@ -7,7 +7,7 @@ function WaitStartScene:new()
         elapsedTime = 0
     }
 
-    scaleDimension:calculeScales("menuBackground", this.background:getWidth(), this.background:getHeight(), 0, 0)
+    scaleDimension:calculeScales("menuBackground", this.background:getWidth(), this.background:getHeight(), 0, 0, {width = this.background:getWidth(), height = this.background:getHeight()})
     return setmetatable(this, WaitStartScene)
 end
 

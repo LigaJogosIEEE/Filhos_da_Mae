@@ -1,53 +1,35 @@
-local MainMenuScene = {}
-
-MainMenuScene.__index = MainMenuScene
-
-local addButton = function(this, buttonName, sceneName, buttonDimensions, originalSize, callback)
-    local scaleButtonName = "menu" .. buttonName
-    scaleDimension:calculeScales(scaleButtonName, unpack(buttonDimensions))
-    scaleDimension:centralize(scaleButtonName, true, false, false)
-    scaleDimension:relativeScale(scaleButtonName, originalSize)
-    local scales = scaleDimension:getScale(scaleButtonName)
-
-    --buttonName, x, y, width, height, image, originalImage, animation, 70
-    local button = this.buttonManager:addButton(buttonName, scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
-    button.callback = callback or function(this) sceneDirector:switchScene(sceneName); sceneDirector:reset(sceneName) end
-    button:setScale(scales.relative.x, scales.relative.y)
-    
-    this.buttonNames[scaleButtonName] = button
-end
+local MainMenuScene = {}; MainMenuScene.__index = MainMenuScene
 
 function MainMenuScene:new()
-    local this = {
+    local this = setmetatable({
         background = love.graphics.newImage("assets/background.png"),
         logo = love.graphics.newImage("assets/menuLogo.png"),
         buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
-        buttonsImage = nil,
-        buttonsQuads = nil,
-        buttonNames = {},
+        buttonsImage = nil, buttonsQuads = nil,
+        buttons = {parentName = "mainMenu"},
         elapsedTime = 0
-    }
+    }, MainMenuScene)
     scaleDimension:calculeScales("menuLogo", 150, 110, 0, 50)
     scaleDimension:relativeScale("menuLogo", {width = this.logo:getWidth(), height = this.logo:getHeight()})
     scaleDimension:centralize("menuLogo", true, false, false, false)
 
-    local spriteSheet = gameDirector:getLibrary("SpriteSheet"):new("buttons.json", "assets/gui/", nil)
+    local spriteSheet = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("buttons", "assets/gui/", nil)
     local spriteQuads = spriteSheet:getQuads()
     this.buttonsQuads = {
-        normal = spriteQuads["normal"],
-        hover = spriteQuads["hover"],
-        pressed = spriteQuads["pressed"],
-        disabled = spriteQuads["disabled"]
+        normal = spriteQuads["normal"], hover = spriteQuads["hover"],
+        pressed = spriteQuads["pressed"], disabled = spriteQuads["disabled"]
     }
     this.buttonsImage = spriteSheet:getAtlas()
-
     local x, y, width, height = this.buttonsQuads["normal"]:getViewport()
     local originalSize = {width = width, height = height}
-    addButton(this, 'Start Game', "inGame", {128, 60, 350, 320}, originalSize)
-    addButton(this, 'Configurations', "configurations", {128, 60, 350, 390}, originalSize)
-    addButton(this, 'Credits', "credits", {128, 60, 350, 460}, originalSize)
+    gameDirector:addButton(this, this.buttons, 'Start Game', true, "inGame", {128, 60, 350, 320}, originalSize, nil, false)
+    gameDirector:addButton(this, this.buttons, 'Configurations', true, "configurations", {128, 60, 350, 390}, originalSize, nil, false)
+    gameDirector:addButton(this, this.buttons, 'Credits', true, "credits", {128, 60, 350, 460}, originalSize, nil, false)
+    this.buttons.parentName = nil
 
-    return setmetatable(this, MainMenuScene)
+    for _, button in pairs(this.buttons) do this.buttonManager:addButton(button) end
+
+    return this
 end
 
 function MainMenuScene:keypressed(key, scancode, isrepeat)
@@ -95,7 +77,7 @@ function MainMenuScene:draw()
 end
 
 function MainMenuScene:resize(w, h)
-    for index, value in pairs(self.buttonNames) do
+    for index, value in pairs(self.buttons) do
         local scales = scaleDimension:getScale(index)
         value:setXY(scales.x, scales.y)
         value:setDimensions(scales.width, scales.height)

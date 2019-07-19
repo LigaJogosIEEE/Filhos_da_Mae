@@ -1,7 +1,7 @@
 --Models
 local World = require "models.business.World"
-local GameState = require "models.business.GameState"
 local LevelLoader = require "models.business.LevelLoader"
+local LifeForm = require "models.value.LifeForm"
 
 --Actors
 local Bullet = require "models.actors.Bullet"
@@ -9,11 +9,9 @@ local Player = require "models.actors.Player"
 
 --Libs
 local STI = require "libs.sti"
-
---Util
-local SpriteSheet = require "util.SpriteSheet"
-local SpriteAnimation = require "util.SpriteAnimation"
-local Stack = require "util.Stack"
+local MoonJohn = require "libs.MoonJohn"
+local Pixelurite = require "libs.Pixelurite"
+local Sanghost = require "libs.Sanghost.Sanghost"
 
 --Controllers
 local CharacterController = require "controllers.CharacterController"
@@ -21,73 +19,81 @@ local EnemiesController = require "controllers.EnemiesController"
 local CameraController = require "controllers.CameraController"
 
 --Gui Components
+local Button = require "util.ui.Button"
 local ButtonManager = require "util.ui.ButtonManager"
 local ProgressBar = require "util.ui.ProgressBar"
 
-local GameDirector = {}
-
-GameDirector.__index = GameDirector
-
-function GameDirector:configureSpriteSheet(jsonFile, directory, looping, duration, scaleX, scaleY, centerOrigin)
-    local newSprite = SpriteSheet:new(jsonFile, directory, nil)
-    local frameTable, frameStack = newSprite:getFrames()
-    local newAnimation = SpriteAnimation:new(frameTable, newSprite:getAtlas(), duration)
-    if centerOrigin then
-        newAnimation:setOrigin(newSprite:getCenterOrigin())
-    end
-    newAnimation:setType(looping)
-    newAnimation:setScale(scaleX, scaleY)
-    return newAnimation
-end
+local GameDirector = {}; GameDirector.__index = GameDirector
 
 function GameDirector:new()
     local playerAnimation = {}
     for number = 1, 2 do
         local path = string.format("assets/sprites/Player_%d/", number)
         table.insert(playerAnimation, {
-            idle = GameDirector:configureSpriteSheet("Mother_Idle.json", path, true, nil, 1, 1, true),
-            running = GameDirector:configureSpriteSheet("Mother_Run.json", path, true, 0.1, 1, 1, true),
-            runningDown = GameDirector:configureSpriteSheet("Mother_Run_Down.json", path, true, nil, 1, 1, true),
-            runningUp = GameDirector:configureSpriteSheet("Mother_Run_Up.json", path, true, nil, 1, 1, true),
-            down = GameDirector:configureSpriteSheet("Mother_Idle_Down.json", path, true, nil, 1, 1, true),
-            up = GameDirector:configureSpriteSheet("Mother_Idle_Up.json", path, true, nil, 1, 1, true),
-            jumping = GameDirector:configureSpriteSheet("Mother_Jump.json", path, true, nil, 1, 1, true)
+            idle = Pixelurite.configureSpriteSheet("Mother_Idle", path, true, nil, 1, 1, true),
+            running = Pixelurite.configureSpriteSheet("Mother_Run", path, true, 0.1, 1, 1, true),
+            runningDown = Pixelurite.configureSpriteSheet("Mother_Run_Down", path, true, nil, 1, 1, true),
+            runningUp = Pixelurite.configureSpriteSheet("Mother_Run_Up", path, true, nil, 1, 1, true),
+            down = Pixelurite.configureSpriteSheet("Mother_Idle_Down", path, true, nil, 1, 1, true),
+            up = Pixelurite.configureSpriteSheet("Mother_Idle_Up", path, true, nil, 1, 1, true),
+            jumping = Pixelurite.configureSpriteSheet("Mother_Jump", path, true, nil, 1, 1, true)
         })
     end
 
-    local LifeForm = require "models.value.LifeForm"
     local world = World:new()
     local this = {
-        bulletsInWorld = {},
-        world = world,
+        bulletsInWorld = {}, world = world,
         player = Player:new(playerAnimation, world.world),
         lifeBar = ProgressBar:new(20, 20, 200, 40, {1, 0, 0}, 15, 15),
-        characterController = CharacterController:new(LifeForm),
-        enemiesController = EnemiesController:new(world),
-        cameraController = CameraController:new(),
-        gameState = GameState:new(),
+        characterController = CharacterController:new(LifeForm), enemiesController = EnemiesController:new(world),
+        cameraController = CameraController:new(), sanghost = Sanghost:new(),
         --Libraries
         libraries = {
-            SpriteSheet = SpriteSheet, LevelLoader = LevelLoader, sti = STI,
-            SpriteAnimation = SpriteAnimation, Stack = Stack, LifeForm = LifeForm,
-            ProgressBar = ProgressBar, GameState = GameState, ButtonManager = ButtonManager
+            LevelLoader = LevelLoader, sti = STI, LifeForm = LifeForm, Button = Button,
+            ProgressBar = ProgressBar, Sanghost = Sanghost, ButtonManager = ButtonManager,
+            MoonJohn = MoonJohn, Pixelurite = Pixelurite
+        },
+        fonts = {
+            default = love.graphics.getFont(),
+            kirbyss = love.graphics.newFont("assets/fonts/kirbyss.ttf", 18),
+            tovariSans = love.graphics.newFont("assets/fonts/TovariSans.ttf", 36)
         }
     }
 
-    this.gameState:save(this.characterController, "characterController")
-    this.gameState:save(this.lifeBar, "lifebar")
+    this.sanghost:save(this.characterController, "characterController")
+    this.sanghost:save(this.lifeBar, "lifebar")
     return setmetatable(this, GameDirector)
 end
 
 function GameDirector:reset()
-    self.lifeBar = self.gameState:load("lifebar")
-    self.characterController = self.gameState:load("characterController")
+    self.lifeBar = self.sanghost:load("lifebar")
+    self.characterController = self.sanghost:load("characterController")
     self.player:reset()
+end
+
+function GameDirector:addButton(this, buttonList, buttonName, showText, sceneName, buttonDimensions, originalSize, callback, disableButton)
+    local scaleButtonName = buttonList.parentName .. buttonName
+    scaleDimension:calculeScales(scaleButtonName, unpack(buttonDimensions))
+    scaleDimension:relativeScale(scaleButtonName, originalSize)
+    local scales = scaleDimension:getScale(scaleButtonName)
+
+    --buttonName, x, y, width, height, image, originalImage, animation, 70
+    local button = self.libraries["Button"]:new(showText and buttonName or "", scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
+    button.callback = callback or function(self) sceneDirector:switchScene(sceneName); sceneDirector:reset(sceneName); if this.music then this.music:pause() end; if disableButton then self:disableButton() end end
+    button:setScale(scales.relative.x, scales.relative.y)
+    
+    buttonList[scaleButtonName] = button
+end
+
+function GameDirector:loadScene(sceneName, requiredFile)
+    sceneDirector:addScene(sceneName, require (requiredFile):new()) --[[ Added sceneName Scene --]]
 end
 
 function GameDirector:getLibrary(library)
     return self.libraries[library]
 end
+
+function GameDirector:getFonts() return self.fonts end
 
 function GameDirector:keypressed(key, scancode, isrepeat)
     self.player:keypressed(key, scancode, isrepeat)
@@ -113,9 +119,7 @@ function GameDirector:removeBullet(bullet, fixture)
     end
 end
 
-function GameDirector:getLifebar()
-    return self.lifeBar
-end
+function GameDirector:getLifebar() return self.lifeBar end
 
 function GameDirector:getEntityByFixture(fixture)
     if fixture:getUserData() == "Player" then
@@ -124,25 +128,15 @@ function GameDirector:getEntityByFixture(fixture)
     return self.enemiesController:getEnemyByFixture(fixture)
 end
 
-function GameDirector:getMainCharacter()
-    return self.player, self.characterController
-end
+function GameDirector:getMainCharacter() return self.player, self.characterController end
 
-function GameDirector:getLifeBar()
-    return self.lifeBar
-end
+function GameDirector:getLifeBar() return self.lifeBar end
 
-function GameDirector:getCameraController()
-    return self.cameraController
-end
+function GameDirector:getCameraController() return self.cameraController end
 
-function GameDirector:getEnemiesController()
-    return self.enemiesController
-end
+function GameDirector:getEnemiesController() return self.enemiesController end
 
-function GameDirector:getWorld()
-    return self.world
-end
+function GameDirector:getWorld() return self.world end
 
 function GameDirector:runGame()
     return self.lifeBar:getValue() > 0
@@ -168,10 +162,6 @@ function GameDirector:drawBullets()
     for index, bullet in pairs(self.bulletsInWorld) do
         bullet:draw()
     end
-end
-
-function GameDirector:draw()
-    
 end
 
 return GameDirector

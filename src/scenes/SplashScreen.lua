@@ -20,8 +20,7 @@ end
 function SplashScreen:rescaleImage(name, image)
     local imageDimension = {width = image:getWidth(), height = image:getHeight()}
     scaleDimension:calculeScales(name, 300, 300, 0, 0)
-    scaleDimension:relativeScale(name, imageDimension)
-    scaleDimension:generateAspectRatio(name, {isImage = true, centerOffset = true})
+    scaleDimension:generateAspectRatio(name, {isImage = imageDimension, centerOffset = true})
     scaleDimension:centralize(name, true, true, imageDimension)
 end
 
@@ -44,7 +43,7 @@ function SplashScreen:draw()
     local item = self.all[self.current]
     if item then
         local scales = scaleDimension:getScale(item)
-        love.graphics.draw(self[item], scales.x, scales.y, 0, scales.relative.x, scales.relative.y)
+        love.graphics.draw(self[item], scales.x, scales.y, 0, scales.scaleX, scales.scaleY)
     end
 end
 

@@ -19,10 +19,14 @@ end
 function ScaleDimension:calculeScales(itemName, width, height, x, y, originalScale)
     local originalScale = originalScale or self.gameScreenScale
     if not self.scaleItems[itemName] then
-        self.scaleItems[itemName] = {scaleX = 1, scaleY = 1, x = x, y = y, width = width, height = height, originalInfo = {width, height, x, y, originalScale}, centralizeOptions = {x = false, y = false, isImage = false , centerOffset = false}, relative = nil}
+        self.scaleItems[itemName] = {
+            scaleX = 1, scaleY = 1, x = x, y = y, width = width, height = height, originalInfo = {width, height, x, y, originalScale},
+            centralizeOptions = {x = false, y = false, isImage = false , centerOffset = false}, relative = nil,
+            aspectRatio = {active = false, centralizeOptions = nil}
+        }
     end
     local item = self.scaleItems[itemName]
-    item.scaleX, item.scaleY = self.graphicsDimensions.width / width, self.graphicsDimensions.height / height
+    item.scaleX, item.scaleY = self.graphicsDimensions.width / originalScale.width, self.graphicsDimensions.height / originalScale.height
     if x and y and originalScale then
         item.x = (x * self.graphicsDimensions.width) / originalScale.width
         item.y = (y * self.graphicsDimensions.height) / originalScale.height
@@ -44,6 +48,7 @@ end
 function ScaleDimension:generateAspectRatio(itemName, centralizeOptions)
     if self.scaleItems[itemName] then
         local item = self.scaleItems[itemName]
+        item.aspectRatio.active = true
         local x, y = false, false
         if item.scaleX < item.scaleY then
             item.scaleY = item.scaleX
@@ -59,6 +64,7 @@ function ScaleDimension:generateAspectRatio(itemName, centralizeOptions)
             end
         end
         if centralizeOptions then
+            item.aspectRatio.centralizeOptions = centralizeOptions
             self:centralize(itemName, x, y, centralizeOptions.isImage, centralizeOptions.centerOffset)
         end
     end
@@ -88,10 +94,13 @@ function ScaleDimension:screenResize(width, height)
     self.graphicsDimensions.width, self.graphicsDimensions.height = width, height
     for itemName, item in pairs(self.scaleItems) do
         self:calculeScales(itemName, unpack(item.originalInfo))
-        self:centralize(itemName, item.centralizeOptions.x, item.centralizeOptions.y, item.centralizeOptions.isImage, item.centralizeOptions.centerOffset)
         if item.relative then
             self:relativeScale(itemName, item.relative.originalSize)
         end
+        if item.aspectRatio.active then
+            self:generateAspectRatio(itemName, item.aspectRatio.centralizeOptions)
+        end
+        self:centralize(itemName, item.centralizeOptions.x, item.centralizeOptions.y, item.centralizeOptions.isImage, item.centralizeOptions.centerOffset)
     end
 end
 

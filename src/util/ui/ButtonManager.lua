@@ -1,4 +1,4 @@
-local Button = require "util/ui/Button"
+local Button = require "util.ui.Button"
 
 local ButtonManager = {}
 
@@ -16,11 +16,16 @@ function ButtonManager:new()
     return setmetatable(this, ButtonManager)
 end
 
-function ButtonManager:addButton(buttonName, x, y, width, height, image, originalImage, animation)
+function ButtonManager:addNewButton(buttonName, x, y, width, height, image, originalImage, animation)
     local newButton = Button:new(buttonName, x, y, width, height, image, originalImage, animation)
     table.insert(self.buttons, newButton)
     table.insert(self.options, buttonName)
     return newButton
+end
+
+function ButtonManager:addButton(button)
+    table.insert(self.buttons, button)
+    table.insert(self.options, button:getName())
 end
 
 function ButtonManager:keypressed(key, scancode, isrepeat)
