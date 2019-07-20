@@ -1,18 +1,10 @@
-local Enemy = {}
-
-Enemy.__index = Enemy
+local Enemy = {}; Enemy.__index = Enemy
 
 function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions, category, bulletCategory)
     assert(colisorDimensions and type(colisorDimensions) == "table", "Enemy needs a colisor dimension and its need to be a table")
     local this = {
-        isMoving = false,
-        inGround = false,
-        bulletCategory = bulletCategory or 3,
-        speed = 100,
-        jumpForce = 320,
-        orientation = "left",
-        animation = "idle",
-        previousAnimation = "idle",
+        isMoving = false, inGround = false, bulletCategory = bulletCategory or 3,
+        speed = 100, jumpForce = 320, orientation = "left", animation = "idle", previousAnimation = "idle",
         looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
         spriteAnimation = spriteAnimation or nil,
@@ -24,9 +16,8 @@ function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions, c
     this.body:setFixedRotation(true)
     this.shape = #colisorDimensions > 1 and love.physics.newRectangleShape(unpack(colisorDimensions)) or love.physics.newCircleShape(unpack(colisorDimensions))
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
-    this.fixture:setUserData(enemyType or "Enemy")
-    this.fixture:setCategory(category or 3)
-    this.fixture:setMask(category or 3, bulletCategory or 3)
+    this.fixture:setUserData({name = "Enemy", type = enemyType or "Common", object = this})
+    this.fixture:setCategory(category or 3); this.fixture:setMask(category or 3, bulletCategory or 3)
     
     return setmetatable(this, Enemy)
 end

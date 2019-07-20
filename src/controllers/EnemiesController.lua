@@ -1,8 +1,6 @@
-local Enemy = require "models.actors.Enemy"
+local Enemy = require "models.entities.Enemy"
 
-local EnemiesController = {}
-
-EnemiesController.__index = EnemiesController
+local EnemiesController = {}; EnemiesController.__index = EnemiesController
 
 function EnemiesController:new(world)
     local this = {

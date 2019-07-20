@@ -13,7 +13,7 @@ function ConfigureKey:keypressed(key, scancode, isrepeat)
         sceneDirector:exitSubscene()
     end
 
-    gameDirector:getMainCharacter():configureKeys(self.args, key)
+    gameDirector:getPlayer():configureKeys(self.args, key)
     sceneDirector:exitSubscene()
 end
 
@@ -22,7 +22,7 @@ function ConfigureKey:draw()
 end
 
 function ConfigureKey:keyreleased(key, scancode)
-    gameDirector:getMainCharacter():keyreleased(key, scancode)
+    gameDirector:getPlayer():keyreleased(key, scancode)
 end
 
 function ConfigureKey:reset()

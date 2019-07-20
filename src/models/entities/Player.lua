@@ -1,52 +1,30 @@
-local Player = {}
-
-Player.__index = Player
+local Player = {}; Player.__index = Player
 
 function Player:new(spriteAnimation, world)
     assert(spriteAnimation, "Is needed a animation for this actor")
-    local this = {
-        move = false,
-        inGround = false,
-        speed = 250,
-        jumpForce = -200,
-        orientation = "right",
-        animation = "idle",
-        previousAnimation = "idle",
-        looking = nil,
+    local this = setmetatable({
+        move = false, inGround = false, speed = 250, jumpForce = -200,
+        orientation = "right", animation = "idle", previousAnimation = "idle", looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
-        allAnimations = spriteAnimation,
-        spriteAnimation = spriteAnimation[love.math.random(2)],
+        allAnimations = spriteAnimation, spriteAnimation = spriteAnimation[love.math.random(2)],
         controlKeys = {left = "left", right = "right", up = "up", down = "down", jump = "space", shot = "z"}
-    }
-    
+    }, Player)
+
     --aplying physics
     this.body = love.physics.newBody(this.world, 0, 0, "dynamic")
     this.shape = love.physics.newCircleShape(26)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
-    this.body:setFixedRotation(true)
-    this.fixture:setUserData("Player")
-    this.fixture:setCategory(1)
-    this.fixture:setMask(2, 3)
-    this.fixture:setFriction(0)
-    
-    return setmetatable(this, Player)
+    this.body:setFixedRotation(true); this.fixture:setUserData({name = "Player", object = this})
+    this.fixture:setCategory(1); this.fixture:setMask(2, 3); this.fixture:setFriction(0)
+
+    return this
 end
 
 function Player:keypressed(key, scancode, isrepeat)
-    if key == self.controlKeys.left then
-        self.orientation = "left"
-        self.move = true
-        self.animation = "running"
-    elseif key == self.controlKeys.right then
-        self.orientation = "right"
-        self.move = true
-        self.animation = "running"
-    elseif key == self.controlKeys.up then
-        self.looking = "up"
-        self.animation = "up"
-    elseif key == self.controlKeys.down then
-        self.looking = "down"
-        self.animation = "down"
+    if key == self.controlKeys.left then self.orientation = "left"; self.animation = "running"; self.move = true
+    elseif key == self.controlKeys.right then self.orientation = "right"; self.animation = "running"; self.move = true
+    elseif key == self.controlKeys.up then self.looking = "up"; self.animation = "up"
+    elseif key == self.controlKeys.down then self.looking = "down"; self.animation = "down"
     end
 
     if self.looking and self.move then
@@ -60,9 +38,7 @@ function Player:keypressed(key, scancode, isrepeat)
         self.previousAnimation = self.animation ~= "jumping" and self.animation or self.previousAnimation
     end
 
-    if not self.inGround then
-        self.animation = "jumping"
-    end
+    if not self.inGround then self.animation = "jumping" end
     
     if key == self.controlKeys.shot then
         local verticalDirection = self.looking == "up" and - 20 or 0
@@ -82,32 +58,23 @@ function Player:keyreleased(key, scancode)
             self.body:setLinearVelocity(0, yBodyVelocity)
             self.animation = self.inGround and (self.looking or "idle") or "jumping"
             self.previousAnimation = self.animation
-            if not self.inGround then
-                self.previousAnimation = self.looking or "idle"
-            end
+            if not self.inGround then self.previousAnimation = self.looking or "idle" end
         end
     end
     if key == self.controlKeys.up or key == self.controlKeys.down then
         self.looking = nil
         self.animation = self.inGround and (self.move and "running" or "idle") or "jumping"
         self.previousAnimation = self.animation
-        if not self.inGround then
-            self.previousAnimation = self.move and "running" or "idle"
-        end
+        if not self.inGround then self.previousAnimation = self.move and "running" or "idle" end
     end
 end
 
-function Player:getPosition()
-    return self.body:getX(), self.body:getY()
-end
+function Player:getPosition() return self.body:getX(), self.body:getY() end
 
-function Player:setPosition(x, y)
-    self.body:setX(x); self.body:setY(y)
-end
+function Player:setPosition(x, y) self.body:setX(x); self.body:setY(y) end
 
 function Player:stopMoving()
-    local xVelocity, yVelocity = self.body:getLinearVelocity()
-    self.body:setLinearVelocity(0, yVelocity)
+    local xVelocity, yVelocity = self.body:getLinearVelocity(); self.body:setLinearVelocity(0, yVelocity)
 end
 
 function Player:configureKeys(action, key)
@@ -115,20 +82,14 @@ function Player:configureKeys(action, key)
 end
 
 function Player:reset()
-    self.move = false
-    self.inGround = true
-    self.looking = nil
-    self.body:setLinearVelocity(0, 0)
-    self.body:setX(900); self.body:setY(900)
-    self.orientation = "right"
-    self.animation = "idle"
-    self.spriteAnimation = self.allAnimations[love.math.random(2)]
-    self.previousAnimation = "idle"
+    self.move = false; self.inGround = true; self.looking = nil
+    self.body:setLinearVelocity(0, 0); self.body:setX(900); self.body:setY(900)
+    self.orientation = "right"; self.animation = "idle"
+    self.spriteAnimation = self.allAnimations[love.math.random(2)]; self.previousAnimation = "idle"
 end
 
 function Player:touchGround(isTouching)
-    self.inGround = isTouching
-    self.animation = self.previousAnimation
+    self.inGround = isTouching; self.animation = self.previousAnimation
     if self.animation == "jumping" and not self.move then
         if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
             self.move = true
@@ -136,28 +97,20 @@ function Player:touchGround(isTouching)
     end
 end
 
-function Player:getOrientation()
-    return self.orientation
-end
+function Player:getOrientation() return self.orientation end
 
-function Player:compareFixture(fixture)
-    return self.fixture == fixture
-end
+function Player:compareFixture(fixture) return self.fixture == fixture end
 
 function Player:retreat()
     --local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
     self.body:setLinearVelocity(0, 0)
     self.body:applyLinearImpulse((self.orientation == "left" and 1 or -1) * self.speed / 1.5, self.jumpForce)
-    self.inGround = false
-    self.move = false
-    self.animation = "jumping"
-    self.previousAnimation = "idle"
+    self.inGround = false; self.move = false
+    self.animation = "jumping"; self.previousAnimation = "idle"
 end
 
 function Player:update(dt)
-    if self.body:getX() <= 540 then
-        self.body:setX(540)
-    end
+    if self.body:getX() <= 540 then self.body:setX(540) end
     if self.spriteAnimation then
         if self.move then
             local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()

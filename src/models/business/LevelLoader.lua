@@ -13,20 +13,16 @@ function LevelLoader:new(tilemapName, path, world)
     return this
 end
 
-function LevelLoader:update(dt)
-    self.tilemap:update(dt)
-end
+function LevelLoader:update(dt) self.tilemap:update(dt) end
 
 function LevelLoader:draw()
     love.graphics.translate(-494, -400)
-    self.tilemap:draw(-gameDirector:getMainCharacter():getPosition() + 188, -504)
+    self.tilemap:draw(-gameDirector:getPlayer():getBody():getPosition() + 188, -504)
     love.graphics.setColor(1, 0, 0)
 	--self.tilemap:box2d_draw(0, 0)
     love.graphics.setColor(1, 1, 1)
 end
 
-function LevelLoader:resize(h, w)
-    self.tilemap:resize(w, h)
-end
+function LevelLoader:resize(h, w) self.tilemap:resize(w, h) end
 
 return LevelLoader

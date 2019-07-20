@@ -3,9 +3,9 @@ local World = require "models.business.World"
 local LevelLoader = require "models.business.LevelLoader"
 local LifeForm = require "models.value.LifeForm"
 
---Actors
-local Bullet = require "models.actors.Bullet"
-local Player = require "models.actors.Player"
+--Entities
+local Bullet = require "models.entities.Bullet"
+local Player = require "models.entities.Player"
 
 --Libs
 local STI = require "libs.sti"
@@ -14,7 +14,7 @@ local Pixelurite = require "libs.Pixelurite"
 local Sanghost = require "libs.Sanghost.Sanghost"
 
 --Controllers
-local CharacterController = require "controllers.CharacterController"
+local PlayerController = require "controllers.PlayerController"
 local EnemiesController = require "controllers.EnemiesController"
 local CameraController = require "controllers.CameraController"
 
@@ -42,10 +42,8 @@ function GameDirector:new()
 
     local world = World:new()
     local this = {
-        bulletsInWorld = {}, world = world,
-        player = Player:new(playerAnimation, world.world),
-        lifeBar = ProgressBar:new(20, 20, 200, 40, {1, 0, 0}, 15, 15),
-        characterController = CharacterController:new(LifeForm), enemiesController = EnemiesController:new(world),
+        bulletsInWorld = {}, world = world, lifeBar = ProgressBar:new(20, 20, 200, 40, {1, 0, 0}, 15, 15),
+        playerController = PlayerController:new(LifeForm, Player, playerAnimation, world.world), enemiesController = EnemiesController:new(world),
         cameraController = CameraController:new(), sanghost = Sanghost:new(),
         --Libraries
         libraries = {
@@ -60,15 +58,12 @@ function GameDirector:new()
         }
     }
 
-    this.sanghost:save(this.characterController, "characterController")
     this.sanghost:save(this.lifeBar, "lifebar")
     return setmetatable(this, GameDirector)
 end
 
 function GameDirector:reset()
-    self.lifeBar = self.sanghost:load("lifebar")
-    self.characterController = self.sanghost:load("characterController")
-    self.player:reset()
+    self.lifeBar = self.sanghost:load("lifebar"); self.playerController:reset()
 end
 
 function GameDirector:addButton(this, buttonList, buttonName, showText, sceneName, buttonDimensions, originalSize, callback, disableButton)
@@ -89,22 +84,12 @@ function GameDirector:loadScene(sceneName, requiredFile)
     sceneDirector:addScene(sceneName, require (requiredFile):new()) --[[ Added sceneName Scene --]]
 end
 
-function GameDirector:getLibrary(library)
-    return self.libraries[library]
-end
+function GameDirector:getLibrary(library) return self.libraries[library] end
 
 function GameDirector:getFonts() return self.fonts end
 
-function GameDirector:keypressed(key, scancode, isrepeat)
-    self.player:keypressed(key, scancode, isrepeat)
-end
-
-function GameDirector:keyreleased(key, scancode)
-    self.player:keyreleased(key, scancode)
-end
-
 function GameDirector:addBullet(x, y, orientation, speed, category, fromPlayer)
-    if not fromPlayer or (fromPlayer and self.characterController:shot()) then
+    if not fromPlayer or (fromPlayer and self.playerController:shot()) then
         table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed, nil, category))
     end
 end
@@ -112,8 +97,7 @@ end
 function GameDirector:removeBullet(bullet, fixture)
     for index = 1, #self.bulletsInWorld do
         if (bullet and self.bulletsInWorld[index] == bullet) or (fixture and self.bulletsInWorld[index].fixture == fixture) then
-            self.bulletsInWorld[index]:destroy()
-            table.remove(self.bulletsInWorld, index)
+            self.bulletsInWorld[index]:destroy(); table.remove(self.bulletsInWorld, index)
             return index
         end
     end
@@ -122,34 +106,21 @@ end
 function GameDirector:getLifebar() return self.lifeBar end
 
 function GameDirector:getEntityByFixture(fixture)
-    if fixture:getUserData() == "Player" then
-        return self.characterController
-    end
+    if "Player" == fixture:getUserData().name then return self.playerController end
     return self.enemiesController:getEnemyByFixture(fixture)
 end
 
-function GameDirector:getMainCharacter() return self.player, self.characterController end
-
+function GameDirector:getPlayer() return self.playerController end
 function GameDirector:getLifeBar() return self.lifeBar end
-
 function GameDirector:getCameraController() return self.cameraController end
-
 function GameDirector:getEnemiesController() return self.enemiesController end
-
 function GameDirector:getWorld() return self.world end
-
-function GameDirector:runGame()
-    return self.lifeBar:getValue() > 0
-end
+function GameDirector:runGame() return self.lifeBar:getValue() > 0 end
 
 function GameDirector:update(dt)
-    if not self.characterController:isDead() then
-        self.world:update(dt)
-        self.player:update(dt)
-        self.enemiesController:update(dt)            
-        for index, bullet in pairs(self.bulletsInWorld) do
-            bullet:update(dt)
-        end
+    if not self.playerController:isDead() then
+        self.world:update(dt); self.playerController:update(dt); self.enemiesController:update(dt)            
+        for index, bullet in pairs(self.bulletsInWorld) do bullet:update(dt) end
 
         self.cameraController:update(dt)
     else
@@ -159,9 +130,7 @@ function GameDirector:update(dt)
 end
 
 function GameDirector:drawBullets()
-    for index, bullet in pairs(self.bulletsInWorld) do
-        bullet:draw()
-    end
+    for index, bullet in pairs(self.bulletsInWorld) do bullet:draw() end
 end
 
 return GameDirector

@@ -22,7 +22,7 @@ end
 
 function SeuBarrigaAi:update(dt)
     self.elapsedTime = self.elapsedTime + dt
-    local x, y = gameDirector:getMainCharacter():getPosition()
+    local x, y = gameDirector:getPlayer():getBody():getPosition()
     local xDistance = math.abs(self.actor.body:getX() - x)
     local yDistance = math.abs(self.actor.body:getY() - y)
     local distance = math.sqrt(yDistance ^ 2 + xDistance ^ 2)
