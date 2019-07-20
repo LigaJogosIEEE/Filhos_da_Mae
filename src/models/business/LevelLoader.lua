@@ -2,15 +2,26 @@ local LevelLoader = {}
 
 LevelLoader.__index = LevelLoader
 
-function LevelLoader:new(tilemapName, path, world)
+function LevelLoader:new(path, world)
     assert(world, "Needs a World object")
-    assert(tilemapName and path, "filename and path required")
+    assert(path, "path required")
     local this = setmetatable({
-        tilemap = gameDirector:getLibrary("sti")(string.format("%s/%s.lua", path, tilemapName), {"box2d"}, 0, 128)
+        world = world, levelsPath = path, tilemap = nil, enemiesData = {}
     }, LevelLoader)
 
-    this.tilemap:box2d_init(world)
     return this
+end
+
+function LevelLoader:load(tilemapName)
+    assert(tilemapName, "filename required")
+    self.tilemap = gameDirector:getLibrary("sti")(string.format("%s/%s.lua", self.levelsPath, tilemapName), {"box2d"}, 0, 128)
+    --[[ Here will get the enemies layer and add it to enemies controller --]]
+    local billLayer = self.tilemap.layers["boleto"]
+    --for _, __ in pairs(billLayer) do print(_, __) end
+    --gameDirector:getEnemiesController()
+    
+    self.tilemap:box2d_init(self.world)
+    return self
 end
 
 function LevelLoader:update(dt) self.tilemap:update(dt) end

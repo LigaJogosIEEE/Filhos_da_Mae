@@ -1,8 +1,12 @@
 local World = {}; World.__index = World
 
+local function getUserDataName(userData)
+    return userData.name or (userData.properties and userData.properties.name)
+end
+
 local function verifyUserData(a, b, firstType, secondType)
-    if a:getUserData().name == firstType and b:getUserData().name == secondType then return a, b
-    elseif b:getUserData().name == firstType and a:getUserData().name == secondType then return b, a
+    if getUserDataName(a:getUserData()) == firstType and getUserDataName(b:getUserData()) == secondType then return a, b
+    elseif getUserDataName(b:getUserData()) == firstType and getUserDataName(a:getUserData()) == secondType then return b, a
     else return false, false
     end
 end

@@ -43,55 +43,68 @@ return {
       tiles = {
         {
           id = 0,
-          terrain = { -1, -1, -1, 0 }
+          terrain = { -1, -1, -1, 0 },
+          properties = {name = "platforms"}
         },
         {
           id = 1,
-          terrain = { -1, -1, 0, 0 }
+          terrain = { -1, -1, 0, 0 },
+          properties = {name = "platforms"}
         },
         {
           id = 2,
-          terrain = { -1, -1, 0, -1 }
+          terrain = { -1, -1, 0, -1 },
+          properties = {name = "platforms"}
         },
         {
           id = 4,
-          terrain = { 0, 0, 0, -1 }
+          terrain = { 0, 0, 0, -1 },
+          properties = {name = "platforms"}
         },
         {
           id = 5,
-          terrain = { 0, 0, -1, 0 }
+          terrain = { 0, 0, -1, 0 },
+          properties = {name = "platforms"}
         },
         {
           id = 10,
-          terrain = { -1, 0, -1, 0 }
+          terrain = { -1, 0, -1, 0 },
+          properties = {name = "platforms"}
         },
         {
           id = 11,
-          terrain = { 0, 0, 0, 0 }
+          terrain = { 0, 0, 0, 0 },
+          properties = {name = "platforms"}
         },
         {
           id = 12,
-          terrain = { 0, -1, 0, -1 }
+          terrain = { 0, -1, 0, -1 },
+          properties = {name = "platforms"}
         },
         {
           id = 14,
-          terrain = { 0, -1, 0, 0 }
+          terrain = { 0, -1, 0, 0 },
+          properties = {name = "platforms"}
         },
         {
           id = 15,
-          terrain = { -1, 0, 0, 0 }
+          terrain = { -1, 0, 0, 0 },
+          properties = {name = "platforms"}
         },
         {
           id = 20,
-          terrain = { -1, 0, -1, -1 }
+          terrain = { -1, 0, -1, -1 },
+          properties = {name = "platforms"}
         },
         {
           id = 21,
-          terrain = { 0, 0, -1, -1 }
+          terrain = { 0, 0, -1, -1 },
+          properties = {name = "platforms"}
         },
         {
           id = 22,
-          terrain = { 0, -1, -1, -1 }
+          terrain = { 0, -1, -1, -1 },
+          properties = {name = "platforms"}
         }
       }
     }

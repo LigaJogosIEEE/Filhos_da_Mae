@@ -8,7 +8,7 @@ local Bullet = require "models.entities.Bullet"
 local Player = require "models.entities.Player"
 
 --Libs
-local STI = require "libs.sti"
+local STI = require "libs.Simple-Tiled-Implementation.sti"
 local MoonJohn = require "libs.MoonJohn"
 local Pixelurite = require "libs.Pixelurite"
 local Sanghost = require "libs.Sanghost.Sanghost"

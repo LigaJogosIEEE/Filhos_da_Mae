@@ -4,7 +4,7 @@ InGameScene.__index = InGameScene
 
 function InGameScene:new(world)
     local this = {
-        level_1_map = gameDirector:getLibrary("LevelLoader"):new("level_1_map", "assets/tilesets", world),
+        level_1_map = gameDirector:getLibrary("LevelLoader"):new("assets/tilesets", world):load("level_1_map"),
         liveImage = love.graphics.newImage("assets/elements/health.png")
     }
 

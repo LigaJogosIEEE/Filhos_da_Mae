@@ -7,3 +7,6 @@
 [submodule "src/libs/Sanghost"]
 	path = src/libs/Sanghost
 	url = https://github.com/Jictyvoo/Sanghost
+[submodule "src/libs/Simple-Tiled-Implementation"]
+	path = src/libs/Simple-Tiled-Implementation
+	url = https://github.com/karai17/Simple-Tiled-Implementation
