@@ -21,7 +21,7 @@ local beginContact = function(a, b, coll)
     if playerFixture and platforms then gameDirector:getPlayer():getBody():touchGround(true)
     elseif playerFixture and enemy then
         gameDirector:getEntityByFixture(playerFixture):takeDamage(
-            gameDirector:getEnemiesController():getDamage(World:getUserData(enemy))
+            gameDirector:getEnemiesController():getDamage(getUserDataName(enemy))
         )
         gameDirector:getPlayer():retreat()
     elseif playerFixture and death_sensor then

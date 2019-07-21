@@ -35,10 +35,8 @@ end
 function InGameScene:draw()
     local playerController = gameDirector:getPlayer()
     gameDirector:getCameraController():draw(function()
-        self.level_1_map:draw()
-        playerController:draw()
-        gameDirector:getEnemiesController():draw()
-        gameDirector:drawBullets()
+        self.level_1_map:draw(); playerController:draw()
+        gameDirector:getEnemiesController():draw(); gameDirector:drawBullets()
     end)
     gameDirector:getLifeBar():draw()
     for counter = 1, playerController:getLives() do

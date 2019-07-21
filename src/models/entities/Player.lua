@@ -83,7 +83,7 @@ end
 
 function Player:reset()
     self.move = false; self.inGround = true; self.looking = nil
-    self.body:setLinearVelocity(0, 0); self.body:setX(900); self.body:setY(900)
+    self.body:setLinearVelocity(0, 0); self.body:setX(256); self.body:setY(900)
     self.orientation = "right"; self.animation = "idle"
     self.spriteAnimation = self.allAnimations[love.math.random(2)]; self.previousAnimation = "idle"
 end
@@ -110,11 +110,11 @@ function Player:retreat()
 end
 
 function Player:update(dt)
-    if self.body:getX() <= 540 then self.body:setX(540) end
+    if self.body:getX() <= 340 then self.body:setX(340) end
     if self.spriteAnimation then
         if self.move then
             local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
-            if self.body:getX() >= 540 then
+            if self.body:getX() >= 340 then
                 self.body:setLinearVelocity((self.orientation == "left" and -1 or 1) * self.speed, yBodyVelocity)
             end
         end

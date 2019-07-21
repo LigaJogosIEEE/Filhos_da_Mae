@@ -12,7 +12,7 @@ function EnemiesController:new(world)
         world = world.world,
         enemiesUserData = {
             Bill = true,
-            --Seu_Barriga = true
+            Seu_Barriga = true
         },
         enemiesFactory = {
             Seu_Barriga = {colisor = {36, 54}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1},
@@ -26,10 +26,10 @@ end
 
 function EnemiesController:factory(enemyName)
     local enemyAnimation = {
-        idle = gameDirector:configureSpriteSheet(enemyName .. "_Idle.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
-        running = gameDirector:configureSpriteSheet(enemyName .. "_Running.json", "assets/sprites/" .. enemyName .. "/", true, 0.2, nil, nil, true),
-        up = gameDirector:configureSpriteSheet(enemyName .. "_Idle.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
-        down = gameDirector:configureSpriteSheet(enemyName .. "_Idle.json", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true)    
+        idle = gameDirector:configureSpriteSheet(enemyName .. "_Idle", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        running = gameDirector:configureSpriteSheet(enemyName .. "_Running", "assets/sprites/" .. enemyName .. "/", true, 0.2, nil, nil, true),
+        up = gameDirector:configureSpriteSheet(enemyName .. "_Idle", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        down = gameDirector:configureSpriteSheet(enemyName .. "_Idle", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true)    
     }
     return enemyAnimation
 end
