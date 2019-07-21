@@ -27,12 +27,10 @@ function SeuBarrigaAi:update(dt)
     local yDistance = math.abs(self.actor.body:getY() - y)
     local distance = math.sqrt(yDistance ^ 2 + xDistance ^ 2)
     if distance <= 185 and self.elapsedTime >= 0.7 then
-        self.actor:setSpeed(getSpeed() * self.speedToggle and 0.5 or 2)
+        self.actor:setSpeed(self.actor:getSpeed() * (self.speedToggle and 0.5 or 2))
         self.elapsedTime = 0
-    elseif distance <= 300 then
-        self:moveToPlayer(x, y, xDistance, yDistance)
-    else
-        self.actor:stopMoving("right")
+    elseif distance <= 300 then self:moveToPlayer(x, y, xDistance, yDistance)
+    else self.actor:stopMoving("right")
     end
 end
 

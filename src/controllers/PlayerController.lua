@@ -5,7 +5,7 @@ function PlayerController:new(LifeForm, Player, spriteAnimation, world)
         stats = LifeForm(), player = Player:new(spriteAnimation, world)
     }, PlayerController)
 
-    local playerEvents = {"keypressed", "keyreleased", "stopMoving", "configureKeys", "update", "draw"}
+    local playerEvents = {"keypressed", "keyreleased", "retreat", "instantDeath", "configureKeys", "update", "draw"}
     for _, eventName in pairs(playerEvents) do
         this[eventName] = function(self, ...) return self.player[eventName](self.player, ...) end
     end

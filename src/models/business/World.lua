@@ -21,20 +21,21 @@ local beginContact = function(a, b, coll)
     if playerFixture and platforms then gameDirector:getPlayer():getBody():touchGround(true)
     elseif playerFixture and enemy then
         gameDirector:getEntityByFixture(playerFixture):takeDamage(
-            gameDirector:getEnemiesController():getDamage(getUserDataName(enemy))
+            gameDirector:getEnemiesController():getDamage(enemy:getUserData().type)
         )
         gameDirector:getPlayer():retreat()
     elseif playerFixture and death_sensor then
         gameDirector:getEntityByFixture(playerFixture):instantDeath()
     elseif bullet and (enemy or playerFixture) then
-        local entity = playerFixture or enemy
+        local entity = enemy or (playerFixture and gameDirector:getPlayer())
         entity:takeDamage(1); gameDirector:removeBullet(nil, bullet)
     end
 end
 
 local endContact = function(a, b, coll)
     local entity, bullet = verifyUserData(a, b, "Player", "Bullet")
-    if not entity then entity, bullet = verifyUserData(a, b, "Enemy", "Bullet") end
+    if entity then entity = gameDirector:getPlayer()
+    else entity, bullet = verifyUserData(a, b, "Enemy", "Bullet"); if entity then entity = entity.object end end
     if entity and bullet then
         if entity.endContact then entity:endContact() end
     end

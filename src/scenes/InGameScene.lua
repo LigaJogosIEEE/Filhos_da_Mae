@@ -7,6 +7,7 @@ function InGameScene:new(world)
         level_1_map = gameDirector:getLibrary("LevelLoader"):new("assets/tilesets", world):load("level_1_map"),
         liveImage = love.graphics.newImage("assets/elements/health.png")
     }
+    gameDirector:getEnemiesController():startFactory()
 
     sceneDirector:addSubscene("pause", require "scenes.subscenes.PauseGame":new())
     return setmetatable(this, InGameScene)
@@ -25,7 +26,7 @@ end
 
 function InGameScene:reset()
     gameDirector:reset()
-    gameDirector.enemiesController:clearEnemies()
+    gameDirector.enemiesController:clearEnemies(); self.level_1_map:generateEnemies()
 end
 
 function InGameScene:update(dt)

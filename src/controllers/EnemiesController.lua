@@ -3,7 +3,7 @@ local Enemy = require "models.entities.Enemy"
 local EnemiesController = {}; EnemiesController.__index = EnemiesController
 
 function EnemiesController:new(world)
-    local this = {
+    local this = setmetatable({
         enemies = {},
         ai = {types = {
             Bill = require "models.business.enemies_ai.BillAi",
@@ -11,32 +11,32 @@ function EnemiesController:new(world)
         }},
         world = world.world,
         enemiesUserData = {
-            Bill = true,
-            Seu_Barriga = true
+            Bill = {idle = "_Idle", running = "_Running", up = "_Idle", down = "_Idle"},
+            Seu_Barriga = {idle = "", running = "", up = "", down = ""}
         },
         enemiesFactory = {
             Seu_Barriga = {colisor = {36, 54}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1},
             Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}, damage = 1},
             Two_Guys_In_a_Bike = {colisor = {16}, sprite = nil, category = {body = 4, bullet = 4}, damage = 2}
         }
-    }
-    
-    return setmetatable(this, EnemiesController)
+    }, EnemiesController)
+
+    return this
 end
 
-function EnemiesController:factory(enemyName)
+function EnemiesController:factory(enemyName, animation)
     local enemyAnimation = {
-        idle = gameDirector:configureSpriteSheet(enemyName .. "_Idle", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
-        running = gameDirector:configureSpriteSheet(enemyName .. "_Running", "assets/sprites/" .. enemyName .. "/", true, 0.2, nil, nil, true),
-        up = gameDirector:configureSpriteSheet(enemyName .. "_Idle", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
-        down = gameDirector:configureSpriteSheet(enemyName .. "_Idle", "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true)    
+        idle = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.idle, "assets/sprites/" .. enemyName .. "/", true, 0.7, nil, nil, true),
+        running = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.running, "assets/sprites/" .. enemyName .. "/", true, 0.2, nil, nil, true),
+        up = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.up, "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        down = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.down, "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true)    
     }
     return enemyAnimation
 end
 
 function EnemiesController:startFactory()
-    for key, _ in pairs(self.enemiesUserData) do
-        self.enemiesFactory[key].sprite = self:factory(key)
+    for key, animation in pairs(self.enemiesUserData) do
+        self.enemiesFactory[key].sprite = self:factory(key, animation)
     end
 end
 
@@ -48,7 +48,7 @@ function EnemiesController:clearEnemies()
 end
 
 function EnemiesController:getDamage(enemyType)
-    return self.enemiesFactory[enemyName].damage
+    return self.enemiesFactory[enemyType].damage
 end
 
 function EnemiesController:createEnemy(enemyType, x, y)
@@ -60,7 +60,7 @@ function EnemiesController:createEnemy(enemyType, x, y)
 end
 
 function EnemiesController:getEnemyByFixture(fixture)
-    if self.enemiesUserData[fixture:getUserData()] then
+    if self.enemiesUserData[fixture:getUserData().type] then
         for _, enemy in pairs(self.enemies) do
             if enemy:compareFixture(fixture) then
                 return enemy

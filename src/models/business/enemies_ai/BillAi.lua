@@ -28,10 +28,8 @@ function BillAi:update(dt)
     if distance <= 185 and self.elapsedTime >= 0.7 then
         self.actor:shot() -- Command to enemy shot
         self.elapsedTime = 0
-    elseif distance <= 300 then
-        self:moveToPlayer(x, y, xDistance, yDistance)
-    else
-        self.actor:stopMoving("right")
+    elseif distance <= 300 then self:moveToPlayer(x, y, xDistance, yDistance)
+    else self.actor:stopMoving("right")
     end
 end
 

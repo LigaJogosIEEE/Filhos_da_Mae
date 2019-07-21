@@ -124,7 +124,7 @@ function Enemy:draw()
         local positionToDraw = self.animation
         local scaleX = self.orientation == "right" and -1 or 1
         self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX)
-        love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
+        --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
         --love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius())
     end
 end
