@@ -62,10 +62,11 @@ end
 
 function Button:mousemoved(x, y, dx, dy, istouch)
     if self:isMouseOnButton(x, y) and (not self.pressed) and self.state ~= "disabled" then
-        self.state = "hover"; if love.mouse.getCursor() ~= self.cursor.hover then love.mouse.setCursor(self.cursor.hover) end
+        self.state = "hover"; love.mouse.setCursor(self.cursor.hover)
         return self.name
     elseif not self.pressed and self.state ~= "disabled" then
-        self.state = "normal"; love.mouse.setCursor(self.cursor.normal)
+        if self.state == "hover" then love.mouse.setCursor(self.cursor.normal) end
+        self.state = "normal"
     end
     return nil
 end
