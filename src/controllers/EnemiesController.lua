@@ -7,17 +7,19 @@ function EnemiesController:new(world)
         enemies = {},
         ai = {types = {
             Bill = require "models.business.enemies_ai.BillAi",
-            Seu_Barriga = require "models.business.enemies_ai.SeuBarrigaAi"
+            Seu_Barriga = require "models.business.enemies_ai.SeuBarrigaAi",
+            Two_Guys_In_a_Bike = require "models.business.enemies_ai.TwoGuysInMotorcycleAi"
         }},
         world = world.world,
         enemiesUserData = {
             Bill = {idle = "_Idle", running = "_Running", up = "_Idle", down = "_Idle"},
-            Seu_Barriga = {idle = "", running = "", up = "", down = ""}
+            Seu_Barriga = {idle = "", running = "", up = "", down = ""},
+            Two_Guys_In_a_Bike = {idle = "", running = "", up = "", down = ""}
         },
         enemiesFactory = {
-            Seu_Barriga = {colisor = {36, 54}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1},
-            Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}, damage = 1},
-            Two_Guys_In_a_Bike = {colisor = {16}, sprite = nil, category = {body = 4, bullet = 4}, damage = 2}
+            Seu_Barriga = {colisor = {24}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1},
+            Bill = {colisor = {16}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1},
+            Two_Guys_In_a_Bike = {colisor = {24}, sprite = nil, category = {body = 4, bullet = 4}, damage = 2}
         }
     }, EnemiesController)
 

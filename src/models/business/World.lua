@@ -12,13 +12,16 @@ local function verifyUserData(a, b, firstType, secondType)
 end
 
 local beginContact = function(a, b, coll)
-    local playerFixture, platforms = verifyUserData(a, b, "Player", "platforms")
-    local bullet, enemy, death_sensor = nil, nil, nil
-    if not playerFixture then playerFixture, bullet = verifyUserData(a, b, "Player", "Bullet") end
-    if not bullet then enemy, bullet = verifyUserData(a, b, "Enemy", "Bullet") end
+    local bullet, enemy, death_sensor, playerFixture, platforms = nil, nil, nil, nil, nil
+    playerFixture, platforms = verifyUserData(a, b, "Player", "platforms")
     if not playerFixture then playerFixture, enemy = verifyUserData(a, b, "Player", "Enemy") end
     if not playerFixture then playerFixture, death_sensor = verifyUserData(a, b, "Player", "death-sensor") end
-    if playerFixture and platforms then gameDirector:getPlayer():getBody():touchGround(true)
+    if not playerFixture then playerFixture, bullet = verifyUserData(a, b, "Player", "Bullet") end
+    if not bullet and not enemy then enemy, bullet = verifyUserData(a, b, "Enemy", "Bullet") end
+    if not enemy and not platforms then enemy, platforms = verifyUserData(a, b, "Enemy", "platforms") end
+    if platforms and (playerFixture or enemy) then
+        local entity = (playerFixture and gameDirector:getPlayer():getBody()) or (enemy and enemy:getUserData().object)
+        entity:touchGround(true)
     elseif playerFixture and enemy then
         gameDirector:getEntityByFixture(playerFixture):takeDamage(
             gameDirector:getEnemiesController():getDamage(enemy:getUserData().type)
@@ -27,7 +30,7 @@ local beginContact = function(a, b, coll)
     elseif playerFixture and death_sensor then
         gameDirector:getEntityByFixture(playerFixture):instantDeath()
     elseif bullet and (enemy or playerFixture) then
-        local entity = enemy or (playerFixture and gameDirector:getPlayer())
+        local entity = (enemy and enemy:getUserData().object) or (playerFixture and gameDirector:getPlayer())
         entity:takeDamage(1); gameDirector:removeBullet(nil, bullet)
     end
 end
@@ -35,7 +38,7 @@ end
 local endContact = function(a, b, coll)
     local entity, bullet = verifyUserData(a, b, "Player", "Bullet")
     if entity then entity = gameDirector:getPlayer()
-    else entity, bullet = verifyUserData(a, b, "Enemy", "Bullet"); if entity then entity = entity.object end end
+    else entity, bullet = verifyUserData(a, b, "Enemy", "Bullet"); if entity then entity = entity:getUserData().object end end
     if entity and bullet then
         if entity.endContact then entity:endContact() end
     end

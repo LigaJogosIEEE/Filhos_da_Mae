@@ -26,8 +26,8 @@ function MainMenuScene:new()
     gameDirector:addButton(this, this.buttons, 'Configurations', true, "configurations", {128, 60, 350, 390}, originalSize, nil, false)
     gameDirector:addButton(this, this.buttons, 'Credits', true, "credits", {128, 60, 350, 460}, originalSize, nil, false)
     this.buttons.parentName = nil
-
-    for _, button in pairs(this.buttons) do this.buttonManager:addButton(button) end
+    local buttonOrder = {"mainMenuStart Game", "mainMenuConfigurations", "mainMenuCredits"}
+    for _, buttonName in pairs(buttonOrder) do this.buttonManager:addButton(this.buttons[buttonName]) end
 
     return this
 end

@@ -2,13 +2,14 @@ local Button = {}
 
 Button.__index = Button
 
-function Button:new(buttonName, x, y, width, height, image, originalImage, animation)
+function Button:new(buttonName, x, y, width, height, image, originalImage, animation, cursor)
     local this = {
         name = buttonName, x = x or 0, y = y or 0, width = width or 100, height = height or 50,
         image = type(image) == "table" and image or {normal = image, pressed = image, hover = image, disabled = image},
         state = "normal", pressed = false, callback = function() return "Clicked" end,
         animation = animation or {normal = nil, pressed = nil, hover = nil}, scaleX = 1, scaleY = 1,
-        originalImage = originalImage, visible = true, rotation = 0, offsetX = 0, offsetY = 0
+        originalImage = originalImage, visible = true, rotation = 0, offsetX = 0, offsetY = 0,
+        cursor = cursor or {hover = love.mouse.getSystemCursor("hand"), normal = love.mouse.getCursor()}
     }
 
     return setmetatable(this, Button)
@@ -17,6 +18,8 @@ end
 function Button:isMouseOnButton(x, y)
     return (x >= self.x - self.offsetX and x <= self.x + self.width - self.offsetX) and (y >= self.y - self.offsetY and y <= self.y + self.height - self.offsetY)
 end
+
+function Button:setCursor(cursor) self.cursor = cursor end
 
 function Button:setCallback(callback) self.callback = callback end
 
@@ -59,10 +62,10 @@ end
 
 function Button:mousemoved(x, y, dx, dy, istouch)
     if self:isMouseOnButton(x, y) and (not self.pressed) and self.state ~= "disabled" then
-        self.state = "hover"
+        self.state = "hover"; if love.mouse.getCursor() ~= self.cursor.hover then love.mouse.setCursor(self.cursor.hover) end
         return self.name
     elseif not self.pressed and self.state ~= "disabled" then
-        self.state = "normal"
+        self.state = "normal"; love.mouse.setCursor(self.cursor.normal)
     end
     return nil
 end

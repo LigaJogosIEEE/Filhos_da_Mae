@@ -5,7 +5,7 @@ return {
 			w = 192,
 			h = 192,
 		},
-		image = "Dois_Caras_Numa_Moto.png",
+		image = "Two_Guys_In_a_Bike.png",
 		version = "1.0",
 		format = "RGBA8888",
 	},

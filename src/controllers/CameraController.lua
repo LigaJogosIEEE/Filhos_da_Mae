@@ -21,7 +21,7 @@ end
 function CameraController:update(dt)
     local inGround = gameDirector:getPlayer():isInGround()
     local x, y = gameDirector:getPlayer():getBody():getPosition()
-    self.gamera:setPosition(x, 1000)--(inGround and y or self.previousPosition.y) - 300)
+    self.gamera:setPosition(x < 9944 and x or 9944, 1000)--(inGround and y or self.previousPosition.y) - 300)
     if inGround then
         self.previousPosition.x, self.previousPosition.y = x, y
     end

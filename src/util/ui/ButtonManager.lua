@@ -6,26 +6,24 @@ ButtonManager.__index = ButtonManager
 
 function ButtonManager:new()
     local this = {
-        buttons = {},
-        options = {},
-        currentOption = 1,
-        previousState = "normal",
-        currentState = "hover"
+        buttons = {}, options = {},
+        currentOption = 1, previousState = "normal", currentState = "hover",
+        cursor = {hover = love.mouse.getSystemCursor("hand"), normal = love.mouse.getCursor()}
     }
 
     return setmetatable(this, ButtonManager)
 end
 
 function ButtonManager:addNewButton(buttonName, x, y, width, height, image, originalImage, animation)
-    local newButton = Button:new(buttonName, x, y, width, height, image, originalImage, animation)
+    local newButton = Button:new(buttonName, x, y, width, height, image, originalImage, animation, self.cursor)
     table.insert(self.buttons, newButton)
     table.insert(self.options, buttonName)
     return newButton
 end
 
 function ButtonManager:addButton(button)
-    table.insert(self.buttons, button)
-    table.insert(self.options, button:getName())
+    button:setCursor(self.cursor)
+    table.insert(self.buttons, button); table.insert(self.options, button:getName())
 end
 
 function ButtonManager:keypressed(key, scancode, isrepeat)
@@ -57,8 +55,8 @@ function ButtonManager:mousemoved(x, y, dx, dy, istouch)
     for index, button in pairs(self.buttons) do
         local buttonName = button:mousemoved(x, y, dx, dy, istouch)
         if buttonName then
-            self.currentOption = index
-            self.currentState = "hover"
+            self.currentOption = index; self.currentState = "hover"
+            --love.mouse.setCursor(love.mouse.getSystemCursor("hand"))
         end
     end
 end

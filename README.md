@@ -23,6 +23,12 @@ Love2d - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . F
 
 * Kevin
 
+## Metas
+
+* Botar os áudios e músicas
+* Separar o mapa por chunks e dar draw e update apenas nos chunks próximos ao jogador
+* Adicionar objeto de final de jogo
+
 ## Bibliotecas de terceiros
 
 * Simple Tiled Implementation - A Tiled Loader to use in LOVE2D -> <https://github.com/karai17/Simple-Tiled-Implementation>

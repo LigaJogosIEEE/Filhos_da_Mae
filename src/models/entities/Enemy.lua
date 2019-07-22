@@ -27,28 +27,25 @@ function Enemy:compareFixture(fixture)
 end
 
 function Enemy:reset()
-    self.isMoving = false
-    self.inGround = true
-    self.looking = nil
-    self.body:setLinearVelocity(0, 0)
-    self.body:setX(10); self.body:setY(700)
+    self.isMoving = false; self.inGround = true; self.looking = nil
+    self.body:setLinearVelocity(0, 0); self.body:setX(10); self.body:setY(700)
     self.orientation = "left"
     self.animation = "idle"
     self.previousAnimation = "idle"
 end
 
 function Enemy:destroy()
-    self.fixture:destroy()
-    self.shape = nil
-    self.body:destroy()
+    self.fixture:destroy(); self.shape = nil; self.body:destroy()
     gameDirector.enemiesController:remove(self)
+end
+
+function Enemy:touchGround(isTouching)
+    self.inGround = isTouching; self.animation = self.previousAnimation
 end
 
 function Enemy:takeDamage(amount)
     local isDead = self.lifeForm:takeDamage(amount)
-    if isDead then
-        self:destroy()
-    end
+    if isDead then self:destroy() end
 end
 
 function Enemy:endContact()
@@ -57,32 +54,21 @@ function Enemy:endContact()
 end
 
 function Enemy:move(key)
-    if key == "up" then
-        self.looking = "up"
-    elseif key == "down" then
-        self.looking = "down"
-    elseif key == "left" then
-        self.orientation = "left"
-        self.isMoving = true
-    elseif key == "right" then
-        self.orientation = "right"
-        self.isMoving = true
+    if key == "up" then self.looking = "up"
+    elseif key == "down" then self.looking = "down"
+    elseif key == "left" then self.orientation = "left"; self.isMoving = true
+    elseif key == "right" then self.orientation = "right"; self.isMoving = true
     end
     if self.isMoving then self.animation = "running" end
 end
 
 function Enemy:jump()
-    self.body:applyLinearImpulse(0, -430)
-    self.inGround = false
+    if self.inGround then self.body:applyLinearImpulse(0, -60); self.inGround = false end
 end
 
-function Enemy:getSpeed()
-    return self.speed
-end
+function Enemy:getSpeed() return self.speed end
 
-function Enemy:setSpeed(speed)
-    self.speed = speed
-end
+function Enemy:setSpeed(speed) self.speed = speed end
 
 function Enemy:shot()
     local verticalDirection = self.looking == "up" and - 20 or self.looking == "down" and 70 or -10
@@ -125,7 +111,7 @@ function Enemy:draw()
         local scaleX = self.orientation == "right" and -1 or 1
         self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX)
         --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
-        --love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius())
+        love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius())
     end
 end
 
