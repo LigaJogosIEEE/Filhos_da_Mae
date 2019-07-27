@@ -50,9 +50,7 @@ function LevelLoader:draw()
     love.graphics.translate(-128, -64)
     local x = -gameDirector:getPlayer():getBody():getPosition() + 555
     self.tilemap:draw(x < -130 and (x > -9390 and x or -9390) or -130, -256)
-    love.graphics.setColor(1, 0, 0)
-	self.tilemap:box2d_draw(0, 0)
-    love.graphics.setColor(1, 1, 1)
+    --[[love.graphics.setColor(1, 0, 0); self.tilemap:box2d_draw(0, 0); love.graphics.setColor(1, 1, 1) --]]
 end
 
 function LevelLoader:resize(h, w) self.tilemap:resize(w, h) end
