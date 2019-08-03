@@ -12,6 +12,7 @@ local STI = require "libs.Simple-Tiled-Implementation.sti"
 local MoonJohn = require "libs.MoonJohn"
 local Pixelurite = require "libs.Pixelurite"
 local Sanghost = require "libs.Sanghost.Sanghost"
+local push = require "libs.push.push"
 
 --Controllers
 local PlayerController = require "controllers.PlayerController"
@@ -49,7 +50,7 @@ function GameDirector:new()
         libraries = {
             LevelLoader = LevelLoader, sti = STI, LifeForm = LifeForm, Button = Button,
             ProgressBar = ProgressBar, Sanghost = Sanghost, ButtonManager = ButtonManager,
-            MoonJohn = MoonJohn, Pixelurite = Pixelurite
+            MoonJohn = MoonJohn, Pixelurite = Pixelurite, push = push
         },
         fonts = {
             default = love.graphics.getFont(),
@@ -71,12 +72,10 @@ function GameDirector:addButton(this, buttonList, buttonName, showText, sceneNam
     scaleDimension:calculeScales(scaleButtonName, unpack(buttonDimensions))
     scaleDimension:relativeScale(scaleButtonName, originalSize)
     local scales = scaleDimension:getScale(scaleButtonName)
-
-    --buttonName, x, y, width, height, image, originalImage, animation, 70
     local button = self.libraries["Button"]:new(showText and buttonName or "", scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
     button.callback = callback or function(self) sceneDirector:switchScene(sceneName); sceneDirector:reset(sceneName); if this.music then this.music:pause() end; if disableButton then self:disableButton() end end
     button:setScale(scales.relative.x, scales.relative.y)
-    
+    --button:setOffset(buttonDimensions[1] / 2, buttonDimensions[2] / 2)
     buttonList[scaleButtonName] = button
 end
 

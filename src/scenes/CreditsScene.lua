@@ -1,7 +1,7 @@
 local CreditsScene = {}
 CreditsScene.__index = CreditsScene
 
-function CreditsScene:new()
+function CreditsScene:new(splashCompany)
     local this = {
         variableNames = {mechanics = "Mechanics Programmers", gameDesign = "Game Designers",
         graphicalDesigners = "Graphical Designers", levelDesign = "Level Designers", enemyAi = "Enemies AI"},
@@ -10,7 +10,7 @@ function CreditsScene:new()
         gameDesign = {"João Victor Oliveira Couto"},
         graphicalDesigners = {enemies = "Lucas Silva Lima", player = "Manuella Vieira", gui = "Lokisley"},
         levelDesign = {"João Victor Oliveira Couto", "Lokisley Oliveira", "Manuella Vieira"},
-        companyImage = love.graphics.newImage("assets/company_logo.png"),
+        splashCompany = splashCompany,
         y = love.graphics.getHeight(),
         elapsedTime = 0,
         speed = 1,
@@ -62,9 +62,8 @@ function CreditsScene:draw()
         y = y + 15
     end
     y = y + 30
-    local scales = scaleDimension:getScale("splash_company")
-    love.graphics.draw(self.companyImage, scales.x, y, 0, scales.scaleX, scales.scaleY)
-    self.finalY = y + self.companyImage:getHeight() * scales.scaleY
+    love.graphics.draw(self.splashCompany.image, self.splashCompany.x, y, 0, self.splashCompany.scaleX, self.splashCompany.scaleY)
+    self.finalY = y + self.splashCompany.image:getHeight() * self.splashCompany.scaleY
 end
 
 return CreditsScene

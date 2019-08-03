@@ -4,7 +4,7 @@ function MainMenuScene:new()
     local this = setmetatable({
         background = love.graphics.newImage("assets/background.png"),
         logo = love.graphics.newImage("assets/menuLogo.png"),
-        buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
+        buttonManager = gameDirector:getLibrary("ButtonManager"):new("right", "left"),
         buttonsImage = nil, buttonsQuads = nil,
         buttons = {parentName = "mainMenu"},
         elapsedTime = 0
@@ -22,9 +22,9 @@ function MainMenuScene:new()
     this.buttonsImage = spriteSheet:getAtlas()
     local x, y, width, height = this.buttonsQuads["normal"]:getViewport()
     local originalSize = {width = width, height = height}
-    gameDirector:addButton(this, this.buttons, 'Start Game', true, "inGame", {128, 60, 350, 320}, originalSize, nil, false)
-    gameDirector:addButton(this, this.buttons, 'Configurations', true, "configurations", {128, 60, 350, 390}, originalSize, nil, false)
-    gameDirector:addButton(this, this.buttons, 'Credits', true, "credits", {128, 60, 350, 460}, originalSize, nil, false)
+    gameDirector:addButton(this, this.buttons, 'Start Game', true, "inGame", {300, 70, 140, 550}, originalSize, nil, false)
+    gameDirector:addButton(this, this.buttons, 'Configurations', true, "configurations", {300, 70, 490, 550}, originalSize, nil, false)
+    gameDirector:addButton(this, this.buttons, 'Credits', true, "credits", {300, 70, 840, 550}, originalSize, nil, false)
     this.buttons.parentName = nil
     local buttonOrder = {"mainMenuStart Game", "mainMenuConfigurations", "mainMenuCredits"}
     for _, buttonName in pairs(buttonOrder) do this.buttonManager:addButton(this.buttons[buttonName]) end
@@ -69,8 +69,7 @@ end
 
 function MainMenuScene:draw()
     local width, height = love.graphics.getDimensions()
-    local scales = scaleDimension:getScale("menuBackground")
-    love.graphics.draw(self.background, 0, 0, 0, scales.scaleX, scales.scaleY)
+    love.graphics.draw(self.background, 0, 0, 0, 1, 1)
     scales = scaleDimension:getScale("menuLogo")
     love.graphics.draw(self.logo, scales.x, scales.y, 0, scales.relative.x, scales.relative.y)
     self.buttonManager:draw()

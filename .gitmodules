@@ -10,3 +10,6 @@
 [submodule "src/libs/Simple-Tiled-Implementation"]
 	path = src/libs/Simple-Tiled-Implementation
 	url = https://github.com/karai17/Simple-Tiled-Implementation
+[submodule "src/libs/push"]
+	path = src/libs/push
+	url = https://github.com/Ulydev/push

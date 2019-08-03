@@ -4,9 +4,9 @@ local ButtonManager = {}
 
 ButtonManager.__index = ButtonManager
 
-function ButtonManager:new()
+function ButtonManager:new(next, previous)
     local this = {
-        buttons = {}, options = {},
+        buttons = {}, options = {}, controls = {next = next or "down", previous = previous or "up"},
         currentOption = 1, previousState = "normal", currentState = "hover",
         cursor = {hover = love.mouse.getSystemCursor("hand"), normal = love.mouse.getCursor()}
     }
@@ -28,13 +28,13 @@ end
 
 function ButtonManager:keypressed(key, scancode, isrepeat)
     local valid = false
-    if key == "down" and self.currentOption < #self.options then
+    if key == self.controls.next and self.currentOption < #self.options then
         if self.buttons[self.currentOption + 1]:getState() ~= "disabled" then
             self.buttons[self.currentOption]:setState(self.previousState)
             self.currentOption = self.currentOption + 1
             valid = true
         end
-    elseif key == "up" and self.currentOption > 1 then
+    elseif key == self.controls.previous and self.currentOption > 1 then
         if self.buttons[self.currentOption - 1]:getState() ~= "disabled" then
             self.buttons[self.currentOption]:setState(self.previousState)
             self.currentOption = self.currentOption - 1

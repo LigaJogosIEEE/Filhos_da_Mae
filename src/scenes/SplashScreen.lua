@@ -2,48 +2,29 @@ local SplashScreen = {}
 
 SplashScreen.__index = SplashScreen
 
-function SplashScreen:new()
+function SplashScreen:new(splashCompany, splashLove2dLogo)
     local this = {
-        splash_company = love.graphics.newImage("assets/company_logo.png"),
-        splash_loveLogo = love.graphics.newImage("assets/engine_logo.png"),
-        all = {"splash_company", "splash_loveLogo"},
-        current = 1,
-        elapsedTime = 0
+        splashCompany = splashCompany, splashLove2dLogo = splashLove2dLogo,
+        all = {"splashCompany", "splashLove2dLogo"}, current = 1, elapsedTime = 0
     }
-    
-    SplashScreen:rescaleImage("splash_loveLogo", this.splash_loveLogo)
-    SplashScreen:rescaleImage("splash_company", this.splash_company)
     
     return setmetatable(this, SplashScreen)
 end
 
-function SplashScreen:rescaleImage(name, image)
-    local imageDimension = {width = image:getWidth(), height = image:getHeight()}
-    scaleDimension:calculeScales(name, 300, 300, 0, 0)
-    scaleDimension:generateAspectRatio(name, {isImage = imageDimension, centerOffset = true})
-    scaleDimension:centralize(name, true, true, imageDimension)
-end
-
-function SplashScreen:keypressed(key, scancode, isrepeat)
-    self.elapsedTime = 3
-end
+function SplashScreen:keypressed(key, scancode, isrepeat) self.elapsedTime = 4 end
 
 function SplashScreen:update(dt)
     self.elapsedTime = self.elapsedTime + dt
     if self.elapsedTime > 2 then
-        self.current = self.current + 1
-        self.elapsedTime = 0
-        if self.current > #self.all then
-            sceneDirector:clearStack("waitStart")
-        end
+        self.current = self.current + 1; self.elapsedTime = 0
+        if self.current > #self.all then sceneDirector:clearStack("waitStart") end
     end
 end
 
 function SplashScreen:draw()
     local item = self.all[self.current]
     if item then
-        local scales = scaleDimension:getScale(item)
-        love.graphics.draw(self[item], scales.x, scales.y, 0, scales.scaleX, scales.scaleY)
+        love.graphics.draw(self[item].image, self[item].x, self[item].y, 0, self[item].scaleX, self[item].scaleY)
     end
 end
 
