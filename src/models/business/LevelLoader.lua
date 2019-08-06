@@ -15,6 +15,7 @@ function LevelLoader:new(path, world)
 end
 
 function LevelLoader:getTilePosition(objects)
+    self.enemiesData.bill = {}; self.enemiesData.seuBarriga = {}; self.enemiesData.motocycle = {}
     for _, object in pairs(objects) do
         if "bill" == object.properties.name then table.insert(self.enemiesData.bill, {x = object.x, y = object.y})
         elseif "Seu_Barriga" == object.properties.name then table.insert(self.enemiesData.seuBarriga, {x = object.x, y = object.y})

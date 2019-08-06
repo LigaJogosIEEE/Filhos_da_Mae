@@ -4,7 +4,7 @@ Uma produção da Liga de Jogos do Ramo IEEE-UEFS.
 
 ## Ferramentas Utilizadas
 
-Love2d - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . Foi desenvolvido o jogo utilizando a versão 0.11.1 do Love 2d
+LÖVE2D - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . Foi desenvolvido o jogo utilizando a versão 0.11.2 do Love 2d
 
 ## Time
 
@@ -28,7 +28,8 @@ Love2d - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . F
 * Botar os áudios e músicas
 * Separar o mapa por chunks e dar draw e update apenas nos chunks próximos ao jogador
 * Adicionar objeto de final de jogo
-* Verificar bug do Seu Barriga fantasma
+* Adicionar Zoom maior na camera e corrigir a mesma
+* Adicionar menu de gameover
 * Adicionar parallax com as nuvens se mexendo em velocidade diferente
 * Adicionar shaders
 * Adicionar efeitos para cada colisão

@@ -18,7 +18,7 @@ function EnemiesController:new(world)
         },
         enemiesFactory = {
             Seu_Barriga = {colisor = {24}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1},
-            Bill = {colisor = {16}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1},
+            Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}, damage = 1},
             Two_Guys_In_a_Bike = {colisor = {24}, sprite = nil, category = {body = 4, bullet = 4}, damage = 2}
         }
     }, EnemiesController)
@@ -43,9 +43,11 @@ function EnemiesController:startFactory()
 end
 
 function EnemiesController:clearEnemies()
-    for _, enemy in pairs(self.enemies) do
-        enemy:destroy()
-    end
+    repeat
+        for _, enemy in pairs(self.enemies) do
+            enemy:destroy()
+        end
+    until #self.enemies <= 0
     self.enemies = {}
 end
 

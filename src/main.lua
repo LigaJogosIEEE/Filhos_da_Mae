@@ -9,10 +9,6 @@ function love.load()
     local function rescaleImage(image)
         local imageDimension = {width = image:getWidth(), height = image:getHeight()}
         local item = {x = 0, y = 0, scaleX = 1, scaleY = 1, image = image}
-        --[[item.scaleX, item.scaleY = love.graphics.getWidth() / 1080, love.graphics.getHeight() / 720
-        if item.scaleX < item.scaleY then item.scaleY = item.scaleX
-        else item.scaleX = item.scaleY
-        end--]]
         item.x = (love.graphics.getWidth() / 2) - imageDimension.width / 2
         item.y = (love.graphics.getHeight() / 2) - imageDimension.height / 2
         return item
@@ -52,7 +48,6 @@ function love.load()
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
-    print(x, y, dx, dy, istouch)
     x, y = gameDirector:getLibrary("push"):toGame(x, y)
     dx, dy = gameDirector:getLibrary("push"):toGame(dx, dy)
     sceneDirector:mousemoved(x, y, dx, dy, istouch)
