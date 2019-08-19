@@ -53,7 +53,10 @@ function Enemy:endContact()
     self.body:setLinearVelocity(0, 0)
 end
 
+function Enemy:setOrientation(direction) self.orientation = direction end
+
 function Enemy:move(key)
+    if not key then key = self.orientation end
     if key == "up" then self.looking = "up"
     elseif key == "down" then self.looking = "down"
     elseif key == "left" then self.orientation = "left"; self.isMoving = true
@@ -79,6 +82,7 @@ function Enemy:shot()
 end
 
 function Enemy:stopMoving(key)
+    if not key then key = self.orientation end
     if key == "left" or key == "right" then
         if key == self.orientation then
             self.isMoving = false
