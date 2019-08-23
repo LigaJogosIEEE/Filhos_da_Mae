@@ -45,21 +45,15 @@ function LevelLoader:load(tilemapName)
     return self
 end
 
-function LevelLoader:cameraSlide(to, from)
-    if not from then local x, y = gameDirector:getPlayer():getBody():getPosition(); from = {x = x, y = y} end
-    return function()
-        
-    end
-end
-
 function LevelLoader:update(dt) self.tilemap:update(dt) end
 
 function LevelLoader:draw()
     love.graphics.translate(-128, 0)
     local x, y = gameDirector:getCameraController():getPosition()
-    y = (y < 1064 and (-y + 320) or (-1064 + 320))
+    local defaultY = (-1064 + 320)
+    y = (y < 580 and -260 or (y < 1064 and (-y + 320) or defaultY))
     self.tilemap:draw(-x < -130 and (-x > -10400 and (-x + 218) or -10400) or -130, y, 2, 2)
-    love.graphics.setColor(1, 0, 0); self.tilemap:box2d_draw(0, 0); love.graphics.setColor(1, 1, 1) --]]
+    --[[love.graphics.setColor(1, 0, 0); self.tilemap:box2d_draw(0, 0); love.graphics.setColor(1, 1, 1) --]]
 end
 
 function LevelLoader:resize(h, w) self.tilemap:resize(w, h) end
