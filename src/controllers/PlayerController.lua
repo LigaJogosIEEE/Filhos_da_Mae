@@ -26,6 +26,7 @@ function PlayerController:takeDamage(damageAmount)
     if previousLife > self.stats:getLife() then gameDirector:getLifebar():decrement(damageAmount)
     else gameDirector:getLifebar():fill()
     end
+    gameDirector:getCameraController():shake()
 	return isDead
 end
 
@@ -49,7 +50,6 @@ function PlayerController:getLives() return self.stats:getLives() end
 function PlayerController:update(dt)
     self.player:update(dt)
     local x, y = self.player:getPosition()
-    print(x, y)
     if x >= 10691 then self:instantDeath()
     elseif y >= 1350 then self:instantDeath() end
 end

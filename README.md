@@ -27,7 +27,6 @@ LÖVE2D - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . 
 
 * Botar os áudios e músicas
 * Separar o mapa por chunks e dar draw e update apenas nos chunks próximos ao jogador
-* Adicionar Zoom maior na camera e corrigir a mesma
 * Adicionar menu de gameover
 * Adicionar parallax com as nuvens se mexendo em velocidade diferente
 * Adicionar shaders
@@ -41,5 +40,5 @@ LÖVE2D - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . 
 * Pixelurite - A sprite animation library -> <https://github.com/Jictyvoo/Pixelurite>
 * Sanghost - A game state library -> <https://github.com/Jictyvoo/Sanghost>
 * Simple Tiled Implementation - A Tiled Loader to use in LOVE2D -> <https://github.com/karai17/Simple-Tiled-Implementation>
-* gamera - A camera lib for LOVE2D -> <https://github.com/kikito/gamera>
+* STALKER-X - A camera lib for LOVE2D -> <https://github.com/adnzzzzZ/STALKER-X>
 * push - A simple resolution-handling library -> <https://github.com/Ulydev/push>
