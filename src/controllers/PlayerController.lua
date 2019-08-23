@@ -26,6 +26,7 @@ function PlayerController:takeDamage(damageAmount)
     if previousLife > self.stats:getLife() then gameDirector:getLifebar():decrement(damageAmount)
     else gameDirector:getLifebar():fill()
     end
+    gameDirector:getCameraController():shake()
 	return isDead
 end
 

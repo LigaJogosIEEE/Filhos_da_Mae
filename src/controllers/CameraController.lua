@@ -5,30 +5,33 @@ function CameraController:new()
     local this = {
         previousOrientation = true, --[[ true if right, false is left --]]
         previousPosition = {x = 0, y = 0},
-        gamera = require "libs.gamera".new(0, 0, 172 * 64, 17 * 64)
+        stalkerX = require "libs.STALKER-X"()
     }
-    this.gamera:setScale(2); this.gamera:setPosition(0, 0)
+    this.stalkerX.scale = 2
+    this.stalkerX:setFollowStyle('PLATFORMER'); this.stalkerX:setFollowLerp(0.1); this.stalkerX:setFollowLead(5)
     return setmetatable(this, CameraController)
 end
 
-function CameraController:isOnCenter(xPosition, yPosition)
-    local dimensions = {x = love.graphics.getWidth() / 2, y = love.graphics.getHeight() / 2}
-    local x = self.previousOrientation and xPosition >= dimensions.x or not self.previousOrientation and dimensions.x >= xPosition
-    local y = yPosition >= dimensions.y
-    return x, y
+function CameraController:shake()
+    self.stalkerX:shake(4, 1, 60)
+end
+
+function CameraController:getPosition()
+    return self.stalkerX.x, self.stalkerX.y
 end
 
 function CameraController:update(dt)
     local inGround = gameDirector:getPlayer():isInGround()
     local x, y = gameDirector:getPlayer():getBody():getPosition()
-    self.gamera:setPosition(x < 9944 and x or 9944, y)--(inGround and y or self.previousPosition.y) - 300)
+    self.stalkerX:update(dt)
+    self.stalkerX:follow(x < 10400 and x or 10400, y)--(inGround and y or self.previousPosition.y) - 300)
     if inGround then
         self.previousPosition.x, self.previousPosition.y = x, y
     end
 end
 
 function CameraController:draw(drawFunction)
-    self.gamera:draw(drawFunction)
+    self.stalkerX:attach(); drawFunction(); self.stalkerX:detach(); self.stalkerX:draw()
 end
 
 return CameraController
