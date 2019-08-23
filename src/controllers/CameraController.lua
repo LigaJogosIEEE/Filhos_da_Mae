@@ -7,7 +7,7 @@ function CameraController:new()
         previousPosition = {x = 0, y = 0},
         gamera = require "libs.gamera".new(0, 0, 172 * 64, 17 * 64)
     }
-    this.gamera:setScale(1); this.gamera:setPosition(0, 0)
+    this.gamera:setScale(2); this.gamera:setPosition(0, 0)
     return setmetatable(this, CameraController)
 end
 
@@ -21,7 +21,7 @@ end
 function CameraController:update(dt)
     local inGround = gameDirector:getPlayer():isInGround()
     local x, y = gameDirector:getPlayer():getBody():getPosition()
-    self.gamera:setPosition(x < 9944 and x or 9944, 1000)--(inGround and y or self.previousPosition.y) - 300)
+    self.gamera:setPosition(x < 9944 and x or 9944, y)--(inGround and y or self.previousPosition.y) - 300)
     if inGround then
         self.previousPosition.x, self.previousPosition.y = x, y
     end
