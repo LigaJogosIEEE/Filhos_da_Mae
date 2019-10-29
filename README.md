@@ -25,10 +25,8 @@ LÖVE2D - A Lua Framework, pode ser encontrado nesse link: https://love2d.org . 
 
 ## Metas
 
-* Botar os áudios e músicas
 * Separar o mapa por chunks e dar draw e update apenas nos chunks próximos ao jogador
 * Adicionar menu de gameover
-* Adicionar parallax com as nuvens se mexendo em velocidade diferente
 * Adicionar shaders
 * Adicionar efeitos para cada colisão
 * Adicionar historinha (animação)

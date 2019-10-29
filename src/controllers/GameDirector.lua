@@ -15,6 +15,7 @@ local Sanghost = require "libs.Sanghost.Sanghost"
 local push = require "libs.push.push"
 
 --Controllers
+local AudioController = require "controllers.AudioController"
 local PlayerController = require "controllers.PlayerController"
 local EnemiesController = require "controllers.EnemiesController"
 local CameraController = require "controllers.CameraController"
@@ -45,7 +46,7 @@ function GameDirector:new()
     local this = {
         bulletsInWorld = {}, world = world, lifeBar = ProgressBar:new(20, 20, 200, 40, {1, 0, 0}, 15, 15),
         playerController = PlayerController:new(LifeForm, Player, playerAnimation, world.world), enemiesController = EnemiesController:new(world),
-        cameraController = CameraController:new(), sanghost = Sanghost:new(),
+        cameraController = CameraController:new(), audioController = AudioController:new(), sanghost = Sanghost:new(),
         --Libraries
         libraries = {
             LevelLoader = LevelLoader, sti = STI, LifeForm = LifeForm, Button = Button,
@@ -72,7 +73,7 @@ function GameDirector:addButton(this, buttonList, buttonName, showText, sceneNam
     scaleDimension:calculeScales(scaleButtonName, unpack(buttonDimensions))
     scaleDimension:relativeScale(scaleButtonName, originalSize)
     local scales = scaleDimension:getScale(scaleButtonName)
-    local button = self.libraries["Button"]:new(showText and buttonName or "", scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage)
+    local button = self.libraries["Button"]:new(showText and buttonName or "", scales.x, scales.y, scales.width, scales.height, this.buttonsQuads, this.buttonsImage, self.audioController:getSound("effects", "button_pressed"))
     button.callback = callback or function(self) sceneDirector:switchScene(sceneName); sceneDirector:reset(sceneName); if this.music then this.music:pause() end; if disableButton then self:disableButton() end end
     button:setScale(scales.relative.x, scales.relative.y)
     --button:setOffset(buttonDimensions[1] / 2, buttonDimensions[2] / 2)
@@ -89,6 +90,10 @@ function GameDirector:getFonts() return self.fonts end
 
 function GameDirector:addBullet(x, y, orientation, speed, category, fromPlayer)
     if not fromPlayer or (fromPlayer and self.playerController:shot()) then
+        if fromPlayer then
+            local coinSound = self.audioController:getSound("effects", "coin_sound")
+            coinSound:stop(); coinSound:play()
+        end
         table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed, nil, category))
     end
 end
@@ -111,6 +116,7 @@ end
 
 function GameDirector:getPlayer() return self.playerController end
 function GameDirector:getLifeBar() return self.lifeBar end
+function GameDirector:getAudioController() return self.audioController end
 function GameDirector:getCameraController() return self.cameraController end
 function GameDirector:getEnemiesController() return self.enemiesController end
 function GameDirector:getWorld() return self.world end

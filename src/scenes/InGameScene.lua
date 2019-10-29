@@ -2,15 +2,26 @@ local InGameScene = {}
 
 InGameScene.__index = InGameScene
 
-function InGameScene:new(world)
+function InGameScene:new(world, game_music)
     local this = {
         level_1_map = gameDirector:getLibrary("LevelLoader"):new("assets/tilesets", world):load("level_1_map"),
-        liveImage = love.graphics.newImage("assets/elements/health.png")
+        liveImage = love.graphics.newImage("assets/elements/health.png"),
+        game_music = game_music
     }
     gameDirector:getEnemiesController():startFactory()
-
+    this.game_music:isLooping(true)
     sceneDirector:addSubscene("pause", require "scenes.subscenes.PauseGame":new())
     return setmetatable(this, InGameScene)
+end
+
+function InGameScene:entering(sceneName)
+    --print("enter", sceneName)
+    self.game_music:play()
+end
+
+function InGameScene:goingOut(sceneName)
+    --print("Out", sceneName)
+    self.game_music:pause()
 end
 
 function InGameScene:keypressed(key, scancode, isrepeat)

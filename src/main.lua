@@ -19,7 +19,7 @@ function love.load()
 
     sceneDirector = gameDirector:getLibrary("MoonJohn").MoonJohn:new(require "scenes.SplashScreen":new(splashCompany, splashLove2dLogo))
     --Adding Scenes to SceneDirector
-    local inGame = require "scenes.InGameScene":new(gameDirector:getWorld().world)
+    local inGame = require "scenes.InGameScene":new(gameDirector:getWorld().world, gameDirector:getAudioController():getSound("music", "game_music"))
     sceneDirector:setDefaultTransition(function() return gameDirector:getLibrary("MoonJohn").Transitions:FadeOut() end)
 
     --Adding Scenes to SceneDirector
@@ -27,7 +27,7 @@ function love.load()
     sceneDirector:addScene("mainMenu", require "scenes.MainMenuScene":new())
     sceneDirector:addScene("credits", require "scenes.CreditsScene":new(splashCompany))
     sceneDirector:addScene("configurations", require "scenes.ConfigurationScene":new())
-    sceneDirector:addScene("inGame", require "scenes.InGameScene":new(gameDirector:getWorld().world))
+    sceneDirector:addScene("inGame", inGame)
 
     local gameWidth, gameHeight = 1280, 720 --fixed game resolution
     local windowWidth, windowHeight = love.window.getDesktopDimensions()
@@ -38,8 +38,8 @@ function love.load()
     for _, event in pairs(events) do
         if mouseEvents[event] then
             love[event] = function(x, y, button)
-                x, y = gameDirector:getLibrary("push"):toGame(x, y)
-                sceneDirector[event](sceneDirector, x, y, button)
+                local new_x, new_y = gameDirector:getLibrary("push"):toGame(x, y)
+                sceneDirector[event](sceneDirector, new_x or -x, new_y or -y, button)
             end
         else
             love[event] = function(...) sceneDirector[event](sceneDirector, ...) end
@@ -48,9 +48,9 @@ function love.load()
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
-    x, y = gameDirector:getLibrary("push"):toGame(x, y)
-    dx, dy = gameDirector:getLibrary("push"):toGame(dx, dy)
-    sceneDirector:mousemoved(x, y, dx, dy, istouch)
+    local new_x, new_y = gameDirector:getLibrary("push"):toGame(x, y)
+    new_dx, new_dy = gameDirector:getLibrary("push"):toGame(dx, dy)
+    sceneDirector:mousemoved(new_x or -x, new_y or -y, new_dx or -dx, new_dy or -dy, istouch)
 end
 
 function love.draw()

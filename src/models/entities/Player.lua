@@ -89,6 +89,9 @@ function Player:reset()
 end
 
 function Player:touchGround(isTouching)
+    if not self.inGround and isTouching then
+        gameDirector:getAudioController():getSound("effects", "falling_sound"):play()
+    end
     self.inGround = isTouching; self.animation = self.previousAnimation
     if self.animation == "jumping" and not self.move then
         if love.keyboard.isDown("right") or love.keyboard.isDown("left") then

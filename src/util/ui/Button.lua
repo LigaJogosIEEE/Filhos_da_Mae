@@ -2,14 +2,15 @@ local Button = {}
 
 Button.__index = Button
 
-function Button:new(buttonName, x, y, width, height, image, originalImage, animation, cursor)
+function Button:new(buttonName, x, y, width, height, image, originalImage, pressSound, cursor, animation)
     local this = {
         name = buttonName, x = x or 0, y = y or 0, width = width or 100, height = height or 50,
         image = type(image) == "table" and image or {normal = image, pressed = image, hover = image, disabled = image},
         state = "normal", pressed = false, callback = function() return "Clicked" end,
         animation = animation or {normal = nil, pressed = nil, hover = nil}, scaleX = 1, scaleY = 1,
         originalImage = originalImage, visible = true, rotation = 0, offsetX = 0, offsetY = 0,
-        cursor = cursor or {hover = love.mouse.getSystemCursor("hand"), normal = love.mouse.getCursor()}
+        cursor = cursor or {hover = love.mouse.getSystemCursor("hand"), normal = love.mouse.getCursor()},
+        pressSound = pressSound
     }
 
     return setmetatable(this, Button)
@@ -23,7 +24,7 @@ function Button:setCursor(cursor) self.cursor = cursor end
 
 function Button:setCallback(callback) self.callback = callback end
 
-function Button:executeCallback(...) self.callback(self, ...) end
+function Button:executeCallback(...) if self.pressSound then self.pressSound:play() end self.callback(self, ...) end
 
 function Button:disableButton() self.state = "disabled" end
 
@@ -62,10 +63,9 @@ end
 
 function Button:mousemoved(x, y, dx, dy, istouch)
     if self:isMouseOnButton(x, y) and (not self.pressed) and self.state ~= "disabled" then
-        self.state = "hover"; love.mouse.setCursor(self.cursor.hover)
+        self.state = "hover"
         return self.name
     elseif not self.pressed and self.state ~= "disabled" then
-        if self.state == "hover" then love.mouse.setCursor(self.cursor.normal) end
         self.state = "normal"
     end
     return nil
@@ -81,7 +81,7 @@ end
 
 function Button:mousereleased(x, y, button, istouch)
     if self:isMouseOnButton(x, y) and self.pressed and self.state ~= "disabled" then
-        self.callback(self)
+        self:executeCallback()
     end
     self.pressed = false
     self.state = self.state == "disabled" and self.state or "normal"
@@ -112,7 +112,7 @@ function Button:draw()
             end
         end
         
-        love.graphics.rectangle("line", self.x - self.offsetX, self.y - self.offsetY, self.width, self.height)
+        --love.graphics.rectangle("line", self.x - self.offsetX, self.y - self.offsetY, self.width, self.height)
     end
 end
 
