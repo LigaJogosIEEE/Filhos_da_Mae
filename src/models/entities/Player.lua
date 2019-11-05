@@ -3,7 +3,7 @@ local Player = {}; Player.__index = Player
 function Player:new(spriteAnimation, world)
     assert(spriteAnimation, "Is needed a animation for this actor")
     local this = setmetatable({
-        move = false, inGround = false, speed = 250, jumpForce = -200,
+        move = false, inGround = false, speed = 250, jumpForce = -140, jumpTime = 0,
         orientation = "right", animation = "idle", previousAnimation = "idle", looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
         allAnimations = spriteAnimation, spriteAnimation = spriteAnimation[love.math.random(2)],
@@ -11,13 +11,20 @@ function Player:new(spriteAnimation, world)
     }, Player)
 
     --aplying physics
-    this.body = love.physics.newBody(this.world, 0, 0, "dynamic")
+    this.body = love.physics.newBody(this.world, 340, 0, "dynamic")
     this.shape = love.physics.newCircleShape(26)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.body:setFixedRotation(true); this.fixture:setUserData({name = "Player", object = this})
     this.fixture:setCategory(1); this.fixture:setMask(2, 3); this.fixture:setFriction(0)
 
     return this
+end
+
+function Player:reset()
+    self.move = false; self.inGround = true; self.looking = nil
+    self.body:setLinearVelocity(0, 0); self.body:setX(340); self.body:setY(900)
+    self.orientation = "right"; self.animation = "idle"
+    self.spriteAnimation = self.allAnimations[love.math.random(2)]; self.previousAnimation = "idle"
 end
 
 function Player:keypressed(key, scancode, isrepeat)
@@ -34,7 +41,7 @@ function Player:keypressed(key, scancode, isrepeat)
 
     if key == self.controlKeys.jump and self.inGround then
         self.body:applyLinearImpulse(0, self.jumpForce)
-        self.inGround = false
+        self.inGround = false; self.jumpTime = 0.22;
         self.previousAnimation = self.animation ~= "jumping" and self.animation or self.previousAnimation
     end
 
@@ -67,6 +74,7 @@ function Player:keyreleased(key, scancode)
         self.previousAnimation = self.animation
         if not self.inGround then self.previousAnimation = self.move and "running" or "idle" end
     end
+    if key == self.controlKeys.jump then self.jumpTime = 0 end
 end
 
 function Player:getPosition() return self.body:getX(), self.body:getY() end
@@ -79,13 +87,6 @@ end
 
 function Player:configureKeys(action, key)
     if self.controlKeys[action] then self.controlKeys[action] = key end
-end
-
-function Player:reset()
-    self.move = false; self.inGround = true; self.looking = nil
-    self.body:setLinearVelocity(0, 0); self.body:setX(256); self.body:setY(900)
-    self.orientation = "right"; self.animation = "idle"
-    self.spriteAnimation = self.allAnimations[love.math.random(2)]; self.previousAnimation = "idle"
 end
 
 function Player:touchGround(isTouching)
@@ -113,6 +114,10 @@ function Player:retreat()
 end
 
 function Player:update(dt)
+    self.jumpTime = self.jumpTime - dt
+    if self.jumpTime > 0 then
+        self.body:applyLinearImpulse(0, self.jumpForce / 15)
+    end
     if self.body:getX() <= 340 then self.body:setX(340) end
     if self.spriteAnimation then
         if self.move then

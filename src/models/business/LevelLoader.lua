@@ -50,8 +50,8 @@ function LevelLoader:update(dt) self.tilemap:update(dt) end
 function LevelLoader:draw()
     love.graphics.translate(-128, 0)
     local x, y = gameDirector:getCameraController():getPosition()
-    local defaultY = (-1064 + 320)
-    y = (y < 580 and -260 or (y < 1064 and (-y + 320) or defaultY))
+    local defaultY = (-1064 + 340)
+    y = (y < 580 and -260 or (y < 1048 and (-y + 320) or defaultY))
     self.tilemap:draw(-x < -130 and (-x > -10400 and (-x + 218) or -10400) or -130, y, 2, 2)
     --[[love.graphics.setColor(1, 0, 0); self.tilemap:box2d_draw(0, 0); love.graphics.setColor(1, 1, 1) --]]
 end

@@ -23,8 +23,9 @@ end
 function CameraController:update(dt)
     local inGround = gameDirector:getPlayer():isInGround()
     local x, y = gameDirector:getPlayer():getBody():getPosition()
-    self.stalkerX:update(dt)
+    if y > 1048 then y = 1048 end
     self.stalkerX:follow(x < 10400 and x or 10400, y)--(inGround and y or self.previousPosition.y) - 300)
+    self.stalkerX:update(dt)
     if inGround then
         self.previousPosition.x, self.previousPosition.y = x, y
     end
