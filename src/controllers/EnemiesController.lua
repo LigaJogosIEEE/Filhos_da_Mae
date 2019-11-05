@@ -17,9 +17,9 @@ function EnemiesController:new(world)
             Two_Guys_In_a_Bike = {idle = "", running = "", up = "", down = ""}
         },
         enemiesFactory = {
-            Seu_Barriga = {colisor = {24}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1},
-            Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}, damage = 1},
-            Two_Guys_In_a_Bike = {colisor = {26}, sprite = nil, category = {body = 4, bullet = 4}, damage = 2}
+            Seu_Barriga = {colisor = {24}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1, scale = {1, 1}},
+            Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}, damage = 1, scale = {1, 1}},
+            Two_Guys_In_a_Bike = {colisor = {48}, sprite = nil, category = {body = 4, bullet = 4}, damage = 2, scale = {1.5, 1.5}}
         }
     }, EnemiesController)
 
@@ -58,7 +58,7 @@ end
 function EnemiesController:createEnemy(enemyType, x, y)
     assert(enemyType, "Needs to receive enemyType Parameter")
     local enemyConfig = self.enemiesFactory[enemyType]
-    local enemy = Enemy:new(enemyConfig.sprite, self.world, x or 600, y or 500, enemyType, enemyConfig.colisor, enemyConfig.category.body, enemyConfig.category.bullet)
+    local enemy = Enemy:new(enemyConfig.sprite, self.world, x or 600, y or 500, enemyType, enemyConfig.colisor, enemyConfig.category.body, enemyConfig.category.bullet, enemyConfig.scale)
     table.insert(self.enemies, enemy)
     self.ai[enemy] = self.ai.types[enemyType]:new(enemy)
 end

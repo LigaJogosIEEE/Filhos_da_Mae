@@ -130,7 +130,7 @@ function GameDirector:update(dt)
         self.cameraController:update(dt)
     else
         --here will call gameOver scene
-        sceneDirector:previousScene()
+        sceneDirector:switchSubscene("gameOver")
     end
 end
 

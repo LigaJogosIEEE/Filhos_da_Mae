@@ -28,6 +28,7 @@ function love.load()
     sceneDirector:addScene("credits", require "scenes.CreditsScene":new(splashCompany))
     sceneDirector:addScene("configurations", require "scenes.ConfigurationScene":new())
     sceneDirector:addScene("inGame", inGame)
+    sceneDirector:addSubscene("gameOver", require "scenes.subscenes.GameOver":new())
 
     local gameWidth, gameHeight = 1280, 720 --fixed game resolution
     local windowWidth, windowHeight = love.window.getDesktopDimensions()

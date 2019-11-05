@@ -9,22 +9,26 @@ function MainMenuScene:new()
         buttons = {parentName = "mainMenu"},
         elapsedTime = 0
     }, MainMenuScene)
-    scaleDimension:calculeScales("menuLogo", 150, 110, 0, 50)
+    scaleDimension:calculeScales("menuLogo", 150, 110, 60, 50)
     scaleDimension:relativeScale("menuLogo", {width = this.logo:getWidth(), height = this.logo:getHeight()})
-    scaleDimension:centralize("menuLogo", true, false, false, false)
 
-    local spriteSheet = gameDirector:getLibrary("Pixelurite").getSpritesheet():new("buttons", "assets/gui/", nil)
-    local spriteQuads = spriteSheet:getQuads()
-    this.buttonsQuads = {
-        normal = spriteQuads["normal"], hover = spriteQuads["hover"],
-        pressed = spriteQuads["pressed"], disabled = spriteQuads["disabled"]
-    }
-    this.buttonsImage = spriteSheet:getAtlas()
-    local x, y, width, height = this.buttonsQuads["normal"]:getViewport()
-    local originalSize = {width = width, height = height}
-    gameDirector:addButton(this, this.buttons, 'Start Game', true, "inGame", {300, 70, 140, 550}, originalSize, nil, false)
-    gameDirector:addButton(this, this.buttons, 'Configurations', true, "configurations", {300, 70, 490, 550}, originalSize, nil, false)
-    gameDirector:addButton(this, this.buttons, 'Credits', true, "credits", {300, 70, 840, 550}, originalSize, nil, false)
+    local function loadSpriteSheet(filename)
+        local spriteSheet = gameDirector:getLibrary("Pixelurite").getSpritesheet():new(filename, "assets/gui/", nil)
+        local spriteQuads = spriteSheet:getQuads()
+        this.buttonsQuads = {
+            normal = spriteQuads["normal"], hover = spriteQuads["hover"],
+            pressed = spriteQuads["pressed"], disabled = spriteQuads["disabled"]
+        }
+        this.buttonsImage = spriteSheet:getAtlas()
+        local x, y, width, height = this.buttonsQuads["normal"]:getViewport()
+        return {width = width, height = height}
+    end
+    local originalSize = loadSpriteSheet("play_button")
+    gameDirector:addButton(this, this.buttons, 'Start Game', false, "inGame", {300, 70, 140, 550}, originalSize, nil, false)
+    local originalSize = loadSpriteSheet("config_button")
+    gameDirector:addButton(this, this.buttons, 'Configurations', false, "configurations", {300, 70, 490, 550}, originalSize, nil, false)
+    local originalSize = loadSpriteSheet("credits_button")
+    gameDirector:addButton(this, this.buttons, 'Credits', false, "credits", {300, 70, 840, 550}, originalSize, nil, false)
     this.buttons.parentName = nil
     local buttonOrder = {"mainMenuStart Game", "mainMenuConfigurations", "mainMenuCredits"}
     for _, buttonName in pairs(buttonOrder) do this.buttonManager:addButton(this.buttons[buttonName]) end

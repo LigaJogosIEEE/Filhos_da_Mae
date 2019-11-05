@@ -1,11 +1,11 @@
 local Enemy = {}; Enemy.__index = Enemy
 
-function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions, category, bulletCategory)
+function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions, category, bulletCategory, scale)
     assert(colisorDimensions and type(colisorDimensions) == "table", "Enemy needs a colisor dimension and its need to be a table")
     local this = {
         isMoving = false, inGround = false, bulletCategory = bulletCategory or 3,
         speed = 100, jumpForce = 320, orientation = "left", animation = "idle", previousAnimation = "idle",
-        looking = nil,
+        looking = nil, scale = scale or {1, 1},
         world = world or love.physics.newWorld(0, 9.81 * 64),
         spriteAnimation = spriteAnimation or nil,
         lifeForm = gameDirector:getLibrary("LifeForm")(enemyType, 5, 2)
@@ -112,8 +112,8 @@ end
 function Enemy:draw()
     if self.spriteAnimation then
         local positionToDraw = self.animation
-        local scaleX = self.orientation == "right" and -1 or 1
-        self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX)
+        local scaleX = self.orientation == "right" and -self.scale[1] or self.scale[1]
+        self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX, self.scale[2])
         --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
         love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius())
     end
