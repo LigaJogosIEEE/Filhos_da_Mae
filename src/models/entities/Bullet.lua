@@ -46,7 +46,13 @@ function Bullet:draw()
     if self.texture then
         love.graphics.draw(self.texture, self.body:getX(), self.body:getY())
     else
-        self.sprite:draw(self.body:getX(), self.body:getY() - 2, 2 * (self.orientation == "right" and 1 or -1), 2)
+        local rotation = 0
+        local offsetX, offsetY = 0, -2
+        if self.orientation == "up" then
+            rotation = math.pi / 2
+            offsetX, offsetY = 6, -20
+        end
+        self.sprite:draw(self.body:getX() + offsetX, self.body:getY() + offsetY, 2 * (self.orientation == "right" and 1 or -1), 2, nil, nil, rotation)
     end
 end
 
