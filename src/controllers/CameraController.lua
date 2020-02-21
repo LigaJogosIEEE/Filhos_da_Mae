@@ -13,7 +13,7 @@ function CameraController:new()
 end
 
 function CameraController:shake()
-    self.stalkerX:shake(4, 1, 60)
+    self.stalkerX:shake(4, 0.2, 60)
 end
 
 function CameraController:getPosition()

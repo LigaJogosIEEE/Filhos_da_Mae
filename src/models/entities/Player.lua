@@ -7,12 +7,12 @@ function Player:new(spriteAnimation, world)
         orientation = "right", animation = "idle", previousAnimation = "idle", looking = nil,
         world = world or love.physics.newWorld(0, 9.81 * 64),
         allAnimations = spriteAnimation, spriteAnimation = spriteAnimation[love.math.random(2)],
-        controlKeys = {left = "left", right = "right", up = "up", down = "down", jump = "space", shot = "z"}
+        controlKeys = {left = "left", right = "right", up = "up", down = "down", jump = "z", shot = "x"}
     }, Player)
 
     --aplying physics
     this.body = love.physics.newBody(this.world, 340, 0, "dynamic")
-    this.shape = love.physics.newCircleShape(26)
+    this.shape = love.physics.newCircleShape(22)
     this.fixture = love.physics.newFixture(this.body, this.shape, 1)
     this.body:setFixedRotation(true); this.fixture:setUserData({name = "Player", object = this})
     this.fixture:setCategory(1); this.fixture:setMask(2, 3); this.fixture:setFriction(0)
@@ -52,7 +52,7 @@ function Player:keypressed(key, scancode, isrepeat)
         local horizontalDirection = verticalDirection == 0 and self.orientation == "right" and 20 or self.orientation == "left" and - 10 or 0
         
         local positionToDraw = self.looking == "up" and self.looking or self.orientation
-        gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 500, 2, true)
+        gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 1200, 2, true)
     end
 end
 
@@ -116,7 +116,7 @@ end
 function Player:update(dt)
     self.jumpTime = self.jumpTime - dt
     if self.jumpTime > 0 then
-        self.body:applyLinearImpulse(0, self.jumpForce / 15)
+        self.body:applyLinearImpulse(0, self.jumpForce / 35)
     end
     if self.body:getX() <= 340 then self.body:setX(340) end
     if self.spriteAnimation then
@@ -134,9 +134,9 @@ function Player:draw()
     if self.spriteAnimation then
         local positionToDraw = self.animation
         local scaleX = self.orientation == "right" and 1 or -1
-        self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX)
+        self.spriteAnimation[positionToDraw]:draw(self.body:getX() + (4 * scaleX), self.body:getY() - 5, scaleX)
         --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
-        --love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius())
+        love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius())
     end
 end
 
