@@ -31,12 +31,17 @@ function MainMenuScene:new()
     gameDirector:addButton(this, this.buttons, 'Credits', false, "credits", {300, 70, 840, 550}, originalSize, nil, false)
     this.buttons.parentName = nil
     local buttonOrder = {"mainMenuStart Game", "mainMenuConfigurations", "mainMenuCredits"}
-    for _, buttonName in pairs(buttonOrder) do this.buttonManager:addButton(this.buttons[buttonName]) end
+    for _, buttonName in ipairs(buttonOrder) do this.buttonManager:addButton(this.buttons[buttonName]) end
 
     return this
 end
 
+function MainMenuScene:entering()
+    self.elapsedTime = 0
+end
+
 function MainMenuScene:keypressed(key, scancode, isrepeat)
+    self.elapsedTime = 0
     if key == "escape" then
         love.event.quit()
     end
@@ -48,14 +53,17 @@ function MainMenuScene:keyreleased(key, scancode)
 end
 
 function MainMenuScene:mousemoved(x, y, dx, dy, istouch)
+    self.elapsedTime = 0
     self.buttonManager:mousemoved(x, y, dx, dy, istouch)
 end
 
 function MainMenuScene:mousepressed(x, y, button)
+    self.elapsedTime = 0
     self.buttonManager:mousepressed(x, y, button)
 end
 
 function MainMenuScene:mousereleased(x, y, button)
+    self.elapsedTime = 0
     self.buttonManager:mousereleased(x, y, button)
 end
 
@@ -74,7 +82,7 @@ end
 function MainMenuScene:draw()
     local width, height = love.graphics.getDimensions()
     love.graphics.draw(self.background, 0, 0, 0, 1, 1)
-    scales = scaleDimension:getScale("menuLogo")
+    local scales = scaleDimension:getScale("menuLogo")
     love.graphics.draw(self.logo, scales.x, scales.y, 0, scales.relative.x, scales.relative.y)
     self.buttonManager:draw()
 end
