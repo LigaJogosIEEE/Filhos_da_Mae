@@ -9,7 +9,7 @@ function HealthInsurance:new()
             lifeForm:increaseLife(number)
         end,
         moreLives = function(lifeForm, amount)
-            lifeForm.increaseLives(amount)
+            lifeForm:increaseLives(amount)
         end
     }
 
