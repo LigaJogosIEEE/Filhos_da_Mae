@@ -31,7 +31,7 @@ local beginContact = function(a, b, coll)
         gameDirector:getEntityByFixture(playerFixture):instantDeath()
     elseif bullet and (enemy or playerFixture) then
         local entity = (enemy and enemy:getUserData().object) or (playerFixture and gameDirector:getPlayer())
-        entity:takeDamage(1); gameDirector:removeBullet(nil, bullet)
+        entity:takeDamage(1); bullet:getUserData().object:explode()--gameDirector:removeBullet(nil, bullet)
     end
 end
 
@@ -45,7 +45,7 @@ local endContact = function(a, b, coll)
 end
 
 function World:new()
-    love.physics.setMeter(64); world = love.physics.newWorld(0, 9.81 * 128)
+    world = love.physics.newWorld(0, 512); love.physics.setMeter(64)
     world:setCallbacks(beginContact, endContact)
     return setmetatable({world = world}, World)
 end

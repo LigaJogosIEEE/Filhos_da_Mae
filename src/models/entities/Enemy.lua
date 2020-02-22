@@ -1,12 +1,12 @@
 local Enemy = {}; Enemy.__index = Enemy
 
-function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions, category, bulletCategory, scale)
+function Enemy:new(spriteAnimation, world, x, y, enemyType, colisorDimensions, category, bulletCategory, scale, bulletConfig)
     assert(colisorDimensions and type(colisorDimensions) == "table", "Enemy needs a colisor dimension and its need to be a table")
     local this = {
         isMoving = false, inGround = false, bulletCategory = bulletCategory or 3,
         speed = 100, jumpForce = 320, orientation = "left", animation = "idle", previousAnimation = "idle",
-        looking = nil, scale = scale or {1, 1},
-        world = world or love.physics.newWorld(0, 9.81 * 64),
+        looking = nil, scale = scale or {1, 1}, bulletConfig = bulletConfig,
+        world = world,
         spriteAnimation = spriteAnimation or nil,
         lifeForm = gameDirector:getLibrary("LifeForm")(enemyType, 5, 2)
     }
@@ -44,8 +44,7 @@ function Enemy:touchGround(isTouching)
 end
 
 function Enemy:takeDamage(amount)
-    local isDead = self.lifeForm:takeDamage(amount)
-    if isDead then self:destroy() end
+    self.lifeForm:takeDamage(amount)
 end
 
 function Enemy:endContact()
@@ -74,11 +73,11 @@ function Enemy:getSpeed() return self.speed end
 function Enemy:setSpeed(speed) self.speed = speed end
 
 function Enemy:shot()
-    local verticalDirection = self.looking == "up" and - 20 or self.looking == "down" and 70 or -10
-    local horizontalDirection = verticalDirection ~= -10 and 0 or self.orientation == "right" and 10 or self.orientation == "left" and - 10 or 0
+    local verticalDirection = 10
+    local horizontalDirection = self.orientation == "right" and 10 or self.orientation == "left" and - 10 or 0
     
     local positionToDraw = self.looking == nil and self.orientation or self.looking
-    gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 300, self.bulletCategory)
+    gameDirector:addBullet(self.body:getX() + horizontalDirection, self.body:getY() + verticalDirection, positionToDraw, 300, self.bulletCategory, nil, self.bulletConfig)
 end
 
 function Enemy:stopMoving(key)
@@ -101,11 +100,19 @@ function Enemy:update(dt)
         if self.inGround and self.animation == "jumping" then
             self.animation = self.previousAnimation
         end
-        if self.isMoving then
-            local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
-            self.body:setLinearVelocity((self.orientation == "left" and -1 or 1) * self.speed, yBodyVelocity)
+        if self.lifeForm:isDead() then
+            self.animation = "dying"
+        else
+            if self.isMoving then
+                local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
+                self.body:setLinearVelocity((self.orientation == "left" and -1 or 1) * self.speed, yBodyVelocity)
+            end
         end
         self.spriteAnimation[self.animation]:update(dt)
+        if self.spriteAnimation[self.animation]:isOver() then
+            self.spriteAnimation[self.animation]:resetCurrent()
+            self:destroy()
+        end
     end
 end
 

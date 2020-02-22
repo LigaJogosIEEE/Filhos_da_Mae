@@ -12,14 +12,14 @@ function EnemiesController:new(world)
         }},
         world = world.world,
         enemiesUserData = {
-            Bill = {idle = "_Idle", running = "_Running", up = "_Idle", down = "_Idle"},
-            Seu_Barriga = {idle = "", running = "", up = "", down = ""},
-            Two_Guys_In_a_Bike = {idle = "", running = "", up = "", down = ""}
+            Bill = {idle = "_Idle", running = "_Running", up = "_Idle", down = "_Idle", dying = "_Dying"},
+            Seu_Barriga = {idle = "", running = "", up = "", down = "", dying = ""},
+            Two_Guys_In_a_Bike = {idle = "", running = "", up = "", down = "", dying = ""}
         },
         enemiesFactory = {
-            Seu_Barriga = {colisor = {24}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1, scale = {1, 1}},
-            Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}, damage = 1, scale = {1, 1}},
-            Two_Guys_In_a_Bike = {colisor = {48}, sprite = nil, category = {body = 4, bullet = 4}, damage = 2, scale = {1.5, 1.5}}
+            Seu_Barriga = {colisor = {24}, sprite = nil, category = {body = 4, bullet = 4}, damage = 1, bullet = {normal = "shot", hit = "bullet_hit"}, scale = {1, 1}},
+            Bill = {colisor = {16}, sprite = nil, category = {body = 3, bullet = 4}, damage = 1, bullet = {normal = "bill_bullet", hit = "bullet_hit"}, scale = {1, 1}},
+            Two_Guys_In_a_Bike = {colisor = {48}, sprite = nil, category = {body = 4, bullet = 4}, damage = 2, bullet = {normal = "shot", hit = "bullet_hit"}, scale = {1.5, 1.5}}
         }
     }, EnemiesController)
 
@@ -31,7 +31,8 @@ function EnemiesController:factory(enemyName, animation)
         idle = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.idle, "assets/sprites/" .. enemyName .. "/", true, 0.7, nil, nil, true),
         running = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.running, "assets/sprites/" .. enemyName .. "/", true, 0.2, nil, nil, true),
         up = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.up, "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
-        down = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.down, "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true)    
+        down = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.down, "assets/sprites/" .. enemyName .. "/", true, 0.3, nil, nil, true),
+        dying = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(enemyName .. animation.dying, "assets/sprites/" .. enemyName .. "/", false, 0.06, nil, nil, true)
     }
     return enemyAnimation
 end
@@ -58,7 +59,7 @@ end
 function EnemiesController:createEnemy(enemyType, x, y)
     assert(enemyType, "Needs to receive enemyType Parameter")
     local enemyConfig = self.enemiesFactory[enemyType]
-    local enemy = Enemy:new(enemyConfig.sprite, self.world, x or 600, y or 500, enemyType, enemyConfig.colisor, enemyConfig.category.body, enemyConfig.category.bullet, enemyConfig.scale)
+    local enemy = Enemy:new(enemyConfig.sprite, self.world, x or 600, y or 500, enemyType, enemyConfig.colisor, enemyConfig.category.body, enemyConfig.category.bullet, enemyConfig.scale, enemyConfig.bullet)
     table.insert(self.enemies, enemy)
     self.ai[enemy] = self.ai.types[enemyType]:new(enemy)
 end

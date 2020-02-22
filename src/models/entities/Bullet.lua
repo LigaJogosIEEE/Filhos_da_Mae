@@ -2,20 +2,22 @@ local Bullet = {}
 
 Bullet.__index = Bullet
 
-function Bullet:new(world, x, y, orientation, speed, texture, category)
+function Bullet:new(world, x, y, orientation, speed, texture, category, shotName)
+    local shotName = shotName or {}
     local this = setmetatable({
-        world = world or love.physics.newWorld(0, 9.81 * 64),
+        world = world,
         orientation = orientation or "right",
-        speed = speed or 800, elapsedTime = 0, lifeTime = 1,
+        speed = speed or 800, elapsedTime = 0, lifeTime = 1, exploding = false,
         texture = texture, body = nil, shape = nil, fixture = nil,
-        sprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet("shot", "assets/elements/", true, nil, 1, 1, true)
+        spriteExplode = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(shotName.hit or "shot", "assets/elements/", false, 0.07, 1, 1, true),
+        sprite = gameDirector:getLibrary("Pixelurite").configureSpriteSheet(shotName.normal or "shot", "assets/elements/", true, nil, 1, 1, true)
     }, Bullet)
     
     --aplying physics
     this.body = love.physics.newBody(this.world, x or 0, y or 0, "kinematic")
     this.shape = love.physics.newCircleShape(16)
     this.fixture = love.physics.newFixture(this.body, this.shape, 0)
-    this.fixture:setUserData({name = "Bullet", objetic = this})
+    this.fixture:setUserData({name = "Bullet", object = this})
     this.fixture:setCategory(category or 2)
     
     if this.orientation == "right" then
@@ -33,9 +35,20 @@ end
 
 function Bullet:destroy() self.fixture:destroy(); self.shape = nil; self.body:destroy() end
 
+function Bullet:explode()
+    self.sprite = self.spriteExplode
+    self.exploding = true
+    self.fixture:setCategory(4) --always set category as same of enemies
+    self.body:setLinearVelocity(0, 0)
+end
+
 function Bullet:update(dt)
     self.sprite:update(dt)
-    self.updateFunction(dt)
+    if self.exploding then
+        if self.sprite:isOver() then self.elapsedTime = self.lifeTime end
+    else
+        self.updateFunction(dt)
+    end
     self.elapsedTime = self.elapsedTime + dt
     if self.elapsedTime >= self.lifeTime then
         gameDirector:removeBullet(self)

@@ -88,13 +88,13 @@ function GameDirector:getLibrary(library) return self.libraries[library] end
 
 function GameDirector:getFonts() return self.fonts end
 
-function GameDirector:addBullet(x, y, orientation, speed, category, fromPlayer)
+function GameDirector:addBullet(x, y, orientation, speed, category, fromPlayer, bulletSprite)
     if not fromPlayer or (fromPlayer and self.playerController:shot()) then
         if fromPlayer then
             local coinSound = self.audioController:getSound("effects", "coin_sound")
             coinSound:stop(); coinSound:play()
         end
-        table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed, nil, category))
+        table.insert(self.bulletsInWorld, Bullet:new(self.world.world, x, y, orientation, speed, nil, category, bulletSprite))
     end
 end
 

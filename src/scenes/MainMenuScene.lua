@@ -9,7 +9,7 @@ function MainMenuScene:new()
         buttons = {parentName = "mainMenu"},
         elapsedTime = 0
     }, MainMenuScene)
-    scaleDimension:calculeScales("menuLogo", 150, 110, 60, 50)
+    scaleDimension:calculeScales("menuLogo", this.logo:getWidth(), this.logo:getHeight(), 90, 40)
     scaleDimension:relativeScale("menuLogo", {width = this.logo:getWidth(), height = this.logo:getHeight()})
 
     local function loadSpriteSheet(filename)
