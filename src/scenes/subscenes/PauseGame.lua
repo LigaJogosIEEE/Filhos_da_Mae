@@ -16,6 +16,10 @@ function PauseGame:keypressed(key, scancode, isrepeat)
     end
 end
 
+function PauseGame:keyreleased(key, scancode)
+    gameDirector:getPlayer():keyreleased(key, scancode)
+end
+
 --[[function PauseGame:draw()
     local width, height = 400, 200
     local x, y = love.graphics.getDimensions()

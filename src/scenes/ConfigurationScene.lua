@@ -5,8 +5,7 @@ ConfigurationScene.__index = ConfigurationScene
 function ConfigurationScene:new()
     local this = setmetatable({
         buttonManager = gameDirector:getLibrary("ButtonManager"):new(),
-        buttons = {parentName = "configurationScene"}, buttonsQuads = nil,
-        buttonNames = {}
+        buttons = {parentName = "configurationScene"}, buttonsQuads = nil
     }, ConfigurationScene)
 
     sceneDirector:addSubscene("configureKey", require "scenes.subscenes.ConfigureKey":new())
@@ -30,7 +29,10 @@ function ConfigurationScene:new()
     gameDirector:addButton(this, this.buttons, 'Attack', true, "shot", {128, 60, 350, 440}, originalSize, function(self) sceneDirector:switchSubscene("configureKey", "shot") end, false)
     this.buttons.parentName = nil
 
-    for _, button in pairs(this.buttons) do this.buttonManager:addButton(button) end
+    local buttonOrder = {"configurationSceneMove Left", "configurationSceneMove Right",
+        "configurationSceneMove Up", "configurationSceneMove Down",
+        "configurationSceneJump", "configurationSceneAttack"}
+    for _, buttonName in ipairs(buttonOrder) do this.buttonManager:addButton(this.buttons[buttonName]) end
 
     return this
 end
@@ -70,7 +72,7 @@ function ConfigurationScene:draw()
 end
 
 function ConfigurationScene:resize(w, h)
-    for index, value in pairs(self.buttonNames) do
+    for index, value in pairs(self.buttons) do
         local scales = scaleDimension:getScale(index)
         value:setXY(scales.x, scales.y)
         value:setDimensions(scales.width, scales.height)

@@ -11,6 +11,7 @@ end
 function ConfigureKey:keypressed(key, scancode, isrepeat)
     if key == "escape" then
         sceneDirector:exitSubscene()
+        return
     end
 
     gameDirector:getPlayer():configureKeys(self.args, key)
