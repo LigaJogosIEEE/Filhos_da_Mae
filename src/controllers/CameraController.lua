@@ -2,12 +2,12 @@ local CameraController = {}
 CameraController.__index = CameraController
 
 function CameraController:new()
+    local width, height = scaleDimension.gameScreenScale.width, scaleDimension.gameScreenScale.height
     local this = {
         previousOrientation = true, --[[ true if right, false is left --]]
         previousPosition = {x = 0, y = 0},
-        stalkerX = require "libs.STALKER-X"()
+        stalkerX = require "libs.STALKER-X"(width / 2, height / 2, width, height, 2)
     }
-    this.stalkerX.scale = 2
     this.stalkerX:setFollowStyle('PLATFORMER'); this.stalkerX:setFollowLerp(0.1); this.stalkerX:setFollowLead(5)
     return setmetatable(this, CameraController)
 end
@@ -32,7 +32,12 @@ function CameraController:update(dt)
 end
 
 function CameraController:draw(drawFunction)
-    self.stalkerX:attach(); drawFunction(); self.stalkerX:detach(); self.stalkerX:draw()
+    local camera = self.stalkerX
+    local x = math.floor(camera.x * camera.scale + 0.5) / camera.scale
+    local y = math.floor(camera.y * camera.scale + 0.5) / camera.scale
+    camera:attach()
+    love.graphics.translate(camera.x - x, camera.y - y)
+    drawFunction(); camera:detach(); camera:draw()
 end
 
 return CameraController

@@ -25,6 +25,10 @@ function InGameScene:goingOut(sceneName)
 end
 
 function InGameScene:keypressed(key, scancode, isrepeat)
+    if key == "f1" then
+        self.level_1_map.isDebug = not self.level_1_map.isDebug
+        return
+    end
     if key == "escape" then
         sceneDirector:switchSubscene("pause")
     end

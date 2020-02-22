@@ -9,8 +9,8 @@ function love.load()
     local function rescaleImage(image)
         local imageDimension = {width = image:getWidth(), height = image:getHeight()}
         local item = {x = 0, y = 0, scaleX = 1, scaleY = 1, image = image}
-        item.x = (love.graphics.getWidth() / 2) - imageDimension.width / 2
-        item.y = (love.graphics.getHeight() / 2) - imageDimension.height / 2
+        item.x = (scaleDimension.gameScreenScale.width / 2) - imageDimension.width / 2
+        item.y = (scaleDimension.gameScreenScale.height / 2) - imageDimension.height / 2
         return item
     end
     
@@ -50,8 +50,10 @@ end
 
 function love.mousemoved(x, y, dx, dy, istouch)
     local new_x, new_y = gameDirector:getLibrary("push"):toGame(x, y)
-    new_dx, new_dy = gameDirector:getLibrary("push"):toGame(dx, dy)
-    sceneDirector:mousemoved(new_x or -x, new_y or -y, new_dx or -dx, new_dy or -dy, istouch)
+    local old_x, old_y = gameDirector:getLibrary("push"):toGame(x - dx, y - dy)
+    local new_dx = new_x and old_x and new_x - old_x or 0
+    local new_dy = new_y and old_y and new_y - old_y or 0
+    sceneDirector:mousemoved(new_x or -1, new_y or -1, new_dx, new_dy, istouch)
 end
 
 function love.draw()
@@ -61,6 +63,8 @@ function love.draw()
 end
 
 function love.resize(w, h)
-    scaleDimension:screenResize(w, h)
-    sceneDirector:resize(w, h)
+    gameDirector:getLibrary("push"):resize(w, h)
+    local virtual = scaleDimension.gameScreenScale
+    scaleDimension:screenResize(virtual.width, virtual.height)
+    sceneDirector:resize(virtual.width, virtual.height)
 end

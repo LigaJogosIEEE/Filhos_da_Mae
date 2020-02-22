@@ -39,6 +39,7 @@ end
 function LevelLoader:load(tilemapName)
     assert(tilemapName, "filename required")
     self.tilemap = gameDirector:getLibrary("sti")(string.format("%s/%s.lua", self.levelsPath, tilemapName), {"box2d"}, 0, 128)
+    for _, tileset in ipairs(self.tilemap.tilesets) do tileset.image:setFilter("nearest", "nearest") end
     --[[ Here will get the enemies layer and add it to enemies controller --]]
     self:getTilePosition(self.tilemap.layers["enemies"].objects); self.tilemap:removeLayer("enemies")
     self:generateEnemies(); self.tilemap:box2d_init(self.world)
@@ -48,12 +49,18 @@ end
 function LevelLoader:update(dt) self.tilemap:update(dt) end
 
 function LevelLoader:draw()
-    love.graphics.translate(-128, 0)
-    local x, y = gameDirector:getCameraController():getPosition()
-    local defaultY = (-1064 + 340)
-    y = (y < 580 and -260 or (y < 1048 and (-y + 320) or defaultY))
-    self.tilemap:draw(-x < -130 and (-x > -10400 and (-x + 218) or -10400) or -130, y, 2, 2)
-    --[[love.graphics.setColor(1, 0, 0); self.tilemap:box2d_draw(0, 0); love.graphics.setColor(1, 1, 1) --]]
+    --[[ Draw layers directly to keep STI offsets and the camera transform --]]
+    love.graphics.push()
+    love.graphics.translate(0, 128)
+    for _, layer in ipairs(self.tilemap.layers) do
+        if layer.visible and layer.opacity > 0 then self.tilemap:drawLayer(layer) end
+    end
+    love.graphics.pop()
+    if self.isDebug then
+        love.graphics.setColor(1, 0, 0, 0.6)
+        self.tilemap:box2d_draw(0, 0)
+        love.graphics.setColor(1, 1, 1, 1)
+    end
 end
 
 function LevelLoader:resize(h, w) self.tilemap:resize(w, h) end

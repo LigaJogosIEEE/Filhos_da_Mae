@@ -26,7 +26,7 @@ end
 function WaitStartScene:draw()
     love.graphics.draw(self.background, 0, 0, 0, 1, 1)
     local red, green, blue, alpha = love.graphics.getColor(); love.graphics.setColor(red, green, blue, self.alpha)
-    love.graphics.print("Pressione qualquer tecla para continuar", 100, love.graphics.getHeight() - 100, 0, 2, 2)
+    love.graphics.print("Pressione qualquer tecla para continuar", 100, scaleDimension.gameScreenScale.height - 100, 0, 2, 2)
     love.graphics.setColor(red, green, blue, alpha)
 end
 
