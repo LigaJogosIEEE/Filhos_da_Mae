@@ -1,10 +1,11 @@
 local Enemy = require "models.entities.Enemy"
+local Sanghost = require "libs.Sanghost.Sanghost"
 
 local EnemiesController = {}; EnemiesController.__index = EnemiesController
 
 function EnemiesController:new(world)
     local this = setmetatable({
-        enemies = {},
+        enemies = {}, sanghost = Sanghost:new(),
         ai = {types = {
             Bill = require "models.business.enemies_ai.BillAi",
             Seu_Barriga = require "models.business.enemies_ai.SeuBarrigaAi",
@@ -59,7 +60,7 @@ end
 function EnemiesController:createEnemy(enemyType, x, y)
     assert(enemyType, "Needs to receive enemyType Parameter")
     local enemyConfig = self.enemiesFactory[enemyType]
-    local enemy = Enemy:new(enemyConfig.sprite, self.world, x or 600, y or 500, enemyType, enemyConfig.colisor, enemyConfig.category.body, enemyConfig.category.bullet, enemyConfig.scale, enemyConfig.bullet)
+    local enemy = Enemy:new(self.sanghost:cloneObject(enemyConfig.sprite, {}), self.world, x or 600, y or 500, enemyType, enemyConfig.colisor, enemyConfig.category.body, enemyConfig.category.bullet, enemyConfig.scale, enemyConfig.bullet)
     table.insert(self.enemies, enemy)
     self.ai[enemy] = self.ai.types[enemyType]:new(enemy)
 end

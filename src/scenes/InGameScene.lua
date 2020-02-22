@@ -3,13 +3,13 @@ local InGameScene = {}
 InGameScene.__index = InGameScene
 
 function InGameScene:new(world, game_music)
+    gameDirector:getEnemiesController():startFactory()
     local this = {
         level_1_map = gameDirector:getLibrary("LevelLoader"):new("assets/tilesets", world):load("level_1_map"),
         liveImage = love.graphics.newImage("assets/elements/health.png"),
         game_music = game_music
     }
-    gameDirector:getEnemiesController():startFactory()
-    this.game_music:isLooping(true)
+    this.game_music:setLooping(true)
     sceneDirector:addSubscene("pause", require "scenes.subscenes.PauseGame":new())
     return setmetatable(this, InGameScene)
 end
