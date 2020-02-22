@@ -65,6 +65,8 @@ function GameDirector:new()
 end
 
 function GameDirector:reset()
+    for _, bullet in ipairs(self.bulletsInWorld) do bullet:destroy() end
+    self:removeDestroyedBullets()
     self.lifeBar = self.sanghost:load("lifebar"); self.playerController:reset()
 end
 
@@ -101,8 +103,18 @@ end
 function GameDirector:removeBullet(bullet, fixture)
     for index = 1, #self.bulletsInWorld do
         if (bullet and self.bulletsInWorld[index] == bullet) or (fixture and self.bulletsInWorld[index].fixture == fixture) then
-            self.bulletsInWorld[index]:destroy(); table.remove(self.bulletsInWorld, index)
+            self.bulletsInWorld[index]:destroy()
             return index
+        end
+    end
+end
+
+function GameDirector:removeDestroyedBullets()
+    for index = #self.bulletsInWorld, 1, -1 do
+        local bullet = self.bulletsInWorld[index]
+        if bullet.pendingRemoval then
+            bullet.fixture:destroy(); bullet.shape = nil; bullet.body:destroy()
+            table.remove(self.bulletsInWorld, index)
         end
     end
 end
@@ -125,7 +137,10 @@ function GameDirector:runGame() return self.lifeBar:getValue() > 0 end
 function GameDirector:update(dt)
     if not self.playerController:isDead() then
         self.world:update(dt); self.playerController:update(dt); self.enemiesController:update(dt)            
-        for index, bullet in pairs(self.bulletsInWorld) do bullet:update(dt) end
+        for _, bullet in ipairs(self.bulletsInWorld) do
+            if not bullet.pendingRemoval then bullet:update(dt) end
+        end
+        self:removeDestroyedBullets()
 
         self.cameraController:update(dt)
     else

@@ -33,13 +33,15 @@ function Bullet:new(world, x, y, orientation, speed, texture, category, shotName
     return this
 end
 
-function Bullet:destroy() self.fixture:destroy(); self.shape = nil; self.body:destroy() end
+function Bullet:destroy() self.pendingRemoval = true end
 
 function Bullet:explode()
+    if self.exploding then return false end
     self.sprite = self.spriteExplode
     self.exploding = true
     self.fixture:setCategory(4) --always set category as same of enemies
     self.body:setLinearVelocity(0, 0)
+    return true
 end
 
 function Bullet:update(dt)
@@ -51,7 +53,7 @@ function Bullet:update(dt)
     end
     self.elapsedTime = self.elapsedTime + dt
     if self.elapsedTime >= self.lifeTime then
-        gameDirector:removeBullet(self)
+        self:destroy()
     end
 end
 

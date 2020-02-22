@@ -45,12 +45,20 @@ function EnemiesController:startFactory()
 end
 
 function EnemiesController:clearEnemies()
-    repeat
-        for _, enemy in pairs(self.enemies) do
-            enemy:destroy()
-        end
-    until #self.enemies <= 0
-    self.enemies = {}
+    for index = #self.enemies, 1, -1 do self.enemies[index]:destroy() end
+    if not self.isUpdating then self:removeDestroyed() end
+end
+
+function EnemiesController:removeDestroyed()
+    for index = #self.enemies, 1, -1 do
+        if self.enemies[index].pendingRemoval then self:remove(self.enemies[index]) end
+    end
+end
+
+function EnemiesController:touchGround(hasSupport)
+    for _, enemy in ipairs(self.enemies) do
+        if not enemy.pendingRemoval then enemy:touchGround(hasSupport(enemy:getBody())) end
+    end
 end
 
 function EnemiesController:getDamage(enemyType)
@@ -79,6 +87,7 @@ end
 function EnemiesController:remove(enemy)
     for index = 1, #self.enemies do
         if self.enemies[index] == enemy then
+            enemy.fixture:destroy(); enemy.shape = nil; enemy.body:destroy()
             table.remove(self.enemies, index)
             self.ai[enemy] = nil
             return true
@@ -87,10 +96,15 @@ function EnemiesController:remove(enemy)
 end
 
 function EnemiesController:update(dt)
-    for index, enemy in pairs(self.enemies) do
-        self.ai[enemy]:update(dt)
-        enemy:update(dt)
+    self.isUpdating = true
+    for _, enemy in ipairs(self.enemies) do
+        if not enemy.pendingRemoval then
+            if not enemy:isDead() then self.ai[enemy]:update(dt) end
+            if not enemy.pendingRemoval then enemy:update(dt) end
+        end
     end
+    self.isUpdating = false
+    self:removeDestroyed()
 end
 
 function EnemiesController:draw()

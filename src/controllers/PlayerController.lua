@@ -5,7 +5,7 @@ function PlayerController:new(LifeForm, Player, spriteAnimation, world)
         stats = LifeForm(), player = Player:new(spriteAnimation, world)
     }, PlayerController)
 
-    local playerEvents = {"keypressed", "keyreleased", "retreat", "configureKeys", "draw"}
+    local playerEvents = {"keypressed", "keyreleased", "retreat", "configureKeys", "draw", "touchGround", "touchWall"}
     for _, eventName in pairs(playerEvents) do
         this[eventName] = function(self, ...) return self.player[eventName](self.player, ...) end
     end
@@ -17,15 +17,18 @@ function PlayerController:reset() self.player:reset(); self.stats:reset() end
 
 function PlayerController:isInGround() return self.player.inGround end
 
-function PlayerController:getBody() return self.player end
+function PlayerController:getBody() return self.player:getBody() end
 
 function PlayerController:takeDamage(damageAmount)
+    if self.stats:isDead() then return true end
+    if damageAmount and damageAmount <= 0 then return false end
     -- here will verify how many damage are received
     local damageAmount = damageAmount or 1; local previousLife = self.stats:getLife()
     local isDead = self.stats:takeDamage(damageAmount)
     if previousLife > self.stats:getLife() then gameDirector:getLifebar():decrement(damageAmount)
     else gameDirector:getLifebar():fill()
     end
+    self.player:retreat()
     gameDirector:getCameraController():shake()
 	return isDead
 end
@@ -35,8 +38,6 @@ function PlayerController:instantDeath()
 end
 
 function PlayerController:isDead() return self.stats:isDead() end
-
-function PlayerController:endContact() self.player:stopMoving() end
 
 function PlayerController:shot()
     -- here will verify bullet type for shot

@@ -34,22 +34,19 @@ function Enemy:reset()
     self.previousAnimation = "idle"
 end
 
-function Enemy:destroy()
-    self.fixture:destroy(); self.shape = nil; self.body:destroy()
-    gameDirector.enemiesController:remove(self)
-end
+function Enemy:destroy() self.pendingRemoval = true end
+
+function Enemy:getBody() return self.body end
+
+function Enemy:isDead() return self.lifeForm:isDead() end
 
 function Enemy:touchGround(isTouching)
-    self.inGround = isTouching; self.animation = self.previousAnimation
+    self.inGround = isTouching
+    if isTouching then self.animation = self.previousAnimation end
 end
 
 function Enemy:takeDamage(amount)
     self.lifeForm:takeDamage(amount)
-end
-
-function Enemy:endContact()
-    local xVelocity, yVelocity = self.body:getLinearVelocity()
-    self.body:setLinearVelocity(0, 0)
 end
 
 function Enemy:setOrientation(direction) self.orientation = direction end
@@ -100,8 +97,9 @@ function Enemy:update(dt)
         if self.inGround and self.animation == "jumping" then
             self.animation = self.previousAnimation
         end
-        if self.lifeForm:isDead() then
-            self.animation = "dying"
+        if self:isDead() then
+            if self.body:isActive() then self.body:setActive(false) end
+            self.isMoving = false; self.animation = "dying"
         else
             if self.isMoving then
                 local xBodyVelocity, yBodyVelocity = self.body:getLinearVelocity()
@@ -122,7 +120,7 @@ function Enemy:draw()
         local scaleX = self.orientation == "right" and -self.scale[1] or self.scale[1]
         self.spriteAnimation[positionToDraw]:draw(self.body:getX(), self.body:getY(), scaleX, self.scale[2])
         --love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
-        love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius())
+        if not self:isDead() then love.graphics.circle("line", self.body:getX(), self.body:getY(), self.shape:getRadius()) end
     end
 end
 
